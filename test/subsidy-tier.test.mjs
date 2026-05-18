@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { fetchMerchantDetail, fetchMerchantDynamics } from '../src/services/merchantService.js'
 import { formatWanAmount } from '../src/utils/money.js'
 import { buildQuotaRows, getSubsidyTierByMonthlyAvg } from '../src/utils/subsidyTiers.js'
 
@@ -30,7 +31,13 @@ const amountCases = [
   [Number.NaN, '无数据'],
   [-1.23, '-¥1.23万'],
   [0.005, '¥0.01万'],
-  [99999999.99, '¥99999999.99万']
+  [99999999.99, '¥99999999.99万'],
+  ['', '无数据'],
+  ['   ', '无数据'],
+  [true, '无数据'],
+  [false, '无数据'],
+  ['abc', '无数据'],
+  ['1.23', '¥1.23万']
 ]
 
 for (const [input, expected] of amountCases) {
@@ -67,4 +74,42 @@ assert.deepEqual(
   ['-', '-', '-', '-', '¥11.70万']
 )
 
-console.log('subsidy tier and money formatting tests passed')
+const invalidTierInputs = ['', '   ', true, false, 'abc']
+for (const input of invalidTierInputs) {
+  const tier = getSubsidyTierByMonthlyAvg(input)
+  assert.equal(tier, null, `invalid monthlyAvgBalance=${String(input)}`)
+}
+
+await assert.rejects(
+  () => fetchMerchantDetail(''),
+  (error) => error.statusCode === 400 && error.code === 'MOCK_BAD_REQUEST'
+)
+await assert.rejects(
+  () => fetchMerchantDetail('missing'),
+  (error) => error.statusCode === 404 && error.code === 'MOCK_NOT_FOUND'
+)
+
+const defaultMerchant = await fetchMerchantDetail()
+assert.equal(defaultMerchant.merchant_id, 'merchant-with-product')
+
+const defaultDynamics = await fetchMerchantDynamics({ merchantId: 'merchant-with-product' })
+assert.equal(defaultDynamics.page, 1)
+assert.equal(defaultDynamics.page_size, 20)
+
+const invalidDynamicsCases = [
+  { merchantId: 'merchant-with-product', page: 0, pageSize: 20 },
+  { merchantId: 'merchant-with-product', page: -1, pageSize: 20 },
+  { merchantId: 'merchant-with-product', page: 1, pageSize: 0 },
+  { merchantId: 'merchant-with-product', page: 'x', pageSize: 20 },
+  { merchantId: 'merchant-with-product', page: 1, pageSize: 'x' }
+]
+
+for (const params of invalidDynamicsCases) {
+  await assert.rejects(
+    () => fetchMerchantDynamics(params),
+    (error) => error.statusCode === 400 && error.code === 'MOCK_BAD_REQUEST',
+    `fetchMerchantDynamics invalid params=${JSON.stringify(params)}`
+  )
+}
+
+console.log('merchant service, subsidy tier, and money formatting tests passed')

@@ -11,6 +11,13 @@ const MOCK_DIAL_PHONE_BY_MERCHANT_ID = {
   'merchant-no-product': '10000'
 }
 
+function createMockError(message, options = {}) {
+  const error = new Error(message)
+  error.code = options.code || message
+  error.statusCode = options.statusCode || 500
+  return error
+}
+
 function cloneFixture(value) {
   if (Array.isArray(value)) {
     return value.map((item) => cloneFixture(item))
@@ -36,25 +43,25 @@ function resolveMock(payload, options = {}) {
   return new Promise((resolve, reject) => {
     if (forceTimeout) {
       setTimeout(() => {
-        reject(new Error('MOCK_REQUEST_TIMEOUT'))
+        reject(createMockError('MOCK_REQUEST_TIMEOUT', { code: 'MOCK_REQUEST_TIMEOUT', statusCode: 504 }))
       }, timeoutMs)
       return
     }
 
     const timeoutTimer = setTimeout(() => {
-      reject(new Error('MOCK_REQUEST_TIMEOUT'))
+      reject(createMockError('MOCK_REQUEST_TIMEOUT', { code: 'MOCK_REQUEST_TIMEOUT', statusCode: 504 }))
     }, timeoutMs)
 
     setTimeout(() => {
       clearTimeout(timeoutTimer)
 
       if (forceError) {
-        reject(new Error('MOCK_REQUEST_FAILED'))
+        reject(createMockError('MOCK_REQUEST_FAILED', { code: 'MOCK_REQUEST_FAILED', statusCode: 500 }))
         return
       }
 
-      if (statusCode >= 500) {
-        reject(new Error('MOCK_SERVER_ERROR'))
+      if (statusCode >= 400) {
+        reject(createMockError('MOCK_SERVER_ERROR', { code: 'MOCK_SERVER_ERROR', statusCode }))
         return
       }
 
@@ -63,8 +70,46 @@ function resolveMock(payload, options = {}) {
   })
 }
 
+function rejectMock(message, options) {
+  return Promise.reject(createMockError(message, options))
+}
+
+function normalizeMerchantId(merchantId) {
+  if (merchantId === undefined || merchantId === null) {
+    return DEFAULT_MERCHANT_ID
+  }
+
+  if (typeof merchantId !== 'string' || merchantId.trim() === '') {
+    return null
+  }
+
+  return merchantId.trim()
+}
+
+function normalizePositiveInteger(value, fallback) {
+  if (value === undefined || value === null) {
+    return fallback
+  }
+
+  if (typeof value !== 'number' || !Number.isInteger(value) || value < 1) {
+    return null
+  }
+
+  return value
+}
+
 export function fetchMerchantDetail(merchantId = DEFAULT_MERCHANT_ID, options = {}) {
-  const fixture = merchantDetailFixtures[merchantId] || merchantDetailFixtures[DEFAULT_MERCHANT_ID]
+  const normalizedMerchantId = normalizeMerchantId(merchantId)
+
+  if (!normalizedMerchantId) {
+    return rejectMock('MOCK_BAD_REQUEST', { code: 'MOCK_BAD_REQUEST', statusCode: 400 })
+  }
+
+  const fixture = merchantDetailFixtures[normalizedMerchantId]
+  if (!fixture) {
+    return rejectMock('MOCK_NOT_FOUND', { code: 'MOCK_NOT_FOUND', statusCode: 404 })
+  }
+
   return resolveMock(fixture, options)
 }
 
@@ -74,15 +119,28 @@ export function fetchMerchantDynamics(params = {}, options = {}) {
     page = 1,
     pageSize = 20
   } = params
-  const allRecords = merchantDynamicFixtures[merchantId] || []
+
+  const normalizedMerchantId = normalizeMerchantId(merchantId)
+  const normalizedPage = normalizePositiveInteger(page, 1)
+  const normalizedPageSize = normalizePositiveInteger(pageSize, 20)
+
+  if (!normalizedMerchantId || !normalizedPage || !normalizedPageSize) {
+    return rejectMock('MOCK_BAD_REQUEST', { code: 'MOCK_BAD_REQUEST', statusCode: 400 })
+  }
+
+  if (!Object.hasOwn(merchantDynamicFixtures, normalizedMerchantId)) {
+    return rejectMock('MOCK_NOT_FOUND', { code: 'MOCK_NOT_FOUND', statusCode: 404 })
+  }
+
+  const allRecords = merchantDynamicFixtures[normalizedMerchantId]
   const sortedRecords = [...allRecords].sort((a, b) => b.record_date.localeCompare(a.record_date))
-  const start = (page - 1) * pageSize
-  const records = sortedRecords.slice(start, start + pageSize)
+  const start = (normalizedPage - 1) * normalizedPageSize
+  const records = sortedRecords.slice(start, start + normalizedPageSize)
 
   return resolveMock({
     records,
-    page,
-    page_size: pageSize,
+    page: normalizedPage,
+    page_size: normalizedPageSize,
     total: sortedRecords.length,
     has_more: start + records.length < sortedRecords.length
   }, options)

@@ -1,4 +1,4 @@
-import { formatWanAmount } from './money.js'
+import { formatWanAmount, normalizeFiniteAmount } from './money.js'
 
 export const SUBSIDY_TIERS = [
   {
@@ -49,10 +49,10 @@ export const SUBSIDY_TIERS = [
 ]
 
 export function getSubsidyTierByMonthlyAvg(monthlyAvgBalance) {
-  const amount = Number(monthlyAvgBalance)
+  const amount = normalizeFiniteAmount(monthlyAvgBalance)
 
   // 负活期视为输入异常，不归任何档；上层负责展示空态。
-  if (!Number.isFinite(amount) || amount < 0) {
+  if (amount === null || amount < 0) {
     return null
   }
 
@@ -67,8 +67,8 @@ export function getSubsidyTierByMonthlyAvg(monthlyAvgBalance) {
 
 export function buildQuotaRows(currentMonthlyAvgBalance) {
   const activeTier = getSubsidyTierByMonthlyAvg(currentMonthlyAvgBalance)
-  const amount = Number(currentMonthlyAvgBalance)
-  const hasValidAmount = Number.isFinite(amount) && amount >= 0
+  const amount = normalizeFiniteAmount(currentMonthlyAvgBalance)
+  const hasValidAmount = amount !== null && amount >= 0
 
   return SUBSIDY_TIERS.map((tier) => ({
     ...tier,
