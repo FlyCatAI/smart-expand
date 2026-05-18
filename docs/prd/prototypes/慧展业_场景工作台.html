@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99",
+            "primary-container": "#1A52BF",
+            "on-primary": "#FFFFFF",
+            "on-primary-container": "#FFFFFF",
+            "surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7",
+            "surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB",
+            "surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF",
+            "on-surface": "#191C1E",
+            "on-surface-variant": "#434653",
+            "outline-variant": "#C3C6D0",
+            "outline": "#737685",
+            "secondary": "#4E5D88",
+            "secondary-container": "#BFCEFF",
+            "on-secondary-container": "#485781",
+            "error": "#BA1A1A",
+            "error-container": "#FFDAD6",
+            "on-error": "#FFFFFF",
+            "on-error-container": "#93000A",
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --motion-duration-short: 100ms;
+      --motion-duration-medium: 200ms;
+      --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .scene-card { transition: all var(--motion-duration-short) var(--motion-easing-standard); }
+    .scene-card:active { transform: scale(0.97); }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998; display: none; }
+    .modal-content { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 24px 24px 0 0; z-index: 999; max-height: 80vh; overflow-y: auto; transform: translateY(100%); transition: transform var(--motion-duration-long) var(--motion-easing-standard); padding-bottom: env(safe-area-inset-bottom); }
+    .modal-content.show { transform: translateY(0); }
+    .modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto 0; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+
+  <!-- ===================== TOP APP BAR ===================== -->
+  <header class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-6 bg-white/90 backdrop-blur-xl shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" opacity="0.9"/>
+          <path d="M2 17l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M2 12l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <div>
+        <div class="font-headline text-base font-bold text-on-surface">慧展业</div>
+        <div class="text-[11px] text-on-surface-variant font-label">客户经理工作台</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">search</span>
+      </button>
+      <button class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">notifications</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="pt-16 pb-20 min-h-screen">
+
+    <!-- 页面标题 -->
+    <div class="px-6 pt-6 pb-4">
+      <h1 class="font-headline text-2xl font-bold text-on-surface">场景工作台</h1>
+      <p class="text-sm text-on-surface-variant mt-1">按业务场景快速切入工作</p>
+    </div>
+
+    <!-- 三大场景入口 -->
+    <div class="px-6 space-y-4">
+
+      <!-- 新客户 -->
+      <div class="scene-card bg-white rounded-2xl p-5 shadow-sm border border-outline-variant cursor-pointer" onclick="showDevModal('新客户')">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-emerald-600" style="font-size:28px">person_add</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="font-headline text-base font-bold text-on-surface">新客户</div>
+            <div class="text-sm text-on-surface-variant mt-0.5">普通场景客户开户</div>
+          </div>
+          <div class="flex items-center gap-1 text-primary">
+            <span class="text-sm font-medium">进入</span>
+            <span class="material-symbols-outlined" style="font-size:18px">chevron_right</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 代发客户 -->
+      <div class="scene-card bg-white rounded-2xl p-5 shadow-sm border border-outline-variant cursor-pointer" onclick="showDevModal('代发客户')">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-blue-600" style="font-size:28px">account_balance</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="font-headline text-base font-bold text-on-surface">代发客户</div>
+            <div class="text-sm text-on-surface-variant mt-0.5">代发场景客户开户</div>
+          </div>
+          <div class="flex items-center gap-1 text-primary">
+            <span class="text-sm font-medium">进入</span>
+            <span class="material-symbols-outlined" style="font-size:18px">chevron_right</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 收单客户 -->
+      <div class="scene-card bg-white rounded-2xl p-5 shadow-sm border border-outline-variant cursor-pointer" onclick="showDevModal('收单客户')">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-amber-600" style="font-size:28px">point_of_sale</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="font-headline text-base font-bold text-on-surface">收单客户</div>
+            <div class="text-sm text-on-surface-variant mt-0.5">收单场景客户开户</div>
+          </div>
+          <div class="flex items-center gap-1 text-primary">
+            <span class="text-sm font-medium">进入</span>
+            <span class="material-symbols-outlined" style="font-size:18px">chevron_right</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 底部留白 -->
+    <div class="h-8"></div>
+
+  </main>
+
+  <!-- ===================== 功能开发中弹窗 ===================== -->
+  <div id="devModal" class="fixed inset-0 z-[100] bg-black/40 flex items-end justify-center" style="display:none" onclick="hideDevModal(event)">
+    <div class="absolute bottom-0 left-0 right-0 mx-auto bg-white rounded-t-3xl p-6 pb-10" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="flex flex-col items-center justify-center py-10">
+        <div class="w-20 h-20 rounded-full bg-surface-container-low flex items-center justify-center mb-5">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:40px">construction</span>
+        </div>
+        <h2 class="font-headline text-xl font-bold text-on-surface mb-2" id="devModalTitle">新客户</h2>
+        <p class="text-sm text-on-surface-variant">功能开发中，敬请期待</p>
+        <button onclick="hideDevModal()" class="mt-6 px-8 py-3 bg-primary text-white rounded-xl font-medium text-sm active:scale-95 transition-transform">
+          我知道了
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== BOTTOM NAVIGATION ===================== -->
+  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <!-- 收单 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_收单工作台_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">home</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">收单</span>
+    </a>
+    <!-- 零售 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_零售工作台.html">
+      <span class="material-symbols-outlined" style="font-size:20px">group</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">零售</span>
+    </a>
+    <!-- 场景 [active] -->
+    <a class="flex flex-col items-center justify-center bg-blue-50 text-blue-800 rounded-2xl px-5 py-2" href="慧展业_场景工作台.html">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL'1,'wght'400;font-size:20px">auto_awesome</span>
+      <span class="font-inter text-[10px] font-bold tracking-wide uppercase mt-1">场景</span>
+    </a>
+    <!-- 动态 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_动态消息列表_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">dynamic_feed</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">动态</span>
+    </a>
+    <!-- 我的 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_我的中心_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">person</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">我的</span>
+    </a>
+  </nav>
+
+  <script>
+    function showDevModal(title) {
+      const modal = document.getElementById('devModal');
+      document.getElementById('devModalTitle').textContent = title;
+      modal.style.display = 'flex';
+    }
+    function hideDevModal(event) {
+      if (event && event.target !== event.currentTarget) return;
+      document.getElementById('devModal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

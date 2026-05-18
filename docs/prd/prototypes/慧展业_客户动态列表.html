@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99","primary-container": "#1A52BF","surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7","surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB","surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF","on-surface": "#191C1E",
+            "on-surface-variant": "#434653","outline-variant": "#C3C6D5","outline": "#737685",
+            "tertiary": "#732B00","tertiary-container": "#993C00","tertiary-fixed": "#FFDBCC",
+            "secondary": "#4E5D88","secondary-container": "#BFCEFF","error": "#BA1A1A",
+            "error-container": "#FFDAD6","on-primary": "#FFFFFF","on-tertiary": "#FFFFFF",
+            "on-tertiary-fixed": "#351000","on-error": "#FFFFFF","on-error-container": "#93000A",
+            "on-secondary-container": "#485781",
+          },
+          borderRadius: { "DEFAULT": "0.25rem","lg": "1rem","xl": "1.5rem","full": "9999px" },
+          fontFamily: { "headline": ["Manrope"],"body": ["Inter"],"label": ["Inter"] }
+        }
+      }
+    }
+  </script>
+  <style>
+
+    /* ========== B端 Motion Tokens ========== */
+    :root {
+      --motion-duration-short: 100ms;
+      --motion-duration-medium: 200ms;
+      --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
+    <div class="flex items-center gap-3">
+      <button class="w-9 h-9 rounded-xl bg-primary-container flex items-center justify-center cursor-pointer transition-all active:scale-95" onclick="history.back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span class="text-base font-headline font-semibold text-on-surface">客户动态</span>
+    </div>
+  </header>
+
+  <main class="pt-16 pb-8 px-5 max-w-lg mx-auto">
+
+    <!-- 时间线 -->
+    <div class="space-y-0 pt-5">
+
+      <!-- 最新记录：产品到期 -->
+      <div class="flex gap-4">
+        <div class="flex flex-col items-center">
+          <div class="w-3 h-3 rounded-full bg-error mt-1.5 shadow-sm"></div>
+          <div class="w-0.5 flex-1 bg-error/20 min-h-[100px]"></div>
+        </div>
+        <div class="pb-8 flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-bold text-error bg-error/10 px-2 py-0.5 rounded-full">产品到期</span>
+            <span class="text-xs text-on-surface-variant font-medium">2026-05-15</span>
+          </div>
+          <p class="font-headline text-sm font-bold text-on-surface mb-1">理财产品到期回款</p>
+          <p class="text-xs text-on-surface-variant leading-relaxed">「天天增益理财产」¥50万到期，资金已回到活期账户，建议转投定期存款锁定收益。</p>
+          <div class="flex items-center gap-3 mt-2">
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">回款金额</span>
+              <span class="text-xs font-bold text-primary">¥500,000</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">收益率</span>
+              <span class="text-xs font-bold text-primary">3.2%/年</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录2：大额认购 -->
+      <div class="flex gap-4">
+        <div class="flex flex-col items-center">
+          <div class="w-3 h-3 rounded-full bg-primary mt-1.5"></div>
+          <div class="w-0.5 flex-1 bg-surface-container-high min-h-[100px]"></div>
+        </div>
+        <div class="pb-8 flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">产品购买</span>
+            <span class="text-xs text-on-surface-variant font-medium">2026-04-28</span>
+          </div>
+          <p class="font-headline text-sm font-bold text-on-surface mb-1">购买结构性存款¥100万</p>
+          <p class="text-xs text-on-surface-variant leading-relaxed">认购「稳添盈结构性存款」6个月期，挂钩黄金价格区间，年化收益2.8%-4.5%。</p>
+          <div class="flex items-center gap-3 mt-2">
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">认购金额</span>
+              <span class="text-xs font-bold text-primary">¥1,000,000</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">期限</span>
+              <span class="text-xs font-bold text-primary">6个月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录3：新客认定 -->
+      <div class="flex gap-4">
+        <div class="flex flex-col items-center">
+          <div class="w-3 h-3 rounded-full bg-secondary mt-1.5"></div>
+          <div class="w-0.5 flex-1 bg-surface-container-high min-h-[80px]"></div>
+        </div>
+        <div class="pb-8 flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-bold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">新客认定</span>
+            <span class="text-xs text-on-surface-variant font-medium">2026-04-20</span>
+          </div>
+          <p class="font-headline text-sm font-bold text-on-surface mb-1">新客认定：首次购买银行理财</p>
+          <p class="text-xs text-on-surface-variant leading-relaxed">客户首次在我行购买理财产品，认定为新客客户，享受新客专属收益率上浮0.1%。</p>
+          <div class="flex items-center gap-2 mt-2">
+            <div class="w-6 h-6 rounded-full bg-secondary/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-secondary text-xs">verified</span>
+            </div>
+            <span class="text-[10px] text-secondary font-medium">新客优惠：收益率+0.1%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录4：定期转出提醒 -->
+      <div class="flex gap-4">
+        <div class="flex flex-col items-center">
+          <div class="w-3 h-3 rounded-full bg-tertiary mt-1.5"></div>
+          <div class="w-0.5 flex-1 bg-surface-container-high min-h-[100px]"></div>
+        </div>
+        <div class="pb-8 flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-bold text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full">资金变动</span>
+            <span class="text-xs text-on-surface-variant font-medium">2026-04-10</span>
+          </div>
+          <p class="font-headline text-sm font-bold text-on-surface mb-1">他行同名转入：¥80万</p>
+          <p class="text-xs text-on-surface-variant leading-relaxed">从他行同名账户转入80万，购买三年期大额存单，锁定年利率3.55%。客户原在他行购买理财到期转出。</p>
+          <div class="flex items-center gap-3 mt-2">
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">转入金额</span>
+              <span class="text-xs font-bold text-primary">¥800,000</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">产品</span>
+              <span class="text-xs font-bold text-primary">三年大额存单</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录5：首次资产配置 -->
+      <div class="flex gap-4">
+        <div class="flex flex-col items-center">
+          <div class="w-3 h-3 rounded-full bg-surface-container-high mt-1.5"></div>
+        </div>
+        <div class="pb-4 flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[10px] font-bold text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">产品购买</span>
+            <span class="text-xs text-on-surface-variant font-medium">2026-03-01</span>
+          </div>
+          <p class="font-headline text-sm font-bold text-on-surface mb-1">首次购买定期存款¥250万</p>
+          <p class="text-xs text-on-surface-variant leading-relaxed">新客户首次在我行办理定期存款业务，开立定期账户并存入250万，设定自动转存。</p>
+          <div class="flex items-center gap-3 mt-2">
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">存入金额</span>
+              <span class="text-xs font-bold text-primary">¥2,500,000</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="text-[10px] text-on-surface-variant">期限</span>
+              <span class="text-xs font-bold text-primary">3年</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 加载更多 -->
+    <div class="text-center py-4">
+      <button class="text-xs text-primary font-semibold hover:underline active:scale-95 transition-all">加载更多</button>
+    </div>
+
+  </main>
+
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[100] bg-on-surface text-surface px-5 py-3 rounded-full text-sm font-medium shadow-lg opacity-0 pointer-events-none transition-all duration-300 -translate-y-2" style="max-width:calc(100vw - 80px)"></div>
+
+  <script>
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+      el.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        el.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+        el.classList.remove('opacity-100', 'translate-y-0');
+      }, 2500);
+    }
+  </script>
+</body>
+</html>

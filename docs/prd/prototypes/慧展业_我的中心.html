@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99", "primary-container": "#1A52BF",
+            "on-primary": "#FFFFFF", "on-primary-container": "#FFFFFF",
+            "surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7",
+            "surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB",
+            "surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF",
+            "on-surface": "#191C1E", "on-surface-variant": "#434653",
+            "outline": "#737685", "outline-variant": "#C3C6D0",
+            "tertiary": "#732B00", "tertiary-container": "#993C00",
+            "tertiary-fixed": "#FFDBCC", "on-tertiary-fixed": "#351000",
+            "secondary": "#4E5D88", "secondary-container": "#BFCEFF",
+            "on-secondary-container": "#485781",
+            "error": "#BA1A1A", "error-container": "#FFDAD6",
+            "on-error": "#FFFFFF", "on-error-container": "#93000A",
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+          fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --motion-duration-short: 100ms; --motion-duration-medium: 200ms; --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--color-outline-variant); cursor: pointer; transition: all var(--motion-duration-short) var(--motion-easing-standard); }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:active { opacity: 0.7; transform: scale(0.98); }
+    .menu-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    /* ========== Fallback CSS ========== */
+    body { background: #F7F9FC; color: #191C1E; margin: 0; }
+    .bg-surface { background: #F7F9FC; }
+    .bg-surface-container-lowest { background: white; }
+    .bg-surface-container { background: #ECEEF1; }
+    .bg-surface-container-high { background: #E6E8EB; }
+    .bg-surface-container-highest { background: #E0E3E6; }
+    .bg-primary { background: #003B99; }
+    .bg-primary-container { background: #1A52BF; }
+    .bg-white { background: white; }
+    .bg-gradient-to-br { background: linear-gradient(to bottom right, #003B99, #1A52BF); }
+    .text-on-surface { color: #191C1E; }
+    .text-on-surface-variant { color: #434653; }
+    .text-white { color: white; }
+    .text-primary { color: #003B99; }
+    .text-green-300 { color: #86efac; }
+    .text-red-500 { color: #ef4444; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-t-\[24px\] { border-top-left-radius: 24px; border-top-right-radius: 24px; }
+    .fixed { position: fixed; }
+    .absolute { position: absolute; }
+    .relative { position: relative; }
+    .top-0 { top: 0; }
+    .top-16 { top: 4rem; }
+    .bottom-0 { bottom: 0; }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .z-50 { z-index: 50; }
+    .w-full { width: 100%; }
+    .w-10 { width: 2.5rem; }
+    .w-5 { width: 1.25rem; }
+    .h-5 { height: 1.25rem; }
+    .h-10 { height: 2.5rem; }
+    .h-16 { height: 4rem; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-row { flex-direction: row; }
+    .flex-1 { flex: 1 1 0%; }
+    .flex-wrap { flex-wrap: wrap; }
+    .flex-shrink-0 { flex-shrink: 0; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .items-end { align-items: flex-end; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-around { justify-content: space-around; }
+    .justify-end { justify-content: flex-end; }
+    .gap-1 { gap: 0.25rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .pb-2 { padding-bottom: 0.5rem; }
+    .pb-6 { padding-bottom: 1.5rem; }
+    .pb-24 { padding-bottom: 6rem; }
+    .pt-3 { padding-top: 0.75rem; }
+    .pt-16 { padding-top: 4rem; }
+    .pt-20 { padding-top: 5rem; }
+    .pt-24 { padding-top: 6rem; }
+    .pt-4 { padding-top: 1rem; }
+    .pl-4 { padding-left: 1rem; }
+    .pr-4 { padding-right: 1rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .ml-auto { margin-left: auto; }
+    .mr-2 { margin-right: 0.5rem; }
+    .mr-3 { margin-right: 0.75rem; }
+    .ml-2 { margin-left: 0.5rem; }
+    .ml-3 { margin-left: 0.75rem; }
+    .space-y-2 > * + * { margin-top: 0.5rem; }
+    .space-y-3 > * + * { margin-top: 0.75rem; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+    .space-y-5 > * + * { margin-top: 1.25rem; }
+    .space-y-6 > * + * { margin-top: 1.5rem; }
+    .max-w-lg { max-width: 32rem; margin-left: auto; margin-right: auto; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+    .text-\[10px\] { font-size: 0.625rem; }
+    .text-\[11px\] { font-size: 0.6875rem; }
+    .font-headline { font-family: 'Manrope', sans-serif; }
+    .font-inter { font-family: 'Inter', sans-serif; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-medium { font-weight: 500; }
+    .font-extrabold { font-weight: 800; }
+    .uppercase { text-transform: uppercase; }
+    .tracking-wide { letter-spacing: 0.025em; }
+    .tracking-widest { letter-spacing: 0.1em; }
+    .tracking-tight { letter-spacing: -0.025em; }
+    .leading-none { line-height: 1; }
+    .leading-tight { line-height: 1.25; }
+    .leading-snug { line-height: 1.375; }
+    .leading-relaxed { line-height: 1.625; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .whitespace-nowrap { white-space: nowrap; }
+    .block { display: block; }
+    .inline-block { display: inline-block; }
+    .inline-flex { display: inline-flex; }
+    .hidden { display: none; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+    .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+    .shadow-\[0_-4px_20px_rgba\(0\,0\,0\,0\.05\)\] { box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
+    .shadow-primary\/20 { --tw-shadow-color: rgba(0,59,153,0.2); }
+    .cursor-pointer { cursor: pointer; }
+    .pointer-events-none { pointer-events: none; }
+    .select-none { user-select: none; }
+    .antialiased { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .opacity-80 { opacity: 0.8; }
+    .opacity-60 { opacity: 0.6; }
+    .opacity-50 { opacity: 0.5; }
+    .opacity-30 { opacity: 0.3; }
+    .opacity-20 { opacity: 0.2; }
+    .opacity-10 { opacity: 0.1; }
+    .transition-all { transition: all 150ms cubic-bezier(0.2, 0, 0, 1); }
+    .transition-transform { transition: transform 150ms cubic-bezier(0.2, 0, 0, 1); }
+    .transition-colors { transition: color 150ms, background-color 150ms, border-color 150ms; }
+    .duration-200 { transition-duration: 200ms; }
+    .active\:scale-95:active { transform: scale(0.95); }
+    .active\:scale-\[0\.99\]:active { transform: scale(0.99); }
+    .active\:scale-98:active { transform: scale(0.98); }
+    .hover\:scale-105:hover { transform: scale(1.05); }
+    .hover\:shadow-md:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+    .hover\:underline:hover { text-decoration: underline; }
+    .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+    .bg-white\/90 { background: rgba(255,255,255,0.9); }
+    .bg-white\/20 { background: rgba(255,255,255,0.2); }
+    .bg-white\/10 { background: rgba(255,255,255,0.1); }
+    .bg-black\/5 { background: rgba(0,0,0,0.05); }
+    .min-w-0 { min-width: 0; }
+    .max-h-60 { max-height: 15rem; }
+    .object-cover { object-fit: cover; }
+    .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+    .border-t { border-top-width: 1px; border-top-style: solid; }
+    .border-none { border: none; }
+    .ring-2 { box-shadow: 0 0 0 2px; }
+    .ring-white\/30 { --tw-ring-color: rgba(255,255,255,0.3); }
+    .outline-none { outline: none; }
+    .focus\:ring-2:focus { box-shadow: 0 0 0 2px; }
+    .focus\:ring-primary\/20:focus { --tw-ring-color: rgba(0,59,153,0.2); }
+    .blur-3xl { filter: blur(64px); }
+    .font-variation-settings\:'FILL'1\,'wght'400 { font-variation-settings: 'FILL' 1, 'wght' 400; }
+    /* BottomNavBar */
+    nav.fixed { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(255,255,255,0.9); backdrop-filter: blur(24px); border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+
+  <!-- ===================== TOP APP BAR ===================== -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" opacity="0.9"/>
+          <path d="M2 17l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M2 12l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="text-base font-headline font-semibold text-on-surface">我的中心</span>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="pt-20 pb-28 px-5 max-w-lg mx-auto space-y-5">
+
+    <!-- ====== 头像卡片 ====== -->
+    <div class="bg-gradient-to-br from-primary to-primary-container rounded-xl p-6 text-white shadow-xl relative overflow-hidden mt-4">
+      <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+      <div class="relative z-10 flex items-center gap-5">
+        <div class="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center ring-2 ring-white/30">
+          <span class="font-headline text-3xl font-bold">陈</span>
+        </div>
+        <div class="flex-1">
+          <div class="font-headline text-xl font-bold mb-1">陈思远</div>
+          <div class="font-label text-sm opacity-80 mb-2">南山支行 · 客户经理</div>
+          <div class="flex items-center gap-2">
+            <span class="bg-white/20 rounded-full px-3 py-1 font-label text-xs">零售</span>
+            <span class="bg-white/20 rounded-full px-3 py-1 font-label text-xs">收单</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 绩效快捷入口 ====== -->
+    <div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm">
+      <div class="flex items-center gap-3">
+        <!-- 本月绩效 -->
+        <a href="慧展业_绩效明细页.html" class="flex-1 bg-surface-container-low rounded-xl p-4 flex flex-col items-center gap-1 transition-all active:scale-95">
+          <span class="material-symbols-outlined text-primary" style="font-size:24px">trending_up</span>
+          <span class="font-headline text-lg font-bold text-on-surface">¥12,580</span>
+          <span class="font-label text-[10px] text-on-surface-variant">本月绩效</span>
+        </a>
+        <!-- 我的排名 -->
+        <a href="慧展业_零售排行榜.html" class="flex-1 bg-surface-container-low rounded-xl p-4 flex flex-col items-center gap-1 transition-all active:scale-95">
+          <span class="material-symbols-outlined text-[#faad14]" style="font-size:24px">leaderboard</span>
+          <span class="font-headline text-lg font-bold text-on-surface">第5名</span>
+          <span class="font-label text-[10px] text-on-surface-variant">AUM排行</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- ====== 功能入口 ====== -->
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+      <div class="font-headline text-sm font-bold text-on-surface mb-2">我的工具</div>
+      <div class="menu-item" onclick="location.href='慧展业_绩效明细页.html'">
+        <div class="menu-icon bg-[#e8f0ff]">
+          <span class="material-symbols-outlined text-primary" style="font-size:20px">bar_chart</span>
+        </div>
+        <div class="flex-1">
+          <div class="font-label text-sm font-medium text-on-surface">绩效明细</div>
+          <div class="font-label text-[10px] text-on-surface-variant">查看本期绩效收入构成</div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">chevron_right</span>
+      </div>
+      <div class="menu-item" onclick="location.href='慧展业_零售排行榜.html'">
+        <div class="menu-icon bg-[#fffbeb]">
+          <span class="material-symbols-outlined text-[#faad14]" style="font-size:20px">emoji_events</span>
+        </div>
+        <div class="flex-1">
+          <div class="font-label text-sm font-medium text-on-surface">零售排行榜</div>
+          <div class="font-label text-[10px] text-on-surface-variant">AUM · 绩效 · 联系数等</div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">chevron_right</span>
+      </div>
+    </div>
+
+    <!-- ====== 设置 ====== -->
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+      <div class="font-headline text-sm font-bold text-on-surface mb-2">设置</div>
+      <div class="menu-item" onclick="alert('消息通知设置')">
+        <div class="menu-icon bg-surface-container-low">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">notifications</span>
+        </div>
+        <div class="flex-1">
+          <div class="font-label text-sm font-medium text-on-surface">消息通知</div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">chevron_right</span>
+      </div>
+      <div class="menu-item" onclick="alert('隐私设置')">
+        <div class="menu-icon bg-surface-container-low">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">security</span>
+        </div>
+        <div class="flex-1">
+          <div class="font-label text-sm font-medium text-on-surface">隐私设置</div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">chevron_right</span>
+      </div>
+      <div class="menu-item" onclick="alert('关于我们')">
+        <div class="menu-icon bg-surface-container-low">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">info</span>
+        </div>
+        <div class="flex-1">
+          <div class="font-label text-sm font-medium text-on-surface">关于我们</div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">chevron_right</span>
+      </div>
+    </div>
+
+    <!-- ====== 退出登录 ====== -->
+    <button class="w-full h-12 bg-surface-container-lowest text-error rounded-xl text-sm font-medium font-body flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95" onclick="alert('退出登录')">
+      <span class="material-symbols-outlined" style="font-size:18px">logout</span>
+      退出登录
+    </button>
+
+  </main>
+
+  <!-- BottomNavBar -->
+  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_收单工作台_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">home</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">收单</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_零售工作台.html">
+      <span class="material-symbols-outlined" style="font-size:20px">group</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">零售</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_场景工作台.html">
+      <span class="material-symbols-outlined" style="font-size:20px">auto_awesome</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">场景</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_动态消息列表_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">dynamic_feed</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">动态</span>
+    </a>
+    <!-- 我的 [active] -->
+    <a class="flex flex-col items-center justify-center bg-blue-50 text-blue-800 rounded-2xl px-5 py-2" href="慧展业_我的中心_20260427.html">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL'1,'wght'400;font-size:20px">person</span>
+      <span class="font-inter text-[10px] font-bold tracking-wide uppercase mt-1">我的</span>
+    </a>
+  </nav>
+
+</body>
+</html>

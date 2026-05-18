@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99", "primary-container": "#1A52BF",
+            "on-primary": "#FFFFFF", "on-primary-container": "#FFFFFF",
+            "surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7",
+            "surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB",
+            "surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF",
+            "on-surface": "#191C1E", "on-surface-variant": "#434653",
+            "outline": "#737685", "outline-variant": "#C3C6D0",
+            "tertiary": "#732B00", "tertiary-container": "#993C00",
+            "tertiary-fixed": "#FFDBCC", "on-tertiary-fixed": "#351000",
+            "secondary": "#4E5D88", "secondary-container": "#BFCEFF",
+            "on-secondary-container": "#485781",
+            "error": "#BA1A1A", "error-container": "#FFDAD6",
+            "on-error": "#FFFFFF", "on-error-container": "#93000A",
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"
+          },
+          fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --motion-duration-short: 100ms; --motion-duration-medium: 200ms; --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif;
+      border: 1px solid transparent; cursor: pointer;
+      transition: background var(--motion-duration-short) var(--motion-easing-standard),
+                  color var(--motion-duration-short) var(--motion-easing-standard),
+                  border-color var(--motion-duration-short) var(--motion-easing-standard);
+      user-select: none; white-space: nowrap;
+    }
+    .chip-selected { background: var(--color-primary-container, #1A52BF); color: var(--color-on-primary-container, #FFFFFF); }
+    .chip-unselected { background: var(--color-surface-container-lowest, #FFFFFF); color: var(--color-on-surface-variant, #434653); border-color: var(--color-outline, #737685); }
+    .chip-unselected:hover { background: var(--color-surface-container-high, #E6E8EB); }
+    .tab-bar { display: flex; overflow-x: auto; scrollbar-width: none; gap: 0; }
+    .tab-item { padding: 10px 16px; font-size: 14px; font-weight: 500; color: var(--color-on-surface-variant); cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; transition: all var(--motion-duration-short) var(--motion-easing-standard); }
+    .tab-item.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 600; }
+    .tag-box { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-outline-variant); }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-size: 13px; color: var(--color-on-surface-variant); }
+    .info-value { font-size: 13px; color: var(--color-on-surface); font-weight: 500; text-align: right; }
+    .product-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-outline-variant); }
+    .product-item:last-child { border-bottom: none; }
+    .channel-signed { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; background: #f0fdf4; color: #16a34a; }
+    .channel-unsign { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; background: #f5f5f5; color: #999; }
+    .opp-item { background: var(--color-surface-container-lowest); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .opp-item:last-child { margin-bottom: 0; }
+    .activity-card { background: var(--color-surface-container-lowest); border-radius: 12px; padding: 14px; }
+    .activity-status { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .activity-status-done { display: inline-flex; align-items: center; gap: 3px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; background: #f0fdf4; color: #16a34a; }
+    /* ========== Fallback CSS ========== */
+    body { background: #F7F9FC; color: #191C1E; margin: 0; }
+    .bg-surface { background: #F7F9FC; }
+    .bg-surface-container-lowest { background: white; }
+    .bg-surface-container { background: #ECEEF1; }
+    .bg-surface-container-high { background: #E6E8EB; }
+    .bg-surface-container-highest { background: #E0E3E6; }
+    .bg-primary { background: #003B99; }
+    .bg-primary-container { background: #1A52BF; }
+    .bg-white { background: white; }
+    .bg-gradient-to-br { background: linear-gradient(to bottom right, #003B99, #1A52BF); }
+    .text-on-surface { color: #191C1E; }
+    .text-on-surface-variant { color: #434653; }
+    .text-white { color: white; }
+    .text-primary { color: #003B99; }
+    .text-green-300 { color: #86efac; }
+    .text-red-500 { color: #ef4444; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-t-\[24px\] { border-top-left-radius: 24px; border-top-right-radius: 24px; }
+    .fixed { position: fixed; }
+    .absolute { position: absolute; }
+    .relative { position: relative; }
+    .top-0 { top: 0; }
+    .top-16 { top: 4rem; }
+    .bottom-0 { bottom: 0; }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .z-50 { z-index: 50; }
+    .w-full { width: 100%; }
+    .w-10 { width: 2.5rem; }
+    .w-5 { width: 1.25rem; }
+    .h-5 { height: 1.25rem; }
+    .h-10 { height: 2.5rem; }
+    .h-16 { height: 4rem; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-row { flex-direction: row; }
+    .flex-1 { flex: 1 1 0%; }
+    .flex-wrap { flex-wrap: wrap; }
+    .flex-shrink-0 { flex-shrink: 0; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .items-end { align-items: flex-end; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-around { justify-content: space-around; }
+    .justify-end { justify-content: flex-end; }
+    .gap-1 { gap: 0.25rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .pb-2 { padding-bottom: 0.5rem; }
+    .pb-6 { padding-bottom: 1.5rem; }
+    .pb-24 { padding-bottom: 6rem; }
+    .pt-3 { padding-top: 0.75rem; }
+    .pt-16 { padding-top: 4rem; }
+    .pt-20 { padding-top: 5rem; }
+    .pt-24 { padding-top: 6rem; }
+    .pt-4 { padding-top: 1rem; }
+    .pl-4 { padding-left: 1rem; }
+    .pr-4 { padding-right: 1rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .ml-auto { margin-left: auto; }
+    .mr-2 { margin-right: 0.5rem; }
+    .mr-3 { margin-right: 0.75rem; }
+    .ml-2 { margin-left: 0.5rem; }
+    .ml-3 { margin-left: 0.75rem; }
+    .space-y-2 > * + * { margin-top: 0.5rem; }
+    .space-y-3 > * + * { margin-top: 0.75rem; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+    .space-y-5 > * + * { margin-top: 1.25rem; }
+    .space-y-6 > * + * { margin-top: 1.5rem; }
+    .max-w-lg { max-width: 32rem; margin-left: auto; margin-right: auto; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+    .text-\[10px\] { font-size: 0.625rem; }
+    .text-\[11px\] { font-size: 0.6875rem; }
+    .font-headline { font-family: 'Manrope', sans-serif; }
+    .font-inter { font-family: 'Inter', sans-serif; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-medium { font-weight: 500; }
+    .font-extrabold { font-weight: 800; }
+    .uppercase { text-transform: uppercase; }
+    .tracking-wide { letter-spacing: 0.025em; }
+    .tracking-widest { letter-spacing: 0.1em; }
+    .tracking-tight { letter-spacing: -0.025em; }
+    .leading-none { line-height: 1; }
+    .leading-tight { line-height: 1.25; }
+    .leading-snug { line-height: 1.375; }
+    .leading-relaxed { line-height: 1.625; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .whitespace-nowrap { white-space: nowrap; }
+    .block { display: block; }
+    .inline-block { display: inline-block; }
+    .inline-flex { display: inline-flex; }
+    .hidden { display: none; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+    .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+    .shadow-\[0_-4px_20px_rgba\(0\,0\,0\,0\.05\)\] { box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
+    .shadow-primary\/20 { --tw-shadow-color: rgba(0,59,153,0.2); }
+    .cursor-pointer { cursor: pointer; }
+    .pointer-events-none { pointer-events: none; }
+    .select-none { user-select: none; }
+    .antialiased { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .opacity-80 { opacity: 0.8; }
+    .opacity-60 { opacity: 0.6; }
+    .opacity-50 { opacity: 0.5; }
+    .opacity-30 { opacity: 0.3; }
+    .opacity-20 { opacity: 0.2; }
+    .opacity-10 { opacity: 0.1; }
+    .transition-all { transition: all 150ms cubic-bezier(0.2, 0, 0, 1); }
+    .transition-transform { transition: transform 150ms cubic-bezier(0.2, 0, 0, 1); }
+    .transition-colors { transition: color 150ms, background-color 150ms, border-color 150ms; }
+    .duration-200 { transition-duration: 200ms; }
+    .active\:scale-95:active { transform: scale(0.95); }
+    .active\:scale-\[0\.99\]:active { transform: scale(0.99); }
+    .active\:scale-98:active { transform: scale(0.98); }
+    .hover\:scale-105:hover { transform: scale(1.05); }
+    .hover\:shadow-md:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+    .hover\:underline:hover { text-decoration: underline; }
+    .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+    .bg-white\/90 { background: rgba(255,255,255,0.9); }
+    .bg-white\/80 { background: rgba(255,255,255,0.8); }
+    .bg-white\/20 { background: rgba(255,255,255,0.2); }
+    .bg-white\/10 { background: rgba(255,255,255,0.1); }
+    .bg-black\/5 { background: rgba(0,0,0,0.05); }
+    .min-w-0 { min-width: 0; }
+    .max-h-60 { max-height: 15rem; }
+    .object-cover { object-fit: cover; }
+    .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+    .border-t { border-top-width: 1px; border-top-style: solid; }
+    .border-none { border: none; }
+    .ring-2 { box-shadow: 0 0 0 2px; }
+    .ring-white\/30 { --tw-ring-color: rgba(255,255,255,0.3); }
+    .outline-none { outline: none; }
+    .focus\:ring-2:focus { box-shadow: 0 0 0 2px; }
+    .focus\:ring-primary\/20:focus { --tw-ring-color: rgba(0,59,153,0.2); }
+    .blur-3xl { filter: blur(64px); }
+    .font-variation-settings\:'FILL'1\,'wght'400 { font-variation-settings: 'FILL' 1, 'wght' 400; }
+    /* BottomNavBar */
+    nav.fixed { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(255,255,255,0.9); backdrop-filter: blur(24px); border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+
+  <!-- ===================== TOP APP BAR ===================== -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
+    <div class="flex items-center gap-3">
+      <button class="w-9 h-9 rounded-xl bg-primary-container flex items-center justify-center cursor-pointer transition-all active:scale-95" onclick="history.back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span class="text-base font-headline font-semibold text-on-surface">客户详情</span>
+    </div>
+    <div class="flex items-center gap-1">
+      <button onclick="alert('已切换重点标记')" class="p-2 rounded-xl hover:bg-surface-container transition-colors active:scale-95 cursor-pointer" title="标记重点">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">star</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="pt-20 pb-28 px-5 max-w-lg mx-auto space-y-4">
+
+    <!-- ====== 客户基础信息卡片 ====== -->
+    <div class="bg-gradient-to-br from-primary to-primary-container rounded-xl p-5 text-white shadow-xl relative overflow-hidden mt-4">
+      <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+      <div class="relative z-10">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="font-headline text-xl font-bold">陈永峰</span>
+          <span class="tag-box bg-white/20 text-white text-xs">⭐ 重点客户</span>
+          <span class="tag-box bg-white/20 text-white text-xs">私行客户</span>
+        </div>
+        <div class="font-label text-sm opacity-80 mb-3">138****6521 · 男 · 52岁 · 生日 1974-08-15</div>
+        <div class="flex items-center gap-4">
+          <div>
+            <div class="font-label text-[10px] opacity-60 uppercase tracking-wider">AUM</div>
+            <div class="font-headline text-2xl font-bold">¥856万</div>
+          </div>
+          <div class="w-px h-10 bg-white/30"></div>
+          <div>
+            <div class="font-label text-[10px] opacity-60 uppercase tracking-wider">风险评级</div>
+            <div class="font-label text-sm font-semibold mt-0.5">进取型</div>
+          </div>
+          <div class="w-px h-10 bg-white/30"></div>
+          <div>
+            <div class="font-label text-[10px] opacity-60 uppercase tracking-wider">本年新客</div>
+            <div class="font-label text-sm font-semibold mt-0.5">否</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 价值分析 ====== -->
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+      <div class="font-headline text-sm font-bold text-on-surface mb-3">价值分析</div>
+      <div class="grid grid-cols-2 gap-3">
+        <!-- 第一行：三年峰值AUM + 最近产品到期 -->
+        <div class="bg-surface-container-low rounded-lg p-3">
+          <div class="font-label text-[10px] text-on-surface-variant mb-1">三年峰值AUM</div>
+          <div class="font-headline text-base font-bold text-on-surface">¥1,200万</div>
+          <div class="font-label text-[10px] text-on-surface-variant mt-0.5">较峰值少 ¥344万</div>
+        </div>
+        <div class="bg-surface-container-low rounded-lg p-3">
+          <div class="font-label text-[10px] text-on-surface-variant mb-1">最近产品到期</div>
+          <div class="font-headline text-base font-bold text-on-surface">2026-05-15</div>
+          <div class="font-label text-[10px] text-on-surface-variant mt-0.5">稳盈系列理财 ¥200万</div>
+        </div>
+        <!-- 第二行：代发工资 + 合作收单 -->
+        <div class="bg-surface-container-low rounded-lg p-3">
+          <div class="font-label text-[10px] text-on-surface-variant mb-1">代发工资（月）</div>
+          <div class="font-headline text-base font-bold text-on-surface">¥3.2万</div>
+          <div class="font-label text-[10px] text-on-surface-variant mt-0.5">代发企业：深圳华腾贸易</div>
+        </div>
+        <div class="bg-surface-container-low rounded-lg p-3">
+          <div class="font-label text-[10px] text-on-surface-variant mb-1">合作收单（月）</div>
+          <div class="font-headline text-base font-bold text-on-surface">¥18.6万</div>
+          <div class="font-label text-[10px] text-on-surface-variant mt-0.5">商户：华腾贸易旗舰店</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== 资产总览 ====== -->
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+      <div class="font-headline text-sm font-bold text-on-surface mb-3">资产总览</div>
+      <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+        <div class="flex justify-between items-center py-1.5 border-b border-outline-variant">
+          <span class="font-label text-xs text-on-surface-variant">存款</span>
+          <span class="font-headline text-sm font-bold text-on-surface">¥520万</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5 border-b border-outline-variant">
+          <span class="font-label text-xs text-on-surface-variant">理财</span>
+          <span class="font-headline text-sm font-bold text-on-surface">¥200万</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5 border-b border-outline-variant">
+          <span class="font-label text-xs text-on-surface-variant">基金</span>
+          <span class="font-headline text-sm font-bold text-on-surface">¥80万</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5 border-b border-outline-variant">
+          <span class="font-label text-xs text-on-surface-variant">总贷款</span>
+          <span class="font-headline text-sm font-bold text-on-surface">¥56万</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5 border-b border-outline-variant">
+          <span class="font-label text-xs text-on-surface-variant">E秒贷余额</span>
+          <span class="font-headline text-sm font-bold text-on-surface">¥6万</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5 border-b border-outline-variant">
+          <span class="font-label text-xs text-on-surface-variant">零售贷款</span>
+          <span class="font-headline text-sm font-bold text-on-surface">¥50万</span>
+        </div>
+      </div>
+      <div class="mt-3 pt-3 border-t-2 border-primary/20 flex justify-between items-center">
+        <span class="font-label text-xs font-semibold text-primary">资产总计</span>
+        <span class="font-headline text-lg font-bold text-primary">¥856万</span>
+      </div>
+    </div>
+
+    <!-- ====== Tab 导航 ====== -->
+    <div class="tab-bar bg-surface-container-lowest rounded-t-xl mt-4 sticky top-0 z-20">
+      <div class="tab-item active" id="tab-0" onclick="switchTab(0)">产品配置</div>
+      <div class="tab-item" id="tab-1" onclick="switchTab(1)">商机信息</div>
+      <div class="tab-item" id="tab-2" onclick="switchTab(2)">营销活动</div>
+      <div class="tab-item" id="tab-3" onclick="switchTab(3)">渠道签约</div>
+      <div class="tab-item" id="tab-4" onclick="switchTab(4)">基本信息</div>
+    </div>
+
+    <!-- ====== Tab 0：产品配置 ====== -->
+    <div id="tab-content-0" class="space-y-4 -mt-4">
+      <!-- 产品到期提醒 -->
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="material-symbols-outlined text-error" style="font-size:18px">schedule</span>
+          <span class="font-headline text-sm font-bold text-on-surface">产品到期提醒</span>
+          <span class="bg-error/10 text-error text-[10px] px-2 py-0.5 rounded-full font-medium">2项待处理</span>
+        </div>
+        <div class="space-y-3">
+          <div class="bg-[#fff0f0] rounded-xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-label text-sm font-semibold text-on-surface">稳盈系列理财</span>
+              <span class="priority-urgent">紧急</span>
+            </div>
+            <div class="font-label text-xs text-on-surface-variant mb-2">到期日期：2026-05-15（剩余11天）</div>
+            <div class="flex items-center justify-between">
+              <span class="font-label text-xs text-on-surface-variant">到期金额：<span class="font-semibold text-on-surface">¥200万</span></span>
+              <div class="flex gap-2">
+                <button class="h-7 px-3 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="alert('联系客户：138****6521')">
+                  <span class="material-symbols-outlined" style="font-size:12px">call</span>联系
+                </button>
+                <button class="h-7 px-3 bg-white border border-primary text-primary rounded-lg text-xs font-medium" onclick="this.textContent='跟进中'; this.disabled=true;">暂不处理</button>
+                <button class="h-7 px-3 bg-white border border-primary text-primary rounded-lg text-xs font-medium hidden" id="btn-follow-200w">跟进中</button>
+              </div>
+            </div>
+          </div>
+          <div class="bg-[#fffbeb] rounded-xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-label text-sm font-semibold text-on-surface">定期存款</span>
+              <span class="priority-normal">一般</span>
+            </div>
+            <div class="font-label text-xs text-on-surface-variant mb-2">到期日期：2026-06-30（剩余57天）</div>
+            <div class="flex items-center justify-between">
+              <span class="font-label text-xs text-on-surface-variant">到期金额：<span class="font-semibold text-on-surface">¥100万</span></span>
+              <button class="h-7 px-3 bg-white border border-primary text-primary rounded-lg text-xs font-medium" onclick="this.textContent='跟进中'; this.disabled=true;">跟进中</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 定期存款 -->
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-headline text-sm font-bold text-on-surface">定期存款</span>
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">add_circle</span>
+        </div>
+        <div class="bg-surface-container-low rounded-lg p-3 mb-3">
+          <div class="flex items-center gap-4">
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">余额合计</div>
+              <div class="font-headline text-sm font-bold text-on-surface">¥250万</div>
+            </div>
+            <div class="w-px h-8 bg-outline-variant"></div>
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">三年峰值</div>
+              <div class="font-headline text-sm font-bold text-primary">¥280万</div>
+            </div>
+            <div class="w-px h-8 bg-outline-variant"></div>
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">最近到期日</div>
+              <div class="font-headline text-sm font-bold text-on-surface">2026-03-01</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-item">
+          <div>
+            <div class="font-label text-sm font-medium text-on-surface">定期存款-A</div>
+            <div class="font-label text-xs text-on-surface-variant mt-0.5">2025-03-01 ~ 2026-03-01</div>
+            <div class="font-label text-[10px] text-error mt-1">到期日：2026-03-01</div>
+          </div>
+          <div class="text-right">
+            <div class="font-headline text-sm font-bold text-on-surface">¥100万</div>
+            <div class="font-label text-[10px] text-on-surface-variant">年化 1.95%</div>
+          </div>
+        </div>
+        <div class="product-item">
+          <div>
+            <div class="font-label text-sm font-medium text-on-surface">定期存款-B</div>
+            <div class="font-label text-xs text-on-surface-variant mt-0.5">2025-06-15 ~ 2026-06-15</div>
+            <div class="font-label text-[10px] text-on-surface-variant mt-1">到期日：2026-06-15</div>
+          </div>
+          <div class="text-right">
+            <div class="font-headline text-sm font-bold text-on-surface">¥50万</div>
+            <div class="font-label text-[10px] text-on-surface-variant">年化 1.75%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 结构性存款 -->
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-headline text-sm font-bold text-on-surface">结构性存款</span>
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">add_circle</span>
+        </div>
+        <div class="bg-surface-container-low rounded-lg p-3 mb-3">
+          <div class="flex items-center gap-4">
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">余额合计</div>
+              <div class="font-headline text-sm font-bold text-on-surface">¥150万</div>
+            </div>
+            <div class="w-px h-8 bg-outline-variant"></div>
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">三年峰值</div>
+              <div class="font-headline text-sm font-bold text-primary">¥200万</div>
+            </div>
+            <div class="w-px h-8 bg-outline-variant"></div>
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">最近到期日</div>
+              <div class="font-headline text-sm font-bold text-on-surface">2027-01-10</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-item">
+          <div>
+            <div class="font-label text-sm font-medium text-on-surface">慧盈结构性存款2026-012</div>
+            <div class="font-label text-xs text-on-surface-variant mt-0.5">2026-01-10 ~ 2027-01-10</div>
+            <div class="font-label text-[10px] text-on-surface-variant mt-1">到期日：2027-01-10</div>
+          </div>
+          <div class="text-right">
+            <div class="font-headline text-sm font-bold text-on-surface">¥150万</div>
+            <div class="font-label text-[10px] text-success">年化 2.60%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 理财产品 -->
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-headline text-sm font-bold text-on-surface">理财产品</span>
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">add_circle</span>
+        </div>
+        <div class="bg-surface-container-low rounded-lg p-3 mb-3">
+          <div class="flex items-center gap-4">
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">余额合计</div>
+              <div class="font-headline text-sm font-bold text-on-surface">¥280万</div>
+            </div>
+            <div class="w-px h-8 bg-outline-variant"></div>
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">三年峰值</div>
+              <div class="font-headline text-sm font-bold text-primary">¥400万</div>
+            </div>
+            <div class="w-px h-8 bg-outline-variant"></div>
+            <div class="flex-1 text-center">
+              <div class="font-label text-[10px] text-on-surface-variant">最近到期日</div>
+              <div class="font-headline text-sm font-bold text-on-surface">2026-05-15</div>
+            </div>
+          </div>
+        </div>
+        <div class="product-item">
+          <div>
+            <div class="font-label text-sm font-medium text-on-surface">稳盈系列理财（风险中低）</div>
+            <div class="font-label text-xs text-on-surface-variant mt-0.5">2025-05-15 ~ 2026-05-15</div>
+            <div class="font-label text-[10px] text-error mt-1">到期日：2026-05-15</div>
+          </div>
+          <div class="text-right">
+            <div class="font-headline text-sm font-bold text-on-surface">¥200万</div>
+            <div class="font-label text-[10px] text-on-surface-variant">近一年收益 3.2%</div>
+          </div>
+        </div>
+        <div class="product-item">
+          <div>
+            <div class="font-label text-sm font-medium text-on-surface">稳盈pro尊享理财</div>
+            <div class="font-label text-xs text-on-surface-variant mt-0.5">2025-11-01 ~ 2026-11-01</div>
+            <div class="font-label text-[10px] text-on-surface-variant mt-1">到期日：2026-11-01</div>
+          </div>
+          <div class="text-right">
+            <div class="font-headline text-sm font-bold text-on-surface">¥80万</div>
+            <div class="font-label text-[10px] text-on-surface-variant">成立以来收益 4.5%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- E秒贷 -->
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-headline text-sm font-bold text-on-surface">E秒贷</span>
+        </div>
+        <div class="product-item">
+          <div>
+            <div class="font-label text-sm font-medium text-on-surface">E秒贷</div>
+            <div class="font-label text-xs text-on-surface-variant mt-0.5">额度 ¥30万 · 已用 ¥6万</div>
+          </div>
+          <div class="text-right">
+            <div class="font-headline text-sm font-bold text-on-surface">¥6万</div>
+            <div class="font-label text-[10px] text-on-surface-variant">年化利率 10.95%</div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <div class="w-full bg-surface-container-high rounded-full h-2">
+            <div class="bg-primary h-2 rounded-full" style="width:20%"></div>
+          </div>
+          <div class="flex justify-between mt-1">
+            <span class="font-label text-[10px] text-on-surface-variant">已用 ¥6万</span>
+            <span class="font-label text-[10px] text-on-surface-variant">额度 ¥30万</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== Tab 1：商机信息 ====== -->
+    <div id="tab-content-1" class="space-y-4 -mt-4" style="display:none">
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <span class="font-headline text-sm font-bold text-on-surface">CRM 商机列表</span>
+          <span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-medium">3项商机</span>
+        </div>
+        <div class="space-y-3">
+          <div class="opp-item border-l-4 border-[#BA1A1A]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-label text-sm font-semibold text-on-surface">理财产品到期转化</span>
+              <span class="priority-urgent">紧急</span>
+            </div>
+            <p class="font-label text-xs text-on-surface-variant mb-2">稳盈系列¥200万将于05月15日到期，客户偏好中低风险理财，可推荐结构性存款或新发理财</p>
+            <div class="flex items-center justify-end gap-2">
+              <span class="font-label text-[10px] text-on-surface-variant self-center">发布：2026-04-28</span>
+              <button class="h-7 px-3 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('理财产品到期转化场景','稳盈系列¥200万将于05月15日到期，客户偏好中低风险理财，可推荐结构性存款或新发理财')">
+                <span class="material-symbols-outlined" style="font-size:12px">auto_awesome</span>AI话术
+              </button>
+              <button class="h-7 px-3 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="alert('一键拨号')">
+                <span class="material-symbols-outlined" style="font-size:12px">call</span>联系
+              </button>
+            </div>
+          </div>
+          <div class="opp-item border-l-4 border-[#faad14]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-label text-sm font-semibold text-on-surface">基金组合优化建议</span>
+              <span class="priority-normal">一般</span>
+            </div>
+            <p class="font-label text-xs text-on-surface-variant mb-2">客户持仓¥80万集中于单一新能源基金，建议配置债券基金分散风险</p>
+            <div class="flex items-center justify-end gap-2">
+              <span class="font-label text-[10px] text-on-surface-variant self-center">发布：2026-04-25</span>
+              <button class="h-7 px-3 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('基金组合优化建议场景','客户持仓¥80万集中于单一新能源基金，建议配置债券基金分散风险')">
+                <span class="material-symbols-outlined" style="font-size:12px">auto_awesome</span>AI话术
+              </button>
+              <button class="h-7 px-3 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="alert('一键拨号')">
+                <span class="material-symbols-outlined" style="font-size:12px">call</span>联系
+              </button>
+            </div>
+          </div>
+          <div class="opp-item border-l-4 border-[#3070ff]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-label text-sm font-semibold text-on-surface">E秒贷额度提升</span>
+              <span class="priority-attention">关注</span>
+            </div>
+            <p class="font-label text-xs text-on-surface-variant mb-2">客户E秒贷额度¥30万已用¥6万（20%），使用率较低，可针对性推送优惠利率</p>
+            <div class="flex items-center justify-end gap-2">
+              <span class="font-label text-[10px] text-on-surface-variant self-center">发布：2026-04-20</span>
+              <button class="h-7 px-3 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('E秒贷额度提升场景','客户E秒贷额度¥30万已用¥6万（20%），使用率较低，可针对性推送优惠利率')">
+                <span class="material-symbols-outlined" style="font-size:12px">auto_awesome</span>AI话术
+              </button>
+              <button class="h-7 px-3 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="alert('一键拨号')">
+                <span class="material-symbols-outlined" style="font-size:12px">call</span>联系
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== Tab 2：营销活动 ====== -->
+    <div id="tab-content-2" class="space-y-4 -mt-4" style="display:none">
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="material-symbols-outlined text-primary" style="font-size:18px">campaign</span>
+          <span class="font-headline text-sm font-bold text-on-surface">营销活动</span>
+          <span class="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-full font-medium">4个活动</span>
+        </div>
+        <div class="space-y-3">
+
+          <!-- 活动1：未报名 → 邀约参与 -->
+          <div class="activity-card">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-label text-sm font-semibold text-on-surface">「稳盈添福」存款送好礼</span>
+                </div>
+                <div class="font-label text-[10px] text-on-surface-variant">活动日期：2026-04-01 ~ 2026-06-30</div>
+                <p class="font-label text-xs text-on-surface-variant mt-1">活动期内新存活期达5万即送超市购物卡，参与定期存款还能叠加积分</p>
+              </div>
+              <span class="activity-status bg-surface-container text-on-surface-variant">未报名</span>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <button class="flex-1 h-8 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('存款送好礼活动邀约','客户未报名「稳盈添福」存款送好礼活动，活动期内新存活期达5万即送超市购物卡')">
+                <span class="material-symbols-outlined" style="font-size:14px">auto_awesome</span>AI话术
+              </button>
+              <button class="flex-1 h-8 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="toast('已发送活动邀约')">
+                <span class="material-symbols-outlined" style="font-size:14px">how_to_reg</span>邀约参与
+              </button>
+            </div>
+          </div>
+
+          <!-- 活动2：未达标 → 提醒达标 -->
+          <div class="activity-card">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-label text-sm font-semibold text-on-surface">新客专享理财收益升级</span>
+                </div>
+                <div class="font-label text-[10px] text-on-surface-variant">活动日期：2026-03-01 ~ 2026-05-31</div>
+                <p class="font-label text-xs text-on-surface-variant mt-1">新客购买理财满20万，收益率上浮0.3%；满50万额外奖励手机话费</p>
+              </div>
+              <span class="activity-status bg-[#fff8e1] text-[#e65100]">未达标</span>
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <div class="flex-1 bg-surface-container-low rounded-full h-1.5">
+                <div class="bg-[#e65100] h-1.5 rounded-full" style="width:60%"></div>
+              </div>
+              <span class="font-label text-[10px] text-on-surface-variant">60%</span>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <button class="flex-1 h-8 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('新客理财活动提醒达标','客户购买新客专享理财收益升级活动，目标20万，目前进度60%')">
+                <span class="material-symbols-outlined" style="font-size:14px">auto_awesome</span>AI话术
+              </button>
+              <button class="flex-1 h-8 bg-white border border-[#e65100] text-[#e65100] rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="toast('已提醒客户达标')">
+                <span class="material-symbols-outlined" style="font-size:14px">notifications_active</span>提醒达标
+              </button>
+            </div>
+          </div>
+
+          <!-- 活动3：已达标未领奖 → 提醒领奖 -->
+          <div class="activity-card">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-label text-sm font-semibold text-on-surface">金鹿客户尊享体检套餐</span>
+                </div>
+                <div class="font-label text-[10px] text-on-surface-variant">活动日期：2026-01-01 ~ 2026-06-30</div>
+                <p class="font-label text-xs text-on-surface-variant mt-1">金融资产达300万客户可免费兑换高端体检套餐，限前200名</p>
+              </div>
+              <span class="activity-status bg-[#e3f2fd] text-[#1565c0]">已达标</span>
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <div class="flex-1 bg-[#e3f2fd] rounded-full h-1.5">
+                <div class="bg-[#1565c0] h-1.5 rounded-full" style="width:100%"></div>
+              </div>
+              <span class="font-label text-[10px] text-[#1565c0]">100%</span>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <button class="flex-1 h-8 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('金鹿客户体检套餐提醒领奖','客户已达标金鹿客户尊享体检套餐活动，可免费兑换高端体检套餐')">
+                <span class="material-symbols-outlined" style="font-size:14px">auto_awesome</span>AI话术
+              </button>
+              <button class="flex-1 h-8 bg-white border border-[#1565c0] text-[#1565c0] rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="toast('已提醒客户领取奖品')">
+                <span class="material-symbols-outlined" style="font-size:14px">card_giftcard</span>提醒领奖
+              </button>
+            </div>
+          </div>
+
+          <!-- 活动4：已完成 -->
+          <div class="activity-card">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="font-label text-sm font-semibold text-on-surface">开门红·存款抽奖</span>
+                </div>
+                <div class="font-label text-[10px] text-on-surface-variant">活动日期：2026-01-01 ~ 2026-03-31</div>
+                <p class="font-label text-xs text-on-surface-variant mt-1">活动期内新增存款满10万可参与抽奖，一等奖价值5000元礼品</p>
+              </div>
+              <span class="activity-status-done">
+                <span class="material-symbols-outlined" style="font-size:12px">check_circle</span>已完成
+              </span>
+            </div>
+            <div class="mt-2 pt-2 border-t border-outline-variant">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[#52c41a]" style="font-size:14px">emoji_events</span>
+                <span class="font-label text-xs text-[#52c41a]">已获得：价值¥300超市购物卡</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== Tab 3：渠道签约 ====== -->
+    <div id="tab-content-3" class="space-y-4 -mt-4" style="display:none">
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="font-headline text-sm font-bold text-on-surface mb-1">渠道签约状态</div>
+        <div class="font-label text-xs text-on-surface-variant mb-4">共签约 5/7 个渠道</div>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between py-3 border-b border-outline-variant">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-[#f0fdf4] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#16a34a]" style="font-size:18px">phone_iphone</span>
+              </div>
+              <div>
+                <div class="font-label text-sm font-medium text-on-surface">手机银行</div>
+                <div class="font-label text-[10px] text-on-surface-variant">签约时间：2023-01-15</div>
+              </div>
+            </div>
+            <span class="channel-signed"><span class="material-symbols-outlined" style="font-size:12px">check_circle</span>已签约</span>
+          </div>
+          <div class="flex items-center justify-between py-3 border-b border-outline-variant">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-[#f0fdf4] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#16a34a]" style="font-size:18px">chat</span>
+              </div>
+              <div>
+                <div class="font-label text-sm font-medium text-on-surface">微信动账通知</div>
+                <div class="font-label text-[10px] text-on-surface-variant">签约时间：2023-01-15</div>
+              </div>
+            </div>
+            <span class="channel-signed"><span class="material-symbols-outlined" style="font-size:12px">check_circle</span>已签约</span>
+          </div>
+          <div class="flex items-center justify-between py-3 border-b border-outline-variant">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-[#f0fdf4] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#16a34a]" style="font-size:18px">payments</span>
+              </div>
+              <div>
+                <div class="font-label text-sm font-medium text-on-surface">微信支付绑卡</div>
+                <div class="font-label text-[10px] text-on-surface-variant">签约时间：2023-02-20</div>
+              </div>
+            </div>
+            <span class="channel-signed"><span class="material-symbols-outlined" style="font-size:12px">check_circle</span>已签约</span>
+          </div>
+          <div class="flex items-center justify-between py-3 border-b border-outline-variant">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-[#f0fdf4] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#16a34a]" style="font-size:18px">account_balance_wallet</span>
+              </div>
+              <div>
+                <div class="font-label text-sm font-medium text-on-surface">支付宝支付绑卡</div>
+                <div class="font-label text-[10px] text-on-surface-variant">签约时间：2023-03-10</div>
+              </div>
+            </div>
+            <span class="channel-signed"><span class="material-symbols-outlined" style="font-size:12px">check_circle</span>已签约</span>
+          </div>
+          <div class="flex items-center justify-between py-3 border-b border-outline-variant">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-[#f0fdf4] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[#16a34a]" style="font-size:18px">credit_card</span>
+              </div>
+              <div>
+                <div class="font-label text-sm font-medium text-on-surface">信用卡自动还款</div>
+                <div class="font-label text-[10px] text-on-surface-variant">签约时间：2024-05-01</div>
+              </div>
+            </div>
+            <span class="channel-signed"><span class="material-symbols-outlined" style="font-size:12px">check_circle</span>已签约</span>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">receipt_long</span>
+              </div>
+              <div>
+                <div class="font-label text-sm font-medium text-on-surface">生活缴费</div>
+                <div class="font-label text-[10px] text-on-surface-variant">未签约</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="h-8 px-3 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('生活缴费签约邀请','客户未签约生活缴费渠道，可发送签约邀请')">
+                <span class="material-symbols-outlined" style="font-size:12px">auto_awesome</span>AI话术
+              </button>
+              <button class="h-8 px-4 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="alert('发送生活缴费签约邀请')">
+                <span class="material-symbols-outlined" style="font-size:12px">send</span>发送邀请
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center">
+                <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">contactless</span>
+              </div>
+              <div>
+                <div class="font-label text-sm font-medium text-on-surface">云闪付支付绑卡</div>
+                <div class="font-label text-[10px] text-on-surface-variant">未签约</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button class="h-8 px-3 bg-[#9333ea] text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="showAIScriptDialog('云闪付签约邀请','客户未签约云闪付支付绑卡渠道，可发送签约邀请')">
+                <span class="material-symbols-outlined" style="font-size:12px">auto_awesome</span>AI话术
+              </button>
+              <button class="h-8 px-4 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="alert('发送云闪付签约邀请')">
+                <span class="material-symbols-outlined" style="font-size:12px">send</span>发送邀请
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== Tab 4：基本信息 ====== -->
+    <div id="tab-content-4" class="space-y-4 -mt-4" style="display:none">
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm">
+        <div class="font-headline text-sm font-bold text-on-surface mb-3">基本信息</div>
+        <div class="info-row">
+          <span class="info-label">姓名</span>
+          <span class="info-value">陈永峰</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">性别</span>
+          <span class="info-value">男</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">年龄</span>
+          <span class="info-value">52岁</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">生日</span>
+          <span class="info-value">1974-08-15</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">证件类型</span>
+          <span class="info-value">身份证</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">证件号码</span>
+          <span class="info-value">440*******4158</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">风险评级</span>
+          <span class="info-value" style="color:#003B99;font-weight:600">进取型</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">客户类型</span>
+          <span class="info-value" style="color:#003B99;font-weight:600">私行客户</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">本年新客</span>
+          <span class="info-value">否</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">归属客户经理</span>
+          <span class="info-value">李明（南山支行）</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">最近联系</span>
+          <span class="info-value">2026-04-28</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">客户来源</span>
+          <span class="info-value">网点获客</span>
+        </div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===== 底部操作栏 ===== -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant z-40 safe-area-bottom" style="padding-bottom: env(safe-area-inset-bottom);">
+    <div class="max-w-lg mx-auto flex items-center justify-around py-3 px-4">
+      <button onclick="alert('即将拨打 138****5210')" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-white" style="font-size:18px">call</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">拨打电话</span>
+      </button>
+      <button onclick="showBriefModal()" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-[#9333ea] flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-white" style="font-size:18px">summarize</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">AI简报</span>
+      </button>
+      <button onclick="showInviteModal()" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">edit_calendar</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">添加邀约</span>
+      </button>
+      <button onclick="location.href='慧展业_客户动态列表.html'" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">history</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">客户动态</span>
+      </button>
+    </div>
+  </nav>
+
+<script>
+    var selectedInviteType = '电话联系';
+    function showInviteModal() {
+      document.getElementById('inviteModal').classList.remove('hidden');
+      document.getElementById('inviteModal').style.display = 'block';
+      // 默认选中"电话联系"
+      selectedInviteType = '电话联系';
+      document.querySelectorAll('.invite-type-btn').forEach(function(btn) {
+        btn.classList.remove('border-primary', 'bg-primary/5', 'text-primary');
+        btn.classList.add('border-outline', 'text-on-surface-variant');
+      });
+      var firstBtn = document.querySelector('.invite-type-btn');
+      firstBtn.classList.add('border-primary', 'bg-primary/5', 'text-primary');
+      firstBtn.classList.remove('border-outline', 'text-on-surface-variant');
+      // 默认日期明天
+      var tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('inviteDate').value = tomorrow.toISOString().slice(0, 10);
+      // 默认时间14:00
+      document.getElementById('inviteTime').value = '14:00';
+      // 清空备注
+      document.getElementById('inviteRemark').value = '';
+      document.getElementById('remarkCounter').textContent = '0/200';
+    }
+    function hideInviteModal() {
+      document.getElementById('inviteModal').classList.add('hidden');
+      document.getElementById('inviteModal').style.display = 'none';
+    }
+    function selectInviteType(el, type) {
+      selectedInviteType = type;
+      document.querySelectorAll('.invite-type-btn').forEach(function(btn) {
+        btn.classList.remove('border-primary', 'bg-primary/5', 'text-primary');
+        btn.classList.add('border-outline', 'text-on-surface-variant');
+      });
+      el.classList.add('border-primary', 'bg-primary/5', 'text-primary');
+      el.classList.remove('border-outline', 'text-on-surface-variant');
+    }
+    function submitInvite() {
+      var date = document.getElementById('inviteDate').value;
+      var time = document.getElementById('inviteTime').value;
+      var remark = document.getElementById('inviteRemark').value;
+      if (!date) { alert('请选择邀约日期'); return; }
+      hideInviteModal();
+      alert('已添加邀约：' + date + ' ' + time + '\n方式：' + selectedInviteType + '\n事项：' + remark);
+    }
+    function switchTab(idx) {
+      document.querySelectorAll('.tab-item').forEach(function(t, i) {
+        t.classList.toggle('active', i === idx);
+      });
+      document.querySelectorAll('[id^="tab-content-"]').forEach(function(c) {
+        c.style.display = 'none';
+      });
+      var target = document.getElementById('tab-content-' + idx);
+      if (target) target.style.display = 'block';
+    }
+    function updateRemarkCounter() {
+      var len = document.getElementById('inviteRemark').value.length;
+      document.getElementById('remarkCounter').textContent = len + '/200';
+    }
+    function handleInviteSubmit() {
+      var date = document.getElementById('inviteDate').value;
+      var time = document.getElementById('inviteTime').value;
+      var remark = document.getElementById('inviteRemark').value;
+      if (!date || !time) {
+        alert('请填写邀约日期和时间');
+        return;
+      }
+      hideInviteModal();
+      alert('邀约已添加\n日期：' + date + '\n时间：' + time + '\n类型：' + selectedInviteType + '\n事项：' + (remark || '（无）'));
+    }
+
+     // ===== 客户简报弹框 =====
+     function showBriefModal() {
+       var modal = document.getElementById('briefModal');
+       modal.style.display = 'flex';
+       modal.classList.remove('hidden');
+       document.body.style.overflow = 'hidden';
+       var opp = '①¥200万理财5/15到期，可转化结构存款；②代发+收单双渠道稳定，可深挖商户外链；③AUM较峰值低¥344万，挖潜空间大。';
+       var risk = '定期¥100万已到期未转，理财¥200万即将到期（紧急），资金有外流风险。';
+       var priority = '本周内联系客户推进理财到期转化，同步推荐云闪付/生活缴费提升粘性。';
+       document.getElementById('briefModalOpp').textContent = opp;
+       document.getElementById('briefModalRisk').textContent = risk;
+       document.getElementById('briefModalPriority').textContent = priority;
+     }
+     function hideBriefModal() {
+       var modal = document.getElementById('briefModal');
+       if (modal) { modal.style.display = 'none'; modal.classList.add('hidden'); }
+       document.body.style.overflow = '';
+     }
+
+    var currentAIScript = '';
+    function showAIScriptDialog(title, context) {
+      var modal = document.getElementById('aiScriptModal');
+      modal.style.display = 'flex';
+      modal.classList.remove('hidden');
+
+      var content = document.getElementById('aiScriptContent');
+      var customerInfo = '陈永峰 · 男 · 52岁 · 私行客户 · AUM ¥856万';
+
+      // 构造发送给AI的内容
+      var aiPrompt = '客户信息：' + customerInfo + '\n场景：' + title + '\n详情：' + context;
+
+      // 模拟AI回复话术（实际由后端AI生成）
+      var scriptMap = {
+        '理财产品到期转化场景': '陈先生您好，我是您的客户经理小李。您在我行的稳盈系列理财200万将于5月15日到期，考虑到您偏好中低风险理财，我行目前有一款结构性存款产品，半年期年化收益2.6%，比普通定期高不少，而且起购门槛刚好100万。如果您有兴趣，我可以帮您提前锁定额度，避免到期后资金站岗。',
+        '基金组合优化建议场景': '陈先生，我注意到您目前持有的80万基金主要集中在新能源单一赛道，波动相对较大。近期市场有所调整，我建议您适当配置一部分债券型基金来分散风险，债券和权益类资产的相关性低，搭配起来持有体验会更好。我们行代销的几款债券基金表现稳健，回撤控制也很好，可以给您详细介绍一下。',
+        'E秒贷额度提升场景': '陈先生您好，我注意到您的E秒贷额度使用率目前只有20%（已用6万/额度30万）。其实您的资质非常好，用款灵活且利率优惠。现在我们行有E秒贷利率折扣活动，额度内随时可借、随借随用，非常适合您这样的优质客户临时周转。我可以帮您测算一下最优的用款方案。',
+        '存款送好礼活动邀约': '陈先生您好，我是客户经理小李。跟您分享一个好消息，我行正在开展"稳盈添福"存款送好礼活动，活动期间您新存活期5万元以上，就能获赠超市购物卡，参与定期存款还能叠加积分回馈。刚好您有一笔资金近期可能会到位，这个活动非常适合您，帮您资金保值的同时还能额外拿礼品，一举两得。',
+        '新客理财活动提醒达标': '陈先生您好，提醒您一下，您参与的新客专享理财收益升级活动目前已完成60%（12万/20万目标）。再追加8万购买指定理财产品，就能达到20万门槛，收益率额外上浮0.3%，而且满50万还赠送手机话费。这个活动月底就要截止了，您的专属权益不要错过哦。',
+        '金鹿客户体检套餐提醒领奖': '陈先生恭喜您！您已达标我行"金鹿客户尊享体检套餐"活动资格，您的金融资产达到300万以上，符合免费兑换高端体检套餐的条件。这个套餐市场价超过2000元，包含了三甲医院全套检查，限前200名客户。我现在帮您预约，您看这周方便吗？',
+        '生活缴费签约邀请': '陈先生您好，我是客户经理小李。我们行新上线了生活缴费功能，签约后水费、电费、燃气费都可以自动扣款，还能享受随机立减优惠。签约过程非常简单，只需要您在手机银行授权一下就行，我来指导您操作，一分钟就能搞定。',
+        '云闪付签约邀请': '陈先生，我行现在支持云闪付绑卡支付，签约后您在云闪付APP里直接使用我行卡支付，可以参与云闪付的满减活动，每月都有新人礼和老客礼。您平时用云闪付吗？我帮您操作一下绑卡，很快的。'
+      };
+
+      currentAIScript = scriptMap[title] || '陈先生您好，我是您的专属客户经理。关于' + title + '这个事项，我行有针对性的产品和服务可以为您提供支持和帮助。如果您方便的话，我可以详细为您介绍一下。';
+
+      // 清空prompt区（已迁移到对话气泡）
+      document.getElementById('aiScriptPrompt').innerHTML = '';
+
+      // 对话内容区：用户消息（右侧气泡）+ AI回复（左侧气泡）
+      var userBubble = '<div class="flex gap-3 justify-end"><div class="flex-1 flex flex-col items-end"><div class="font-label text-xs text-on-surface-variant mb-1 text-right">你</div><div class="bg-[#003B99] rounded-xl rounded-tr-sm p-3 max-w-[85%]"><div class="font-label text-sm text-white leading-relaxed whitespace-pre-line">场景：' + title + '\n详情：' + context + '</div></div></div></div>';
+      var aiBubble = '<div class="flex gap-3"><div class="w-7 h-7 rounded-full bg-[#9333ea] flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-white" style="font-size:14px">auto_awesome</span></div><div class="flex-1"><div class="font-label text-xs text-on-surface-variant mb-1">AI话术助手</div><div class="bg-surface-container-low rounded-xl rounded-tl-sm p-3"><div class="font-label text-sm text-on-surface leading-relaxed">' + currentAIScript + '</div></div></div></div>';
+
+      content.innerHTML = userBubble + aiBubble;
+
+      // 滚动到底部
+      content.scrollTop = content.scrollHeight;
+    }
+
+    function hideAIScriptDialog() {
+      var modal = document.getElementById('aiScriptModal');
+      if (modal) { modal.style.display = 'none'; modal.classList.add('hidden'); }
+      document.body.style.overflow = '';
+      var content = document.getElementById('aiScriptContent');
+      if (content) content.innerHTML = '';
+    }
+
+    function copyAIScript() {
+      if (currentAIScript) {
+        navigator.clipboard.writeText(currentAIScript).then(function() {
+          var btns = document.querySelectorAll('#aiScriptModal button');
+          var copyBtn = null;
+          for (var i = 0; i < btns.length; i++) {
+            if (btns[i].textContent.indexOf('复制话术') !== -1) {
+              copyBtn = btns[i];
+              break;
+            }
+          }
+          if (copyBtn) {
+            var originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px">check</span>已复制';
+            copyBtn.classList.add('bg-green-600');
+            setTimeout(function() {
+              copyBtn.innerHTML = originalHTML;
+              copyBtn.classList.remove('bg-green-600');
+            }, 1500);
+          }
+        });
+      }
+    }
+
+    // ===== AI简报弹框 =====
+    function showBriefModal() {
+      var modal = document.getElementById('briefModal');
+      modal.style.display = 'flex';
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      // 解析并填充三区内容
+      var opp = '①¥200万理财5/15到期，可转化结构存款；②代发+收单双渠道稳定，可深挖商户外链；③AUM较峰值低¥344万，挖潜空间大。';
+      var risk = '定期¥100万已到期未转，理财¥200万即将到期（紧急），资金有外流风险。';
+      var priority = '本周内联系客户推进理财到期转化，同步推荐云闪付/生活缴费提升粘性。';
+      document.getElementById('briefModalOpp').textContent = opp;
+      document.getElementById('briefModalRisk').textContent = risk;
+      document.getElementById('briefModalPriority').textContent = priority;
+    }
+    function hideBriefModal() {
+      var modal = document.getElementById('briefModal');
+      if (modal) { modal.style.display = 'none'; modal.classList.add('hidden'); }
+      document.body.style.overflow = '';
+    }
+  </script>
+
+  <!-- ===== AI简报弹框（底部上拉） ===== -->
+  <div id="briefModal" class="hidden fixed inset-0 z-[100] bg-black/40 flex items-end justify-center" style="display:none" onclick="if(event.target===this)hideBriefModal()">
+    <div class="bg-white rounded-t-2xl w-full max-w-lg flex flex-col shadow-xl max-h-[70vh]">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-full bg-[#9333ea] flex items-center justify-center">
+            <span class="material-symbols-outlined text-white" style="font-size:14px">summarize</span>
+          </div>
+          <span class="font-headline text-sm font-bold text-on-surface">客户简报</span>
+        </div>
+        <button onclick="hideBriefModal()" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center cursor-pointer active:scale-95">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">close</span>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+        <div class="bg-[#f0fdf4] rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-green-600" style="font-size:14px">lightbulb</span>
+            <span class="font-label text-xs font-semibold text-green-700">机遇</span>
+          </div>
+          <div class="font-label text-sm text-on-surface leading-relaxed" id="briefModalOpp"></div>
+        </div>
+        <div class="bg-[#fff0f0] rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-red-500" style="font-size:14px">warning</span>
+            <span class="font-label text-xs font-semibold text-red-600">风险</span>
+          </div>
+          <div class="font-label text-sm text-on-surface leading-relaxed" id="briefModalRisk"></div>
+        </div>
+        <div class="bg-[#f0f7ff] rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-primary" style="font-size:14px">flag</span>
+            <span class="font-label text-xs font-semibold text-primary">优先事项</span>
+          </div>
+          <div class="font-label text-sm text-on-surface leading-relaxed" id="briefModalPriority"></div>
+        </div>
+      </div>
+      <div class="px-5 py-4 border-t border-outline-variant flex-shrink-0">
+        <button onclick="hideBriefModal()" class="w-full h-10 bg-[#9333ea] text-white rounded-xl text-sm font-semibold cursor-pointer active:scale-[0.98]">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 客户邀约弹窗 ===== -->
+  <div id="inviteModal" class="hidden fixed inset-0 z-[100] bg-black/40" style="display:none" onclick="if(event.target===this)hideInviteModal()">
+    <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-xl absolute bottom-0 left-0 right-0 mx-auto">
+      <!-- 头部 -->
+      <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant">
+        <span class="font-headline text-sm font-bold text-on-surface">添加邀约</span>
+        <button onclick="hideInviteModal()" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">close</span>
+        </button>
+      </div>
+      <!-- 表单内容 -->
+      <div class="flex-1 overflow-y-auto p-5 space-y-4">
+        <!-- 邀约日期 -->
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1.5">邀约日期</label>
+          <input type="date" id="inviteDate" class="w-full h-10 px-3 rounded-xl border border-outline bg-surface-container text-sm text-on-surface focus:outline-none focus:border-primary">
+        </div>
+        <!-- 邀约时间 -->
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1.5">邀约时间</label>
+          <input type="time" id="inviteTime" class="w-full h-10 px-3 rounded-xl border border-outline bg-surface-container text-sm text-on-surface focus:outline-none focus:border-primary" value="14:00">
+        </div>
+        <!-- 邀约类型 -->
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1.5">邀约方式</label>
+          <div class="flex gap-2">
+            <button onclick="selectInviteType(this, '电话联系')" class="invite-type-btn flex-1 h-10 rounded-xl border border-primary bg-primary/5 text-primary text-sm font-medium cursor-pointer active:scale-[0.98] transition-transform">电话联系</button>
+            <button onclick="selectInviteType(this, '面谈')" class="invite-type-btn flex-1 h-10 rounded-xl border border-outline text-on-surface-variant text-sm font-medium cursor-pointer active:scale-[0.98] transition-transform">面谈</button>
+            <button onclick="selectInviteType(this, '其他')" class="invite-type-btn flex-1 h-10 rounded-xl border border-outline text-on-surface-variant text-sm font-medium cursor-pointer active:scale-[0.98] transition-transform">其他</button>
+          </div>
+        </div>
+        <!-- 邀约事项 -->
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1.5">邀约事项</label>
+          <textarea id="inviteRemark" rows="3" maxlength="200" placeholder="请输入邀约事项（不超过200字）" class="w-full px-3 py-2.5 rounded-xl border border-outline bg-surface-container text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary resize-none"></textarea>
+        </div>
+      </div>
+      <!-- 底部按钮 -->
+      <div class="px-5 py-4 border-t border-outline-variant flex gap-3 flex-shrink-0">
+        <button onclick="hideInviteModal()" class="flex-1 h-10 rounded-xl border border-outline text-on-surface text-sm font-medium cursor-pointer active:scale-[0.98] transition-transform">取消</button>
+        <button onclick="submitInvite()" class="flex-1 h-10 rounded-xl bg-primary text-white text-sm font-semibold cursor-pointer active:scale-[0.98] transition-transform">确认添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== AI话术对话框 ===== -->
+  <div id="aiScriptModal" class="hidden fixed inset-0 z-[100] bg-black/50 flex items-end justify-center" style="display:none" onclick="if(event.target===this)hideAIScriptDialog()">
+    <div class="bg-white rounded-t-2xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-xl">
+      <!-- 头部 -->
+      <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-full bg-[#9333ea] flex items-center justify-center">
+            <span class="material-symbols-outlined text-white" style="font-size:14px">auto_awesome</span>
+          </div>
+          <span class="font-headline text-sm font-bold text-on-surface">AI话术助手</span>
+        </div>
+        <button onclick="hideAIScriptDialog()" class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">close</span>
+        </button>
+      </div>
+      <!-- 客户信息摘要 -->
+      <div class="px-5 py-3 bg-[#f8f5ff] border-b border-[#e9d5ff]">
+        <div class="font-label text-xs text-[#9333ea]">客户画像：陈永峰 · 男 · 52岁 · 私行客户 · AUM ¥856万</div>
+      </div>
+      <!-- 发送给AI的内容 -->
+      <div id="aiScriptPrompt" class="px-5 pt-3 pb-0">
+      </div>
+      <!-- 对话内容 -->
+      <div id="aiScriptContent" class="flex-1 overflow-y-auto p-5 space-y-4">
+        <!-- AI回复内容动态填充 -->
+      </div>
+      <!-- 底部操作 -->
+      <div class="px-5 py-4 border-t border-outline-variant">
+        <div class="flex gap-2">
+          <button onclick="hideAIScriptDialog()" class="h-9 px-4 bg-surface-container text-on-surface-variant rounded-lg text-xs font-medium flex items-center justify-center cursor-pointer active:scale-95 transition-transform">
+            关闭
+          </button>
+          <button onclick="copyAIScript()" class="h-9 px-4 bg-primary text-white rounded-lg text-xs font-medium flex items-center justify-center gap-1 cursor-pointer active:scale-95 transition-transform">
+            <span class="material-symbols-outlined" style="font-size:14px">content_copy</span>复制话术
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99", "primary-container": "#1A52BF",
+            "surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7",
+            "surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB",
+            "surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF",
+            "on-surface": "#191C1E", "on-surface-variant": "#434653",
+            "outline": "#737685", "outline-variant": "#C3C6D0",
+            "tertiary": "#732B00", "tertiary-container": "#993C00",
+            "tertiary-fixed": "#FFDBCC", "on-tertiary-fixed": "#351000",
+            "secondary": "#4E5D88", "secondary-container": "#BFCEFF",
+            "on-secondary-container": "#485781",
+            "error": "#BA1A1A", "error-container": "#FFDAD6",
+            "on-error": "#FFFFFF", "on-error-container": "#93000A",
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+          fontFamily: { "headline": ["Manrope"], "body": ["Inter"], "label": ["Inter"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --motion-duration-short: 100ms; --motion-duration-medium: 200ms; --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Tag */
+    .tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;
+    }
+    .tag-warning {
+      background: #FEF3C7; color: #92400E;
+      border: 1px solid #FCD34D;
+    }
+    .tag-success {
+      background: #D1FAE5; color: #065F46;
+      border: 1px solid #6EE7B7;
+    }
+    /* Fallback CSS */
+    body { background: #F7F9FC; color: #191C1E; margin: 0; }
+    .bg-surface { background: #F7F9FC; }
+    .bg-surface-container-lowest { background: white; }
+    .bg-surface-container { background: #ECEEF1; }
+    .bg-surface-container-high { background: #E6E8EB; }
+    .bg-surface-container-highest { background: #E0E3E6; }
+    .bg-primary { background: #003B99; }
+    .bg-primary-container { background: #1A52BF; }
+    .bg-white { background: white; }
+    .text-on-surface { color: #191C1E; }
+    .text-on-surface-variant { color: #434653; }
+    .text-white { color: white; }
+    .text-primary { color: #003B99; }
+    .text-tertiary { color: #732B00; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .font-headline { font-family: 'Manrope', sans-serif; }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-medium { font-weight: 500; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .fixed { position: fixed; }
+    .absolute { position: absolute; }
+    .top-0 { top: 0; }
+    .bottom-0 { bottom: 0; }
+    .left-0 { left: 0; }
+    .right-0 { right: 0; }
+    .z-50 { z-index: 50; }
+    .w-full { width: 100%; }
+    .w-9 { width: 2.25rem; }
+    .h-9 { height: 2.25rem; }
+    .h-16 { height: 4rem; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-1 { flex: 1 1 0%; }
+    .flex-shrink-0 { flex-shrink: 0; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-1 { gap: 0.25rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .pt-16 { padding-top: 4rem; }
+    .pb-24 { padding-bottom: 6rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .space-y-3 > * + * { margin-top: 0.75rem; }
+    .max-w-lg { max-width: 32rem; margin-left: auto; margin-right: auto; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .leading-tight { line-height: 1.25; }
+    .leading-snug { line-height: 1.375; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    .whitespace-nowrap { white-space: nowrap; }
+    .shadow-sm { box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .cursor-pointer { cursor: pointer; }
+    .active\:scale-95:active { transform: scale(0.95); }
+    .transition-all { transition: all 150ms var(--motion-easing-standard, ease); }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-5">
+    <div class="flex items-center gap-3">
+      <button class="w-9 h-9 rounded-xl bg-primary-container flex items-center justify-center cursor-pointer transition-all active:scale-95" onclick="history.back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span class="font-headline font-bold text-base text-on-surface tracking-tight">待补贴商户</span>
+    </div>
+    <div class="flex items-center gap-1">
+      <button class="p-2 rounded-xl hover:bg-surface-container transition-colors active:scale-95">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">search</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pt-16 pb-24 px-5 max-w-lg mx-auto">
+
+    <!-- 统计摘要 -->
+    <div class="bg-gradient-to-br from-primary to-primary-container rounded-2xl p-4 mt-4 mb-5 flex items-center justify-between">
+      <div>
+        <div class="text-white/70 text-xs font-medium mb-1">待补贴商户总数</div>
+        <div class="font-headline text-2xl font-extrabold text-white">12 <span class="text-sm font-medium opacity-80">户</span></div>
+      </div>
+      <div class="text-right">
+        <div class="text-white/70 text-xs font-medium mb-1">本月新增</div>
+        <div class="font-headline text-lg font-bold text-white">+3</div>
+      </div>
+    </div>
+
+    <!-- 商户列表 -->
+    <div class="space-y-3">
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">龙华区华荣便利店</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040001</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>新商户入网，达标考核期后发放首笔收单补贴，需联系商户确认收款账户信息。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">南山科兴园餐饮店</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040002</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>商户升级为达标商户，本期应收单交易笔数已达标，补贴打款中。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">福田华强北手机店</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040003</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>新商户入网，资料已齐全，补贴申请已提交，待分行审批后发放。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">罗湖东门步行街奶茶铺</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040004</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>商户申请变更收款账户，需重新核实后发放补贴。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">宝安福永海鲜酒楼</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040005</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>商户月交易额突破50万，触发达标奖励，补贴金额核算中。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">龙岗中心城生鲜超市</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040006</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>新商户入网首月考核通过，补贴已申请，待财务打款。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">光明凤凰城便利店</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040007</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>商户连续3个月达标，续发第2期补贴，已提交待审批。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">盐田海鲜码头餐厅</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040008</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>新商户入网，POS机具已安装，商户未激活首笔交易，待激活后发放。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">坪山新区建材店</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040009</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>商户升级收单等级，补贴差额补发申请中。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">大鹏新区海滨民宿</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040010</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>新商户入网，营业执照法人变更中，变更完成后发放补贴。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">龙华清湖工业园食堂</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040011</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>商户季度结算补贴，账单核算中，预计3个工作日内发放。
+        </div>
+      </div>
+
+      <!-- 商户项 -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-headline font-semibold text-sm text-on-surface leading-tight">南山软件园二期餐饮</div>
+            <div class="text-xs text-on-surface-variant mt-0.5">编号：SH2026040012</div>
+          </div>
+          <span class="tag tag-warning flex-shrink-0 ml-3">准入待补贴</span>
+        </div>
+        <div class="text-xs text-on-surface-variant bg-surface-container rounded-lg px-3 py-2 mt-2">
+          <span class="font-medium">补贴备注：</span>商户参与银行满减活动，额外活动补贴发放中。
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

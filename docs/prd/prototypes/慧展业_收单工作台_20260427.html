@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99",
+            "primary-container": "#1A52BF",
+            "surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7",
+            "surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB",
+            "surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF",
+            "on-surface": "#191C1E",
+            "on-surface-variant": "#434653",
+            "outline-variant": "#C3C6D5",
+            "outline": "#737685",
+            "tertiary": "#732B00",
+            "tertiary-container": "#993C00",
+            "tertiary-fixed": "#FFDBCC",
+            "secondary": "#4E5D88",
+            "secondary-container": "#BFCEFF",
+            "error": "#BA1A1A",
+            "error-container": "#FFDAD6",
+            "on-primary": "#FFFFFF",
+            "on-tertiary": "#FFFFFF",
+            "on-tertiary-fixed": "#351000",
+            "on-error": "#FFFFFF",
+            "on-error-container": "#93000A",
+            "on-secondary-container": "#485781",
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* ========== M3 Motion Tokens ========== */
+    :root {
+      --motion-duration-short: 100ms;
+      --motion-duration-medium: 200ms;
+      --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ========== M3 Filter Chip ========== */
+    .chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 6px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif;
+      border: 1px solid transparent; cursor: pointer;
+      transition: background var(--motion-duration-short) var(--motion-easing-standard),
+                  color var(--motion-duration-short) var(--motion-easing-standard),
+                  border-color var(--motion-duration-short) var(--motion-easing-standard),
+                  box-shadow var(--motion-duration-short) var(--motion-easing-standard);
+      user-select: none; white-space: nowrap;
+    }
+    /* Selected — M3 Filter Chip Selected state */
+    .chip-selected {
+      background: var(--color-primary-container, #1A52BF);
+      color: var(--color-on-primary-container, #FFFFFF);
+      border-color: transparent;
+    }
+    /* Unselected — M3 Filter Chip Unselected state */
+    .chip-unselected {
+      background: var(--color-surface-container-lowest, #FFFFFF);
+      color: var(--color-on-surface-variant, #434653);
+      border-color: var(--color-outline, #737685);
+    }
+    .chip-unselected:hover {
+      background: var(--color-surface-container-high, #E6E8EB);
+    }
+    .chip-unselected:active {
+      background: var(--color-surface-container-highest, #E0E3E6);
+    }
+
+    /* ========== M3 Outlined Icon Button (Action) ========== */
+    .action-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      padding: 6px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; font-family: 'Inter', sans-serif;
+      border: 1px solid var(--color-outline, #737685);
+      background: transparent; color: var(--color-primary, #003B99);
+      cursor: pointer;
+      transition: background var(--motion-duration-short) var(--motion-easing-standard),
+                  border-color var(--motion-duration-short) var(--motion-easing-standard);
+    }
+    .action-btn:hover { background: var(--color-primary-container, #1A52BF)22; border-color: var(--color-primary, #003B99); }
+    .action-btn:active { background: var(--color-primary-container, #1A52BF)33; }
+
+    /* ========== Router ======== */
+    .page { display: none; }
+    .page.active { display: block; }
+    .back-btn {
+      display: flex; align-items: center; gap: 4px;
+      color: var(--color-primary); font-size: 14px; font-weight: 500;
+      cursor: pointer; padding: 4px 0; border: none; background: none;
+      transition: opacity var(--motion-duration-short) var(--motion-easing-standard);
+    }
+    .back-btn:active { opacity: 0.6; }
+    .sub-topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--color-surface, #F7F9FC);
+      padding: 12px 16px 8px;
+      /* M3: dividers use outline-variant at 50% opacity, no full border */
+      box-shadow: inset 0 -1px 0 var(--color-outline-variant, #C3C6D0);
+    }
+    .opp-badge { position: absolute; top: 12px; right: 12px; background: #fdeceb; border-radius: 12px; padding: 0 12px; height: 24px; display: flex; align-items: center; }
+    .opp-badge-text { font-size: 11px; color: #eb4448; font-weight: 500; line-height: 1; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" opacity="0.9"/>
+          <path d="M2 17l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M2 12l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="text-base font-headline font-semibold text-on-surface">收单工作台</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="p-2 rounded-full hover:bg-slate-100 transition-colors active:scale-95">
+        <span class="material-symbols-outlined text-slate-500 text-xl">notifications</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+    <main id="page-home" class="page active pt-20 pb-28 px-5 max-w-lg mx-auto space-y-5">
+
+    <!-- 第一行：快捷操作 新入网/商户查重/排行榜 -->
+    <section>
+      <div class="flex gap-3">
+        <!-- 待补贴 -->
+        <a href="慧展业_待补贴商户.html" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-container/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">person_add</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface tracking-wide">待补贴</span>
+        </a>
+        <!-- 商户查重 -->
+        <button onclick="openDuplicateModal()" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-container/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">find_replace</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface tracking-wide">商户查重</span>
+        </button>
+        <!-- 排行榜 -->
+        <a href="慧展业_收单排行榜.html" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-container/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-2xl">leaderboard</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface tracking-wide">排行榜</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 本月业绩 合并卡片 -->
+    <section>
+      <div class="bg-gradient-to-br from-primary to-primary-container rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-headline font-bold text-sm text-white">本月业绩</h2>
+          <span class="text-[10px] text-white/60">更新于 2026-04-27 10:00</span>
+        </div>
+        <div class="grid grid-cols-4 gap-3">
+          <!-- 本月收入 → 收入明细页 -->
+          <a href="慧展业_收入明细页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+            <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月收入</span>
+            <p class="font-headline text-base font-bold text-white leading-none">¥28.56</p>
+            <p class="text-[10px] text-green-300 font-medium leading-none">+0.82</p>
+          </a>
+          <!-- 本月入网 → 历史业绩页 -->
+          <a href="慧展业_历史业绩页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+            <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月入网</span>
+            <p class="font-headline text-base font-bold text-white leading-none">45<span class="text-[10px] font-medium opacity-70 ml-0.5">户</span></p>
+            <p class="text-[10px] text-green-300 font-medium leading-none">+3</p>
+          </a>
+          <!-- 本月达标 → 历史业绩页 -->
+          <a href="慧展业_历史业绩页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+            <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月达标</span>
+            <p class="font-headline text-base font-bold text-white leading-none">38<span class="text-[10px] font-medium opacity-70 ml-0.5">户</span></p>
+            <p class="text-[10px] text-green-300 font-medium leading-none">+5</p>
+          </a>
+          <!-- 本月有效 → 历史业绩页 -->
+          <a href="慧展业_历史业绩页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+            <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月有效</span>
+            <p class="font-headline text-base font-bold text-white leading-none">42<span class="text-[10px] font-medium opacity-70 ml-0.5">/50</span></p>
+            <p class="text-[10px] text-green-300 font-medium leading-none">+1</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 动态栏 -->
+    <section>
+      <div class="relative bg-surface-container rounded-2xl p-4 shadow-sm cursor-pointer active:scale-[0.99] transition-transform overflow-hidden">
+        <div class="absolute top-0 right-0 opacity-[0.06] pointer-events-none transform translate-x-4 -translate-y-4">
+          <span class="material-symbols-outlined text-[7rem] text-on-surface">campaign</span>
+        </div>
+        <div class="relative z-10 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-primary text-xl">campaign</span>
+          </div>
+          <div class="flex-1 min-w-0 flex items-center gap-2">
+            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-2 py-0.5 rounded-full flex-shrink-0">网点动态</span>
+            <p class="text-sm font-semibold leading-snug text-on-surface truncate">轻松解锁，领5元红包！</p>
+          </div>
+          <button class="p-1 text-on-surface-variant hover:text-on-surface transition-colors flex-shrink-0">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第二行快捷操作：首期二访/潜力有效/高补贴回访 -->
+    <section>
+      <div class="flex gap-3">
+        <!-- 首期二访 -->
+        <button id="btn-first-followup" onclick="toggleFilter('first-followup')" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center">
+            <span class="material-symbols-outlined text-amber-600 text-2xl">replay</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface tracking-wide">首期二访</span>
+        </button>
+        <!-- 潜力有效 -->
+        <button id="btn-potential-active" onclick="toggleFilter('potential-active')" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+          <div class="w-12 h-12 rounded-2xl bg-green-50 border-2 border-green-200 flex items-center justify-center">
+            <span class="material-symbols-outlined text-green-600 text-2xl">trending_up</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface tracking-wide">潜力有效</span>
+        </button>
+        <!-- 高补贴回访 -->
+        <button id="btn-high-subsidy" onclick="toggleFilter('high-subsidy')" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
+          <div class="w-12 h-12 rounded-2xl bg-blue-50 border-2 border-blue-200 flex items-center justify-center">
+            <span class="material-symbols-outlined text-blue-600 text-2xl">volunteer_activism</span>
+          </div>
+          <span class="text-[11px] font-semibold text-on-surface tracking-wide">高补贴回访</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 快捷操作第三行：查询/商机/补贴/流水/筛选 -->
+    <section>
+      <div class="flex gap-2 overflow-x-auto overflow-y-visible pb-1 no-scrollbar">
+        <!-- 查询 -->
+        <button id="btn-search" onclick="toggleSearchInput()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-surface-variant text-base">search</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">查询</span>
+        </button>
+        <!-- 商机 -->
+        <button id="btn-opportunity" onclick="sortByOpportunity()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-base">lightbulb</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">商机</span>
+        </button>
+        <!-- 补贴 -->
+        <button id="btn-subsidy" onclick="sortBySubsidy()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-base">payments</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">补贴</span>
+        </button>
+        <!-- 流水 -->
+        <button id="btn-transaction" onclick="sortByTransaction()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-base">account_balance</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">流水</span>
+        </button>
+        <button onclick="openFilterModal()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95 relative">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-base">filter_list</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">筛选</span>
+          <span id="filter-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+        </button>
+      </div>
+    </section>
+
+        <!-- 商户列表 -->
+    <section>
+      <!-- 展开的查询输入框（默认隐藏） -->
+      <div id="search-expand" class="hidden mb-3 bg-surface-container rounded-2xl p-3 shadow-sm">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-xl">search</span>
+          <input id="search-input" type="text" placeholder="输入商户名称搜索..." class="flex-1 bg-transparent border-none outline-none text-sm text-on-surface placeholder:text-on-surface-variant"/>
+          <button onclick="toggleSearchInput()" class="text-on-surface-variant hover:text-on-surface transition-colors">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-headline font-bold text-base text-on-surface">商户列表</h2>
+        <span class="text-[11px] text-on-surface-variant font-medium">共48户</span>
+      </div>
+
+      <div id="merchant-list" class="space-y-3">
+
+        <!-- 商户卡片 1: 已有效 -->
+        <a onclick="openMerchantDetail('时尚美发沙龙')" class="relative block bg-surface-container-lowest rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+          <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">2项</span></div>
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-headline font-bold text-base text-on-surface truncate">时尚美发沙龙</h3>
+                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">已有效</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">person</span> 自拓
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">calendar_today</span> 2024-01-04
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">location_on</span> 1.2km
+                </span>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0 ml-3">
+              <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+              <p class="font-headline text-sm font-bold text-primary">AUM1-10万</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">首期二访</span>
+            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">高补贴</span>
+          </div>
+        </a>
+
+        <!-- 商户卡片 2: 已达标 -->
+        <a onclick="openMerchantDetail('海底捞火锅店')" class="relative block bg-surface-container-lowest rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+          <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">1项</span></div>
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-headline font-bold text-base text-on-surface truncate">海底捞火锅店</h3>
+                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">已达标</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">person</span> 合作推荐
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">calendar_today</span> 2024-02-15
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">location_on</span> 3.5km
+                </span>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0 ml-3">
+              <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+              <p class="font-headline text-sm font-bold text-primary">AUM100万以上</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">潜力有效</span>
+          </div>
+        </a>
+
+        <!-- 商户卡片 3: 未达标 -->
+        <a onclick="openMerchantDetail('便利购超市')" class="relative block bg-surface-container-lowest rounded-2xl p-4 border-l-4 border-amber-400 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+          <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">1项</span></div>
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-headline font-bold text-base text-on-surface truncate">便利购超市</h3>
+                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">未达标</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">person</span> 自拓
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">calendar_today</span> 2024-03-20
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">location_on</span> 0.8km
+                </span>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0 ml-3">
+              <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+              <p class="font-headline text-sm font-bold text-on-surface-variant">AUM10-100万</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+          </div>
+        </a>
+
+        <!-- 商户卡片 4 -->
+        <a onclick="openMerchantDetail('社区生鲜驿站')" class="relative block bg-surface-container-lowest rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+          <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">1项</span></div>
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-headline font-bold text-base text-on-surface truncate">瑞幸咖啡人民广场店</h3>
+                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">已有效</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">person</span> 合作推荐
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">calendar_today</span> 2024-01-18
+                </span>
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">location_on</span> 0.5km
+                </span>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0 ml-3">
+              <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+              <p class="font-headline text-sm font-bold text-primary">AUM10-100万</p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">高补贴</span>
+          </div>
+        </a>
+
+        <!-- 加载更多 -->
+        <div class="text-center py-4">
+          <button class="text-[12px] text-primary font-semibold hover:underline active:scale-95 transition-all">
+            加载更多商户
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== 收入明细页 ========== -->
+    <main id="page-income" class="page">
+      <div class="sub-topbar flex items-center gap-2">
+        <button class="back-btn" onclick="goBack()">
+          <span class="material-symbols-outlined text-lg">arrow_back</span>
+          返回
+        </button>
+        <span class="font-headline font-bold text-base text-on-surface flex-1 text-center pr-8">收入明细</span>
+      </div>
+      <div class="p-4 space-y-4">
+        <div class="bg-surface-container rounded-2xl p-4">
+          <p class="text-xs text-on-surface-variant mb-1">累计收入</p>
+          <p class="font-headline text-2xl font-bold text-primary">¥4,625.00</p>
+          <p class="text-xs text-on-surface-variant mt-1">共 <span class="text-on-surface font-medium">61</span> 笔</p>
+        </div>
+        <div class="flex gap-2 items-center overflow-x-auto no-scrollbar">
+          <div class="flex gap-1 bg-surface-container-lowest rounded-full px-3 py-1 flex-shrink-0">
+            <button class="text-[10px] font-semibold text-white bg-primary px-3 py-1 rounded-full">全部</button>
+            <button class="text-[10px] font-semibold text-on-surface-variant px-3 py-1 rounded-full">达标</button>
+            <button class="text-[10px] font-semibold text-on-surface-variant px-3 py-1 rounded-full">有效</button>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="bg-surface-container-lowest rounded-xl p-3 flex items-center justify-between">
+            <div><p class="text-sm font-semibold text-on-surface">时尚美发沙龙</p><p class="text-[10px] text-on-surface-variant mt-0.5">2026-01-15 · 达标</p></div>
+            <p class="font-headline text-base font-bold text-primary">+¥25.00</p>
+          </div>
+          <div class="bg-surface-container-lowest rounded-xl p-3 flex items-center justify-between">
+            <div><p class="text-sm font-semibold text-on-surface">便利购超市</p><p class="text-[10px] text-on-surface-variant mt-0.5">2026-01-14 · 有效</p></div>
+            <p class="font-headline text-base font-bold text-primary">+¥125.00</p>
+          </div>
+          <div class="bg-surface-container-lowest rounded-xl p-3 flex items-center justify-between">
+            <div><p class="text-sm font-semibold text-on-surface">海底捞火锅店</p><p class="text-[10px] text-on-surface-variant mt-0.5">2026-01-13 · 有效</p></div>
+            <p class="font-headline text-base font-bold text-primary">+¥380.00</p>
+          </div>
+          <div class="bg-surface-container-lowest rounded-xl p-3 flex items-center justify-between">
+            <div><p class="text-sm font-semibold text-on-surface">社区生鲜店</p><p class="text-[10px] text-on-surface-variant mt-0.5">2026-01-12 · 达标</p></div>
+            <p class="font-headline text-base font-bold text-primary">+¥35.00</p>
+          </div>
+        </div>
+        <p class="text-center text-[10px] text-on-surface-variant py-2">— 已加载全部 61 笔 —</p>
+      </div>
+    </main>
+
+    <!-- ========== 历史业绩页 ========== -->
+    <main id="page-history" class="page">
+      <div class="sub-topbar flex items-center gap-2">
+        <button class="back-btn" onclick="goBack()"><span class="material-symbols-outlined text-lg">arrow_back</span>返回</button>
+        <span class="font-headline font-bold text-base text-on-surface flex-1 text-center pr-8">历史业绩</span>
+      </div>
+      <div class="p-4 space-y-3">
+        <div class="bg-surface-container rounded-2xl p-4">
+          <p class="font-headline text-sm font-bold text-on-surface mb-3">近12个月业绩趋势</p>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between py-2 border-b border-outline-variant/30">
+              <span class="text-xs text-on-surface-variant">2026年4月</span>
+              <div class="flex gap-3 text-xs"><span>入网 <b class="text-primary">45</b></span><span>达标 <b class="text-primary">38</b></span><span>有效 <b class="text-primary">42</b></span><span class="text-green-600">+12%</span></div>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b border-outline-variant/30">
+              <span class="text-xs text-on-surface-variant">2026年3月</span>
+              <div class="flex gap-3 text-xs"><span>入网 <b>42</b></span><span>达标 <b>33</b></span><span>有效 <b>41</b></span><span class="text-green-600">+8%</span></div>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b border-outline-variant/30">
+              <span class="text-xs text-on-surface-variant">2026年2月</span>
+              <div class="flex gap-3 text-xs"><span>入网 <b>38</b></span><span>达标 <b>30</b></span><span>有效 <b>37</b></span><span class="text-red-500">-3%</span></div>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-xs text-on-surface-variant">2026年1月</span>
+              <div class="flex gap-3 text-xs"><span>入网 <b>36</b></span><span>达标 <b>29</b></span><span>有效 <b>36</b></span><span class="text-green-600">+5%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== 商户详情页 ========== -->
+    <main id="page-merchant-detail" class="page pt-20 pb-8 px-5 max-w-lg mx-auto space-y-4">
+      <div class="sub-topbar flex items-center gap-2">
+        <button class="back-btn" onclick="goBack()"><span class="material-symbols-outlined text-lg">arrow_back</span>返回</button>
+        <span id="detail-merchant-name" class="font-headline font-bold text-base text-on-surface flex-1 text-center pr-8">商户详情</span>
+      </div>
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">已有效</span>
+          <span class="text-[10px] text-on-surface-variant">个体 · AUM1-10万</span>
+        </div>
+        <div class="bg-surface-container rounded-2xl p-4 space-y-3">
+          <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">经营与资产</h3>
+          <div class="grid grid-cols-2 gap-y-3 gap-x-4">
+            <div><p class="text-[10px] text-on-surface-variant">本期补贴</p><p class="font-headline text-sm font-bold text-primary">¥1.20万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">下期预估</p><p class="font-headline text-sm font-bold text-primary">¥1.50万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">当月结算流水</p><p class="font-headline text-sm font-bold text-on-surface">—</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">当前活期</p><p class="font-headline text-sm font-bold text-on-surface">¥7.50万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">月日均活期</p><p class="font-headline text-sm font-bold text-on-surface">¥11.70万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">当前金融资产</p><p class="font-headline text-sm font-bold text-on-surface">¥15.00万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">月日均金融资产</p><p class="font-headline text-sm font-bold text-on-surface">¥18.00万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">普惠贷款额度</p><p class="font-headline text-sm font-bold text-on-surface">¥4.50万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">E秒贷额度</p><p class="font-headline text-sm font-bold text-on-surface">¥2.25万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">信用卡额度</p><p class="font-headline text-sm font-bold text-on-surface">¥3.75万</p></div>
+          </div>
+        </div>
+        <div class="bg-surface-container-lowest rounded-2xl p-4 space-y-2">
+          <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">他行同名转出</h3>
+          <div class="flex gap-4">
+            <div><p class="text-[10px] text-on-surface-variant">工商银行</p><p class="text-xs text-red-500 font-medium">-¥1.50万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">建设银行</p><p class="text-xs text-red-500 font-medium">-¥0.85万</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">招商银行</p><p class="text-xs text-red-500 font-medium">-¥1.20万</p></div>
+          </div>
+        </div>
+        <div class="bg-surface-container rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">商机信息</h3>
+            <span class="text-[10px] text-primary font-semibold">2项</span>
+          </div>
+          <div class="space-y-2">
+            <div class="bg-surface-container-lowest rounded-xl p-3">
+              <div class="flex items-start justify-between mb-1"><span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded">首期二访</span><span class="text-[9px] text-on-surface-variant">2026-01-10</span></div>
+              <p class="text-xs text-on-surface leading-snug">初次回访未成功，请再次回访</p>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3">
+              <div class="flex items-start justify-between mb-1"><span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">潜力有效</span><span class="text-[9px] text-on-surface-variant">2026-01-08</span></div>
+              <p class="text-xs text-on-surface leading-snug">客户资质良好，建议提升月日均</p>
+            </div>
+          </div>
+          <div class="flex gap-2 pt-1">
+            <button class="action-btn"><span class="material-symbols-outlined text-base">menu_book</span>查看政策</button>
+            <button class="action-btn"><span class="material-symbols-outlined text-base">record_voice_over</span>推荐话术</button>
+            <button class="action-btn"><span class="material-symbols-outlined text-base">image</span>营销海报</button>
+            <button class="action-btn"><span class="material-symbols-outlined text-base">fact_check</span>提交记录</button>
+          </div>
+        </div>
+        <div class="bg-surface-container-lowest rounded-2xl p-4 space-y-2">
+          <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">基础信息</h3>
+          <div class="grid grid-cols-2 gap-y-2 gap-x-4">
+            <div><p class="text-[10px] text-on-surface-variant">商户编号</p><p class="text-xs text-on-surface font-medium">M2024010104</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">入网时间</p><p class="text-xs text-on-surface font-medium">2024-01-04</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">联系人</p><p class="text-xs text-on-surface font-medium">李女士</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">联系电话</p><p class="text-xs text-primary font-medium">138****1234</p></div>
+            <div class="col-span-2"><p class="text-[10px] text-on-surface-variant">地址</p><p class="text-xs text-on-surface font-medium">上海市黄浦区人民广场路188号</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">商户性质</p><p class="text-xs text-on-surface font-medium">个体</p></div>
+            <div><p class="text-[10px] text-on-surface-variant">支付机构</p><p class="text-xs text-on-surface font-medium">银联商务</p></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+          <button onclick="routeTo('merchant-dynamics')" class="flex flex-col items-center gap-1 py-3 bg-surface-container rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95">
+            <span class="material-symbols-outlined text-primary text-xl">history</span>
+            <span class="text-[10px] font-semibold text-on-surface-variant">商户动态</span>
+          </button>
+          <button onclick="showModal('quota')" class="flex flex-col items-center gap-1 py-3 bg-surface-container rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95">
+            <span class="material-symbols-outlined text-primary text-xl">account_balance_wallet</span>
+            <span class="text-[10px] font-semibold text-on-surface-variant">额度管理</span>
+          </button>
+          <label class="flex flex-col items-center gap-1 py-3 bg-surface-container rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer">
+            <span class="material-symbols-outlined text-primary text-xl">camera_alt</span>
+            <span class="text-[10px] font-semibold text-on-surface-variant">拍照</span>
+            <input type="file" accept="image/*" capture="environment" class="hidden"/>
+          </label>
+          <a href="tel:13812341234" class="flex flex-col items-center gap-1 py-3 bg-surface-container rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95">
+            <span class="material-symbols-outlined text-primary text-xl">phone</span>
+            <span class="text-[10px] font-semibold text-on-surface-variant">拨打电话</span>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== 商户动态列表页 ========== -->
+    <main id="page-merchant-dynamics" class="page">
+      <div class="sub-topbar flex items-center gap-2">
+        <button class="back-btn" onclick="goBack()"><span class="material-symbols-outlined text-lg">arrow_back</span>返回</button>
+        <span class="font-headline font-bold text-base text-on-surface flex-1 text-center pr-8">商户动态</span>
+      </div>
+      <div class="p-4 space-y-3">
+        <div class="bg-surface-container-lowest rounded-2xl p-4 space-y-3">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-blue-600 text-sm">person</span></div>
+            <div class="flex-1"><div class="flex items-center justify-between"><span class="text-xs font-semibold text-on-surface">张经理</span><span class="text-[9px] text-on-surface-variant">2026-04-20 14:30</span></div><p class="text-xs text-on-surface leading-relaxed mt-1">与商户沟通首期流水情况，建议增加营销活动提升交易量。商户表示配合，计划下周开展促销活动。</p></div>
+          </div>
+          <div class="border-t border-outline-variant/30 pt-3 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-green-600 text-sm">person</span></div>
+            <div class="flex-1"><div class="flex items-center justify-between"><span class="text-xs font-semibold text-on-surface">张经理</span><span class="text-[9px] text-on-surface-variant">2026-04-15 10:00</span></div><p class="text-xs text-on-surface leading-relaxed mt-1">电话跟进商户入网进度，已提交准入材料，等待审批。预计3个工作日内完成。</p></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== 动态消息列表页 ========== -->
+    <main id="page-dynamics-list" class="page">
+      <div class="sub-topbar flex items-center gap-2">
+        <button class="back-btn" onclick="goBack()"><span class="material-symbols-outlined text-lg">arrow_back</span>返回</button>
+        <span class="font-headline font-bold text-base text-on-surface flex-1 text-center pr-8">动态消息</span>
+      </div>
+      <div class="sticky top-[52px] z-10 bg-surface px-4 pt-2 pb-0">
+        <div class="flex gap-1 overflow-x-auto no-scrollbar border-b border-outline-variant/50">
+          <button class="flex-shrink-0 text-xs font-semibold text-primary border-b-2 border-primary pb-2 px-1">全部 <span class="text-[10px] opacity-70">48</span></button>
+          <button class="flex-shrink-0 text-xs font-semibold text-on-surface-variant pb-2 px-1">政策 <span class="text-[10px] opacity-60">8</span></button>
+          <button class="flex-shrink-0 text-xs font-semibold text-on-surface-variant pb-2 px-1">培训 <span class="text-[10px] opacity-60">5</span></button>
+          <button class="flex-shrink-0 text-xs font-semibold text-on-surface-variant pb-2 px-1">通知 <span class="text-[10px] opacity-60">23</span></button>
+          <button class="flex-shrink-0 text-xs font-semibold text-on-surface-variant pb-2 px-1">商机 <span class="text-[10px] opacity-60">12</span></button>
+        </div>
+      </div>
+      <div class="p-4 space-y-3">
+        <div onclick="routeTo('merchant-detail')" class="bg-surface-container-lowest rounded-2xl p-4 cursor-pointer hover:shadow-md active:scale-[0.99] transition-all">
+          <div class="flex items-center gap-2 mb-2"><span class="text-[9px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">商户动态</span><span class="text-[9px] text-on-surface-variant">2026-04-27 09:30</span></div>
+          <p class="text-sm font-semibold text-on-surface">时尚美发沙龙</p>
+          <p class="text-xs text-on-surface-variant mt-0.5">张经理已完成本月回访，商户配合度良好</p>
+        </div>
+        <div onclick="routeTo('merchant-detail')" class="bg-surface-container-lowest rounded-2xl p-4 cursor-pointer hover:shadow-md active:scale-[0.99] transition-all">
+          <div class="flex items-center gap-2 mb-2"><span class="text-[9px] font-bold bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">商机推送</span><span class="text-[9px] text-on-surface-variant">2026-04-26 14:00</span></div>
+          <p class="text-sm font-semibold text-on-surface">便利购超市</p>
+          <p class="text-xs text-on-surface-variant mt-0.5">新支付产品上线，建议推荐商户参与</p>
+        </div>
+        <div onclick="routeTo('notice-detail')" class="bg-surface-container-lowest rounded-2xl p-4 cursor-pointer hover:shadow-md active:scale-[0.99] transition-all">
+          <div class="flex items-center gap-2 mb-2"><span class="text-[9px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">政策通知</span><span class="text-[9px] text-on-surface-variant">2026-04-25 10:00</span></div>
+          <p class="text-sm font-semibold text-on-surface">最新收单政策调整通知</p>
+          <p class="text-xs text-on-surface-variant mt-0.5">涉及多个行业类别费率调整</p>
+        </div>
+        <div onclick="routeTo('training-detail')" class="bg-surface-container-lowest rounded-2xl p-4 cursor-pointer hover:shadow-md active:scale-[0.99] transition-all">
+          <div class="flex items-center gap-2 mb-2"><span class="text-[9px] font-bold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">培训通知</span><span class="text-[9px] text-on-surface-variant">2026-04-24 08:00</span></div>
+          <p class="text-sm font-semibold text-on-surface">新支付系统操作培训</p>
+          <p class="text-xs text-on-surface-variant mt-0.5">全员必修 · 2026-04-28 14:00</p>
+        </div>
+        <div onclick="routeTo('merchant-detail')" class="bg-surface-container-lowest rounded-2xl p-4 cursor-pointer hover:shadow-md active:scale-[0.99] transition-all">
+          <div class="flex items-center gap-2 mb-2"><span class="text-[9px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">业务动态</span><span class="text-[9px] text-on-surface-variant">2026-04-23 16:00</span></div>
+          <p class="text-sm font-semibold text-on-surface">海底捞火锅店</p>
+          <p class="text-xs text-on-surface-variant mt-0.5">商户已通过准入审批，正式入网</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== 通知详情页（政策） ========== -->
+    <main id="page-notice-detail" class="page">
+      <div class="sub-topbar flex items-center gap-2">
+        <button class="back-btn" onclick="goBack()"><span class="material-symbols-outlined text-lg">arrow_back</span>返回</button>
+        <span class="font-headline font-bold text-base text-on-surface flex-1 text-center pr-8">通知详情</span>
+      </div>
+      <div class="p-4 space-y-4">
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">政策通知</span><span class="text-[10px] text-on-surface-variant">2026-04-25 至 2026-06-30</span></div>
+          <h2 class="font-headline text-base font-bold text-on-surface">最新收单政策调整通知</h2>
+          <p class="text-xs text-on-surface-variant mt-1">发方：总行零售业务部 · 2026-04-25</p>
+        </div>
+        <div class="bg-surface-container rounded-2xl p-4 space-y-3">
+          <div><h3 class="text-xs font-bold text-on-surface mb-1">一、政策调整背景</h3><p class="text-xs text-on-surface leading-relaxed">为促进收单业务健康发展，进一步优化商户结构，总行决定对收单费率政策进行阶段性调整，涉及餐饮、零售、服务等多个行业类别。</p></div>
+          <div><h3 class="text-xs font-bold text-on-surface mb-1">二、主要调整内容</h3><ul class="text-xs text-on-surface leading-relaxed space-y-1 list-disc list-inside"><li>正餐餐饮类：费率标准下调0.05%</li><li>商超便利类：新增"达标有效"商户优惠费率</li><li>社区便利类：月日均达标门槛调整为8万</li><li>高贡献商户：可申请专项补贴，详情询网点负责人</li></ul></div>
+          <div><h3 class="text-xs font-bold text-on-surface mb-1">三、执行时间</h3><p class="text-xs text-on-surface leading-relaxed">2026年5月1日起正式执行，请各网点客户经理做好商户告知工作。</p></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ========== 培训通知详情页 ========== -->
+    <main id="page-training-detail" class="page">
+      <div class="sub-topbar flex items-center gap-2">
+        <button class="back-btn" onclick="goBack()"><span class="material-symbols-outlined text-lg">arrow_back</span>返回</button>
+        <span class="font-headline font-bold text-base text-on-surface flex-1 text-center pr-8">培训详情</span>
+      </div>
+      <div class="p-4 space-y-4">
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="text-[10px] font-bold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">培训通知</span><span class="text-[10px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full font-bold">全员必修</span></div>
+          <h2 class="font-headline text-base font-bold text-on-surface">新支付系统操作培训</h2>
+          <p class="text-xs text-on-surface-variant mt-1">主讲：科技部 · 2026-04-24</p>
+        </div>
+        <div class="bg-surface-container rounded-2xl p-4 space-y-3">
+          <div class="flex gap-4">
+            <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-primary text-sm">schedule</span><span class="text-xs text-on-surface">2026-04-28 14:00</span></div>
+            <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-primary text-sm">ondemand_video</span><span class="text-xs text-on-surface">线上直播</span></div>
+          </div>
+          <div><h3 class="text-xs font-bold text-on-surface mb-1">培训内容</h3><p class="text-xs text-on-surface leading-relaxed">新一代收单系统升级后功能讲解，包括：商户入网全流程线上化、实时交易监控优化、补贴档位查询改版、商户标签管理新功能。</p></div>
+          <div><h3 class="text-xs font-bold text-on-surface mb-1">注意事项</h3><ul class="text-xs text-on-surface leading-relaxed space-y-1 list-disc list-inside"><li>请提前15分钟进入直播会议室</li><li>培训后有在线考核，请认真参加</li><li>考核通过后系统自动更新操作权限</li><li>如有疑问请联系科技部支持</li></ul></div>
+        </div>
+        <button class="w-full bg-primary text-white text-sm font-semibold py-3 rounded-xl active:scale-[0.99] transition-transform">立即报名</button>
+      </div>
+    </main>
+
+    <!-- ========== 我的中心页 ========== -->
+    <main id="page-mine" class="page">
+      <div class="p-4 space-y-4 pb-8">
+        <div class="flex flex-col items-center pt-6 pb-4">
+          <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-3"><span class="material-symbols-outlined text-primary text-3xl">person</span></div>
+          <h2 class="font-headline text-base font-bold text-on-surface">张明</h2>
+          <p class="text-xs text-on-surface-variant mt-0.5">高级客户经理</p>
+          <p class="text-[10px] text-on-surface-variant">EMP20240001 · 上海分行浦东支行</p>
+        </div>
+        <div class="bg-surface-container rounded-2xl p-4 space-y-3">
+          <div class="flex items-center justify-between py-2 border-b border-outline-variant/30"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-on-surface-variant text-sm">badge</span><span class="text-xs text-on-surface-variant">工号</span></div><span class="text-xs text-on-surface font-medium">EMP20240001</span></div>
+          <div class="flex items-center justify-between py-2 border-b border-outline-variant/30"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-on-surface-variant text-sm">phone</span><span class="text-xs text-on-surface-variant">手机</span></div><a href="tel:13812345678" class="text-xs text-primary font-medium">13812345678</a></div>
+          <div class="flex items-center justify-between py-2 border-b border-outline-variant/30"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-on-surface-variant text-sm">email</span><span class="text-xs text-on-surface-variant">邮箱</span></div><span class="text-xs text-on-surface font-medium">zhang.manager@bank.com</span></div>
+          <div class="flex items-center justify-between py-2 border-b border-outline-variant/30"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-on-surface-variant text-sm">calendar_today</span><span class="text-xs text-on-surface-variant">入职日期</span></div><span class="text-xs text-on-surface font-medium">2020-03-15</span></div>
+          <div class="flex items-center justify-between py-2"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-on-surface-variant text-sm">account_balance</span><span class="text-xs text-on-surface-variant">所属机构</span></div><span class="text-xs text-on-surface font-medium">上海分行浦东支行</span></div>
+        </div>
+        <button onclick="confirmLogout()" class="w-full bg-red-50 text-red-600 text-sm font-semibold py-3 rounded-xl active:scale-[0.99] transition-transform mt-2">退出登录</button>
+      </div>
+    </main>
+
+    <!-- ========== 额度管理弹窗 ========== -->
+    <div id="modal-quota" class="modal-overlay hidden" onclick="if(event.target===this)hideModal('quota')">
+      <div class="modal-sheet">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-headline text-base font-bold text-on-surface">月目均额达标准</h3>
+          <button onclick="hideModal('quota')" class="text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-lg">close</span></button>
+        </div>
+        <p class="text-xs text-on-surface-variant mb-3">客户当前活期月日均 = <b class="text-primary">¥11.70万</b></p>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between py-2 px-3 bg-surface-container-lowest rounded-xl"><span class="text-xs text-on-surface-variant">0 ~ 2万（不含）</span><span class="text-xs font-bold text-primary">200元/月</span></div>
+          <div class="flex items-center justify-between py-2 px-3 bg-surface-container-lowest rounded-xl"><span class="text-xs text-on-surface-variant">2 ~ 4万（不含）</span><span class="text-xs font-bold text-primary">500元/月</span></div>
+          <div class="flex items-center justify-between py-2 px-3 bg-surface-container-lowest rounded-xl"><span class="text-xs text-on-surface-variant">4 ~ 6万（不含）</span><span class="text-xs font-bold text-primary">800元/月</span></div>
+          <div class="flex items-center justify-between py-2 px-3 bg-surface-container-lowest rounded-xl"><span class="text-xs text-on-surface-variant">6 ~ 8万（不含）</span><span class="text-xs font-bold text-primary">1200元/月</span></div>
+          <div class="flex items-center justify-between py-2 px-3 bg-primary/10 rounded-xl border border-primary/30"><span class="text-xs text-on-surface font-medium">≥ 8万（当前档位）</span><span class="text-xs font-bold text-primary">1500元/月</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Toast ========== -->
+
+  <!-- BottomNavBar -->
+  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <!-- 收单 [active] -->
+    <a class="flex flex-col items-center justify-center bg-blue-50 text-blue-800 rounded-2xl px-5 py-2" href="慧展业_收单工作台_20260427.html">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL'1,'wght'400;font-size:20px">home</span>
+      <span class="font-inter text-[10px] font-bold tracking-wide uppercase mt-1">收单</span>
+    </a>
+    <!-- 零售 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_零售工作台.html">
+      <span class="material-symbols-outlined" style="font-size:20px">group</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">零售</span>
+    </a>
+    <!-- 场景 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_场景工作台.html">
+      <span class="material-symbols-outlined" style="font-size:20px">auto_awesome</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">场景</span>
+    </a>
+    <!-- 动态 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_动态消息列表_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">dynamic_feed</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">动态</span>
+    </a>
+    <!-- 我的 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_我的中心_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">person</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">我的</span>
+    </a>
+  </nav>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[100] bg-on-surface text-surface px-5 py-3 rounded-full text-sm font-medium shadow-lg opacity-0 pointer-events-none transition-all duration-300 -translate-y-2" style="max-width:calc(100vw - 80px)"></div>
+
+  <!-- 高级筛选弹窗 -->
+  <div id="filter-modal" class="fixed inset-0 z-[90] hidden">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeFilterModal()"></div>
+    <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto shadow-2xl">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-headline font-bold text-xl text-on-surface">高级筛选</h2>
+        <button onclick="closeFilterModal()" class="p-2 rounded-full hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-on-surface-variant">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-6">
+        <div>
+          <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">入网状态</p>
+          <div class="flex flex-wrap gap-2">
+            <button class="chip chip-selected" data-group="status" onclick="m3ToggleChip(this)">全部 <span class="opacity-70">(48)</span></button>
+            <button class="chip chip-unselected" data-group="status" onclick="m3ToggleChip(this)">准入成功 <span class="opacity-60">(28)</span></button>
+            <button class="chip chip-unselected" data-group="status" onclick="m3ToggleChip(this)">准入失败 <span class="opacity-60">(4)</span></button>
+            <button class="chip chip-unselected" data-group="status" onclick="m3ToggleChip(this)">已补贴 <span class="opacity-60">(24)</span></button>
+            <button class="chip chip-unselected" data-group="status" onclick="m3ToggleChip(this)">无补贴 <span class="opacity-60">(9)</span></button>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">商户类型</p>
+          <div class="flex flex-wrap gap-2">
+            <button class="chip chip-selected" data-group="type" onclick="m3ToggleChip(this)">全部</button>
+            <button class="chip chip-unselected" data-group="type" onclick="m3ToggleChip(this)">正餐餐饮</button>
+            <button class="chip chip-unselected" data-group="type" onclick="m3ToggleChip(this)">饮品甜点</button>
+            <button class="chip chip-unselected" data-group="type" onclick="m3ToggleChip(this)">商超购物</button>
+            <button class="chip chip-unselected" data-group="type" onclick="m3ToggleChip(this)">社区便利</button>
+            <button class="chip chip-unselected" data-group="type" onclick="m3ToggleChip(this)">美容美发</button>
+            <button class="chip chip-unselected" data-group="type" onclick="m3ToggleChip(this)">医疗保健</button>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">达标进度</p>
+          <div class="flex flex-wrap gap-2">
+            <button class="chip chip-selected" data-group="progress" onclick="m3ToggleChip(this)">全部 <span class="opacity-70">(48)</span></button>
+            <button class="chip chip-unselected" data-group="progress" onclick="m3ToggleChip(this)">已达标 <span class="opacity-60">(8)</span></button>
+            <button class="chip chip-unselected" data-group="progress" onclick="m3ToggleChip(this)">已有效 <span class="opacity-60">(18)</span></button>
+            <button class="chip chip-unselected" data-group="progress" onclick="m3ToggleChip(this)">未达标 <span class="opacity-60">(22)</span></button>
+            <button class="chip chip-unselected" data-group="progress" onclick="m3ToggleChip(this)">未有效 <span class="opacity-60">(0)</span></button>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">合作伙伴</p>
+          <div class="flex flex-wrap gap-2">
+            <button class="chip chip-selected" data-group="partner" onclick="m3ToggleChip(this)">全部</button>
+            <button class="chip chip-unselected" data-group="partner" onclick="m3ToggleChip(this)">是</button>
+            <button class="chip chip-unselected" data-group="partner" onclick="m3ToggleChip(this)">否</button>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">入网时间</p>
+          <div class="flex items-center gap-3">
+            <input type="date" class="flex-1 bg-surface-container-highest border-none rounded-xl py-3 px-4 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 outline-none"/>
+            <span class="text-on-surface-variant text-sm">至</span>
+            <input type="date" class="flex-1 bg-surface-container-highest border-none rounded-xl py-3 px-4 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 outline-none" value="2026-04-27"/>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">区域筛选</p>
+          <div class="bg-surface-container-highest rounded-xl p-4 text-sm text-on-surface-variant">
+            <div class="flex items-center justify-between">
+              <span>省 → 市 → 区 → 网点</span>
+              <span class="material-symbols-outlined text-primary text-lg">chevron_right</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-8">
+        <button onclick="resetFilter()" class="flex-1 py-3.5 rounded-full bg-surface-container text-on-surface-variant font-semibold text-sm transition-all hover:bg-surface-container-high active:scale-95">重置</button>
+        <button onclick="applyFilter()" class="flex-[2] py-3.5 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-bold text-sm shadow-lg shadow-primary/20 transition-all hover:shadow-xl active:scale-95">应用筛选</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 商户查重弹窗 -->
+  <div id="duplicate-modal" class="fixed inset-0 z-[90] hidden">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeDuplicateModal()"></div>
+    <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-3xl p-6 pb-10 shadow-2xl max-w-lg mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-headline font-bold text-xl text-on-surface">商户查重</h2>
+        <button onclick="closeDuplicateModal()" class="p-2 rounded-xl hover:bg-surface-container transition-colors active:scale-95">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">close</span>
+        </button>
+      </div>
+      <div class="mb-5">
+        <label class="block text-sm font-semibold text-on-surface mb-2">结算账户</label>
+        <input type="text" id="duplicate-account" placeholder="请输入商户结算账户" class="w-full px-4 py-3 bg-surface-container rounded-xl text-base text-on-surface placeholder:text-on-surface-variant/50 outline-none focus:ring-2 focus:ring-primary/30 border border-outline-variant/50"/>
+      </div>
+      <button onclick="queryDuplicate()" class="w-full py-3.5 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-semibold text-sm active:scale-[0.98] transition-transform shadow-lg shadow-primary/20">
+        查询
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function openDuplicateModal() {
+      var modal = document.getElementById('duplicate-modal');
+      modal.classList.remove('hidden');
+      setTimeout(function() {
+        document.getElementById('duplicate-account').focus();
+      }, 100);
+    }
+    function closeDuplicateModal() {
+      document.getElementById('duplicate-modal').classList.add('hidden');
+    }
+    function queryDuplicate() {
+      var account = document.getElementById('duplicate-account').value.trim();
+      if (!account) { toast('请输入结算账户'); return; }
+      toast('查询中…');
+      closeDuplicateModal();
+    }
+  </script>
+
+  <script>
+    // ===== Router =====
+    const _pageStack = ['home'];
+    function goToRetail() {
+      window.location.href = '慧展业_零售工作台.html';
+    }
+    function goToMine() {
+      window.location.href = '慧展业_我的中心_20260427.html';
+    }
+    function routeTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const t = document.getElementById('page-' + page);
+      if (!t) return;
+      t.classList.add('active');
+      window.scrollTo(0, 0);
+      if (_pageStack[_pageStack.length - 1] !== page) _pageStack.push(page);
+      _setTabActive(page);
+    }
+    function goBack() {
+      if (_pageStack.length <= 1) { routeTo('home'); return; }
+      _pageStack.pop();
+      const prev = _pageStack[_pageStack.length - 1];
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const t = document.getElementById('page-' + prev);
+      if (t) t.classList.add('active');
+      window.scrollTo(0, 0);
+      _setTabActive(prev);
+    }
+    function _setTabActive(page) {
+      document.querySelectorAll('.tab-btn').forEach(t => {
+        t.classList.remove('text-blue-800', 'bg-blue-50');
+        t.classList.add('text-slate-400');
+      });
+      const m = { home: 'tab-home', 'dynamics-list': 'tab-dynamics', mine: 'tab-mine' };
+      const el = document.getElementById(m[page] || 'tab-home');
+      if (el) { el.classList.remove('text-slate-400'); el.classList.add('text-blue-800', 'bg-blue-50'); }
+    }
+    function openMerchantDetail(name) {
+      window.location.href = '慧展业_商户详情页_20260427.html?name=' + encodeURIComponent(name);
+    }
+    function showModal(name) {
+      const m = document.getElementById('modal-' + name);
+      if (m) m.classList.remove('hidden');
+    }
+    function hideModal(name) {
+      const m = document.getElementById('modal-' + name);
+      if (m) m.classList.add('hidden');
+    }
+
+    // Toast
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+      el.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        el.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+        el.classList.remove('opacity-100', 'translate-y-0');
+      }, 2500);
+    }
+
+    // Filter
+    let activeFilter = null;
+    function toggleFilter(type) {
+      const btn = document.getElementById('btn-' + type);
+      if (activeFilter === type) {
+        btn.classList.remove('ring-2', 'ring-primary', 'shadow-md');
+        btn.querySelector('div').classList.remove('border-primary');
+        activeFilter = null;
+        toast('已取消筛选');
+      } else {
+        if (activeFilter) {
+          const prev = document.getElementById('btn-' + activeFilter);
+          prev.classList.remove('ring-2', 'ring-primary', 'shadow-md');
+          prev.querySelector('div').classList.remove('border-primary');
+        }
+        btn.classList.add('ring-2', 'ring-primary', 'shadow-md');
+        activeFilter = type;
+        toast('已筛选: ' + btn.querySelector('span').textContent.trim());
+      }
+    }
+
+    // Search expand
+    let searchExpanded = false;
+    function toggleSearchInput() {
+      const panel = document.getElementById('search-expand');
+      const btn = document.getElementById('btn-search');
+      searchExpanded = !searchExpanded;
+      if (searchExpanded) {
+        panel.classList.remove('hidden');
+        btn.classList.add('border-2', 'border-primary');
+        btn.querySelector('span:last-child').classList.add('text-primary');
+        btn.querySelector('span:last-child').classList.remove('text-on-surface-variant');
+        const inp = document.getElementById('search-input');
+        if (inp) inp.focus();
+      } else {
+        panel.classList.add('hidden');
+        btn.classList.remove('border-2', 'border-primary');
+        btn.querySelector('span:last-child').classList.remove('text-primary');
+        btn.querySelector('span:last-child').classList.add('text-on-surface-variant');
+      }
+    }
+
+    // Sort highlight
+    let activeQuickBtn = null;
+    function highlightQuickBtn(activeId) {
+      ['btn-opportunity', 'btn-subsidy', 'btn-transaction'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (id === activeId) {
+          btn.classList.add('border-2', 'border-primary');
+          btn.querySelector('div').classList.add('bg-primary/10');
+          btn.querySelector('span:last-child').classList.add('text-primary');
+          btn.querySelector('span:last-child').classList.remove('text-on-surface-variant');
+        } else {
+          clearQuickBtnHighlight(id);
+        }
+      });
+    }
+    function clearQuickBtnHighlight(id) {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.classList.remove('border-2', 'border-primary');
+      btn.querySelector('div').classList.remove('bg-primary/10');
+      btn.querySelector('span:last-child').classList.remove('text-primary');
+      btn.querySelector('span:last-child').classList.add('text-on-surface-variant');
+    }
+    function sortByOpportunity() {
+      if (activeQuickBtn === 'btn-opportunity') {
+        clearQuickBtnHighlight('btn-opportunity');
+        activeQuickBtn = null;
+        toast('已取消排序');
+      } else {
+        highlightQuickBtn('btn-opportunity');
+        activeQuickBtn = 'btn-opportunity';
+        toast('按商机时间从早到晚排序');
+      }
+    }
+    function sortBySubsidy() {
+      if (activeQuickBtn === 'btn-subsidy') {
+        clearQuickBtnHighlight('btn-subsidy');
+        activeQuickBtn = null;
+        toast('已取消排序');
+      } else {
+        highlightQuickBtn('btn-subsidy');
+        activeQuickBtn = 'btn-subsidy';
+        toast('按补贴金额从高到低排序');
+      }
+    }
+    function sortByTransaction() {
+      if (activeQuickBtn === 'btn-transaction') {
+        clearQuickBtnHighlight('btn-transaction');
+        activeQuickBtn = null;
+        toast('已取消排序');
+      } else {
+        highlightQuickBtn('btn-transaction');
+        activeQuickBtn = 'btn-transaction';
+        toast('按流水金额从高到低排序');
+      }
+    }
+
+    function switchBanner(type) {
+      toast(type === 'subsidy' ? '收单政策调整公告' : '1月业绩考核说明会');
+    }
+
+    // Filter modal
+    function openFilterModal() { document.getElementById('filter-modal').classList.remove('hidden'); }
+    function closeFilterModal() { document.getElementById('filter-modal').classList.add('hidden'); }
+
+    // ===== M3 Filter Chip (replaces legacy toggleTag) =====
+    // Mutual exclusion within each data-group, supports deselect
+    function m3ToggleChip(btn) {
+      const group = btn.getAttribute('data-group');
+      const isSelected = btn.classList.contains('chip-selected');
+
+      // Deselect all chips in same group
+      document.querySelectorAll(`.chip[data-group="${group}"]`).forEach(chip => {
+        chip.classList.remove('chip-selected');
+        chip.classList.add('chip-unselected');
+      });
+
+      // If was already selected → deselect only (all become unselected, no toast)
+      if (isSelected) {
+        // All unselected — show "全部" as active if exists
+        const allBtn = document.querySelector(`.chip[data-group="${group}"]`);
+        if (allBtn) {
+          allBtn.classList.remove('chip-unselected');
+          allBtn.classList.add('chip-selected');
+        }
+        toast('已取消 ' + group + ' 筛选');
+      } else {
+        // Select clicked
+        btn.classList.remove('chip-unselected');
+        btn.classList.add('chip-selected');
+        toast('已选择: ' + btn.textContent.trim());
+      }
+    }
+
+    function resetFilter() {
+      document.querySelectorAll('#filter-modal .chip').forEach(chip => {
+        chip.classList.remove('chip-selected');
+        chip.classList.add('chip-unselected');
+      });
+      // Re-select "全部" for each group
+      ['status', 'type', 'progress', 'partner'].forEach(g => {
+        const first = document.querySelector(`.chip[data-group="${g}"]`);
+        if (first) {
+          first.classList.remove('chip-unselected');
+          first.classList.add('chip-selected');
+        }
+      });
+      document.getElementById('filter-badge').classList.add('hidden');
+      closeFilterModal();
+      toast('筛选已重置');
+    }
+    function applyFilter() {
+      let count = 0;
+      document.querySelectorAll('#filter-modal .chip-selected').forEach(chip => {
+        if (chip.getAttribute('data-group')) count++;
+      });
+      const badge = document.getElementById('filter-badge');
+      if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
+      else { badge.classList.add('hidden'); }
+      closeFilterModal();
+      toast('筛选已应用');
+    }
+    function confirmLogout() { if (confirm('确定要退出登录吗？')) { alert('已退出登录'); } }
+  </script>
+
+</body>
+</html>

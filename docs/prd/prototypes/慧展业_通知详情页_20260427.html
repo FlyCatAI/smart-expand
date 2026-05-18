@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99","primary-container": "#1A52BF","surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7","surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB","surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF","on-surface": "#191C1E",
+            "on-surface-variant": "#434653","outline-variant": "#C3C6D5","outline": "#737685",
+            "tertiary": "#732B00","tertiary-container": "#993C00","tertiary-fixed": "#FFDBCC",
+            "secondary": "#4E5D88","secondary-container": "#BFCEFF","error": "#BA1A1A",
+            "error-container": "#FFDAD6","on-primary": "#FFFFFF","on-tertiary": "#FFFFFF",
+            "on-tertiary-fixed": "#351000","on-error": "#FFFFFF","on-error-container": "#93000A",
+            "on-secondary-container": "#485781",
+          },
+          borderRadius: { "DEFAULT": "0.25rem","lg": "1rem","xl": "1.5rem","full": "9999px" },
+          fontFamily: { "headline": ["Manrope"],"body": ["Inter"],"label": ["Inter"] }
+        }
+      }
+    }
+  </script>
+  <style>
+
+    /* ========== B端 Motion Tokens ========== */
+    :root {
+      --motion-duration-short: 100ms;
+      --motion-duration-medium: 200ms;
+      --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-5">
+    <div class="flex items-center gap-2">
+      <button onclick="history.back()" class="p-2 -ml-2 rounded-full hover:bg-surface-container transition-colors active:scale-95">
+        <span class="material-symbols-outlined text-on-surface text-xl">arrow_back</span>
+      </button>
+      <span class="font-headline font-bold text-base text-on-surface">通知详情</span>
+    </div>
+    <button class="p-2 rounded-full hover:bg-surface-container transition-colors active:scale-95">
+      <span class="material-symbols-outlined text-on-surface-variant text-xl">share</span>
+    </button>
+  </header>
+
+  <main class="pt-16 pb-8 px-5 max-w-lg mx-auto space-y-5">
+
+    <!-- 标签 -->
+    <div class="flex items-center gap-2 pt-2">
+      <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-red-50 text-red-700 border border-red-200">政策通知</span>
+      <span class="text-xs text-on-surface-variant">2026-04-26</span>
+    </div>
+
+    <!-- 标题 -->
+    <h1 class="font-headline font-extrabold text-2xl text-on-surface leading-tight">最新收单政策调整通知</h1>
+
+    <!-- 有效期 -->
+    <div class="bg-surface-container-low rounded-xl p-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+        <span class="material-symbols-outlined text-red-600 text-lg">schedule</span>
+      </div>
+      <div>
+        <p class="text-xs text-on-surface-variant font-semibold uppercase tracking-widest mb-0.5">有效期</p>
+        <p class="font-headline text-sm font-bold text-on-surface">2026-05-01 至 2026-06-30</p>
+      </div>
+    </div>
+
+    <!-- 正文 -->
+    <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm space-y-5">
+      <div>
+        <h2 class="font-headline font-bold text-base text-on-surface mb-3 flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">article</span>
+          政策内容
+        </h2>
+        <div class="space-y-3">
+          <div class="bg-surface-container-low rounded-xl p-4">
+            <p class="text-xs font-bold text-primary mb-2">一、首期营销政策</p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">首期营销政策要求商户达到最低流水标准。新入网商户须在入网后30日内达成首期流水要求，否则将影响补贴发放。</p>
+          </div>
+          <div class="bg-surface-container-low rounded-xl p-4">
+            <p class="text-xs font-bold text-primary mb-2">二、补贴率控制</p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">补贴率需控制在合理范围内，超出预算范围的申请将不予批准。请各客户经理在拓展商户时充分考虑成本效益。</p>
+          </div>
+          <div class="bg-surface-container-low rounded-xl p-4">
+            <p class="text-xs font-bold text-primary mb-2">三、定期回访要求</p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">商户需配合定期回访和资料更新。不配合回访的商户将纳入重点关注名单，影响后续补贴申请。</p>
+          </div>
+          <div class="bg-surface-container-low rounded-xl p-4">
+            <p class="text-xs font-bold text-primary mb-2">四、金融资产提升</p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">金融资产提升可获得更高补贴等级。建议客户经理积极引导商户将他行资产转入我行，实现双向业绩增长。</p>
+          </div>
+          <div class="bg-surface-container-low rounded-xl p-4">
+            <p class="text-xs font-bold text-primary mb-2">五、信用评估与风控</p>
+            <p class="text-sm text-on-surface-variant leading-relaxed">我行将定期进行商户信用评估和风险管理。高风险商户将限制补贴额度，严重者取消合作资格。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 附件（模拟） -->
+    <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
+      <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">相关附件</p>
+      <div class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-red-500 text-lg">picture_as_pdf</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold text-on-surface">收单政策全文.pdf</p>
+            <p class="text-[10px] text-on-surface-variant">2.4 MB</p>
+          </div>
+        </div>
+        <button class="p-2 rounded-full hover:bg-surface-container transition-colors active:scale-95">
+          <span class="material-symbols-outlined text-primary text-xl">download</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

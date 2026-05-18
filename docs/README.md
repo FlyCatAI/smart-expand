@@ -12,7 +12,7 @@
 
 | 目录 | 用途 |
 |---|---|
-| [`prd/`](prd/) | 产品需求文档（PRD），含正式需求、草稿、版本台账与归档，详见 [`prd/requirements/`](prd/requirements/) |
+| [`prd/`](prd/) | 产品需求文档（PRD），含正式需求、原型、草稿、版本台账与归档，详见 [`prd/requirements/`](prd/requirements/) 与 [`prd/prototypes/`](prd/prototypes/) |
 
 ## 跨目录工作流
 
