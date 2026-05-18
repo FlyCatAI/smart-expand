@@ -10,26 +10,5 @@
       "mode": "hash",
       "base": "/"
     }
-  },
-  "pages": [
-    "pages/index/index",
-    "pages/notifications/notifications",
-    "pages/profile/profile"
-  ],
-  "tabBar": {
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "收单"
-      },
-      {
-        "pagePath": "pages/notifications/notifications",
-        "text": "动态"
-      },
-      {
-        "pagePath": "pages/profile/profile",
-        "text": "我的"
-      }
-    ]
   }
 }
