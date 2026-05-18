@@ -47,7 +47,7 @@ export default {
     }
   },
   onLoad(options = {}) {
-    this.merchantId = options.merchantId || DEFAULT_MERCHANT_ID
+    this.merchantId = options.merchantId ? decodeURIComponent(options.merchantId) : DEFAULT_MERCHANT_ID
     this.loadFirstPage()
   },
   methods: {
@@ -59,7 +59,7 @@ export default {
         await this.fetchPage(1, { replace: true })
       } catch (error) {
         this.loadFailed = true
-        // TODO(HZYMiniAppStyle/HZYCompliance): 补齐异常态展示文案。
+        uni.showToast({ title: '数据加载失败，请下拉刷新重试', icon: 'none' })
       } finally {
         this.initialLoading = false
       }
@@ -76,7 +76,7 @@ export default {
         await this.fetchPage(1, { replace: true })
       } catch (error) {
         this.loadFailed = true
-        // TODO(HZYMiniAppStyle/HZYCompliance): 补齐刷新失败提示文案。
+        uni.showToast({ title: '刷新失败，请检查网络后重试', icon: 'none' })
       } finally {
         this.refreshing = false
       }
@@ -91,7 +91,7 @@ export default {
       try {
         await this.fetchPage(this.page + 1, { replace: false })
       } catch (error) {
-        // TODO(HZYMiniAppStyle/HZYCompliance): 补齐分页失败提示文案。
+        uni.showToast({ title: '加载更多失败，下拉重试', icon: 'none' })
       } finally {
         this.loadingMore = false
       }

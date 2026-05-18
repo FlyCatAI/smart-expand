@@ -25,6 +25,7 @@
         class="merchant-detail-scroll"
         scroll-y
         :scroll-into-view="scrollTarget"
+        @scroll="handleDetailScroll"
       >
         <view id="section-assets" class="merchant-detail-section">
           <view class="merchant-detail-section__title">经营与资产信息</view>
@@ -105,7 +106,7 @@
         </view>
       </scroll-view>
 
-      <view v-if="quotaModalState !== modalStates.CLOSED" class="quota-modal">
+      <view v-if="quotaModalVisible" class="quota-modal">
         <view class="quota-modal__panel">
           <view class="quota-modal__title">{{ quotaModalTitle }}</view>
           <view class="quota-modal__current">
@@ -132,16 +133,11 @@
 <script>
 import MerchantProductState from '../../components/MerchantProductState.vue'
 import { DEFAULT_MERCHANT_ID } from '../../fixtures/merchant-detail.js'
-import { fetchMerchantDetail } from '../../services/merchantService.js'
+import { dialMerchant, fetchMerchantDetail } from '../../services/merchantService.js'
 import { formatWanAmount } from '../../utils/money.js'
 import { buildQuotaRows } from '../../utils/subsidyTiers.js'
 
-const MODAL_STATES = {
-  CLOSED: 'closed',
-  OPENING: 'opening',
-  OPEN: 'open',
-  CLOSING: 'closing'
-}
+const SECTION_SCROLL_OFFSET = 24
 
 export default {
   name: 'MerchantDetailPage',
@@ -156,8 +152,9 @@ export default {
       loadFailed: false,
       activeSection: 'section-assets',
       scrollTarget: '',
-      quotaModalState: MODAL_STATES.CLOSED,
-      modalStates: MODAL_STATES,
+      sectionOffsets: [],
+      quotaModalVisible: false,
+      calling: false,
       sections: [
         { id: 'section-assets', label: '经营资产' },
         { id: 'section-product', label: '产品状态' },
@@ -217,12 +214,11 @@ export default {
       return formatWanAmount(this.merchant.operation_assets.monthly_avg_balance)
     },
     quotaModalTitle() {
-      // PRD §4.7 原文为“月目均额达标准”，待 HZYCompliance 终判是否改为“月日均额达标准”。
-      return '月目均额达标准'
+      return '月日均额达标准'
     }
   },
   onLoad(options = {}) {
-    this.merchantId = options.merchantId || DEFAULT_MERCHANT_ID
+    this.merchantId = options.merchantId ? decodeURIComponent(options.merchantId) : DEFAULT_MERCHANT_ID
     this.loadMerchantDetail()
   },
   methods: {
@@ -233,9 +229,12 @@ export default {
       try {
         const merchant = await fetchMerchantDetail(this.merchantId)
         this.merchant = merchant
+        this.$nextTick(() => {
+          this.refreshSectionOffsets()
+        })
       } catch (error) {
         this.loadFailed = true
-        // TODO(HZYMiniAppStyle/HZYCompliance): 补齐异常态展示文案。
+        uni.showToast({ title: '数据加载失败，请下拉刷新重试', icon: 'none' })
       } finally {
         this.loading = false
       }
@@ -247,7 +246,39 @@ export default {
         this.scrollTarget = sectionId
       })
     },
+    handleDetailScroll(event) {
+      if (!this.sectionOffsets.length) {
+        return
+      }
+
+      const scrollTop = Number(event.detail?.scrollTop || 0)
+      const currentSection = this.sectionOffsets.reduce((matched, item) => (
+        scrollTop + SECTION_SCROLL_OFFSET >= item.top ? item.id : matched
+      ), this.sectionOffsets[0].id)
+
+      if (currentSection !== this.activeSection) {
+        this.activeSection = currentSection
+      }
+    },
+    refreshSectionOffsets() {
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.merchant-detail-scroll').boundingClientRect()
+      query.selectAll('.merchant-detail-section').boundingClientRect()
+      query.exec(([scrollRect, sectionRects]) => {
+        if (!scrollRect || !Array.isArray(sectionRects) || !sectionRects.length) {
+          return
+        }
+
+        this.sectionOffsets = sectionRects
+          .map((rect, index) => ({
+            id: this.sections[index]?.id,
+            top: Math.max(0, Math.round(rect.top - scrollRect.top))
+          }))
+          .filter((item) => item.id)
+      })
+    },
     handleOpportunityAction() {
+      // COMPLIANCE-FOLLOWUP: 真实接入 view_policy / recommended_script / marketing_poster / submit_record 前，所有话术/海报文案必须由 HZYCompliance 终审后再发版；本期 toast 仅作占位。
       uni.showToast({
         title: '该功能即将上线',
         icon: 'none'
@@ -255,47 +286,52 @@ export default {
     },
     goDynamics() {
       uni.navigateTo({
-        url: `/pages/merchant-dynamics/merchant-dynamics?merchantId=${this.merchant.merchant_id}`
+        url: `/pages/merchant-dynamics/merchant-dynamics?merchantId=${encodeURIComponent(this.merchant.merchant_id)}`
       })
     },
     openQuotaModal() {
-      this.quotaModalState = MODAL_STATES.OPENING
-      this.$nextTick(() => {
-        this.quotaModalState = MODAL_STATES.OPEN
-      })
+      this.quotaModalVisible = true
     },
     closeQuotaModal() {
-      this.quotaModalState = MODAL_STATES.CLOSING
-      this.$nextTick(() => {
-        this.quotaModalState = MODAL_STATES.CLOSED
-      })
+      this.quotaModalVisible = false
     },
     takePhoto() {
       uni.chooseImage({
         count: 1,
         sourceType: ['camera'],
         fail: () => {
-          // TODO(HZYMiniAppStyle/HZYCompliance): 补齐相机拒绝/失败提示文案。
-          uni.showToast({ title: '', icon: 'none' })
+          uni.showToast({ title: '未获取相机权限，请在系统设置中开启后重试', icon: 'none' })
         }
       })
     },
     confirmCall() {
+      if (this.calling) {
+        return
+      }
+
       uni.showModal({
         title: '拨打电话',
         content: this.merchant.contact_phone,
-        success: (result) => {
+        success: async (result) => {
           if (!result.confirm) {
             return
           }
 
-          uni.makePhoneCall({
-            phoneNumber: this.merchant.dial_phone,
-            fail: () => {
-              // TODO(HZYMiniAppStyle/HZYCompliance): 补齐拨号失败提示文案。
-              uni.showToast({ title: '', icon: 'none' })
-            }
-          })
+          this.calling = true
+          uni.showLoading({ title: '拨号中' })
+          let callFailed = false
+          try {
+            await dialMerchant(this.merchant.merchant_id)
+          } catch (error) {
+            callFailed = true
+          } finally {
+            this.calling = false
+            uni.hideLoading()
+          }
+
+          if (callFailed) {
+            uni.showToast({ title: '拨号未成功，请稍后再试或手动拨打', icon: 'none' })
+          }
         }
       })
     }

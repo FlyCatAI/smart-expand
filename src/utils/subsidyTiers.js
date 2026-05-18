@@ -1,3 +1,5 @@
+import { formatWanAmount } from './money.js'
+
 export const SUBSIDY_TIERS = [
   {
     id: 'tier-1',
@@ -49,6 +51,7 @@ export const SUBSIDY_TIERS = [
 export function getSubsidyTierByMonthlyAvg(monthlyAvgBalance) {
   const amount = Number(monthlyAvgBalance)
 
+  // 负活期视为输入异常，不归任何档；上层负责展示空态。
   if (!Number.isFinite(amount) || amount < 0) {
     return null
   }
@@ -64,11 +67,31 @@ export function getSubsidyTierByMonthlyAvg(monthlyAvgBalance) {
 
 export function buildQuotaRows(currentMonthlyAvgBalance) {
   const activeTier = getSubsidyTierByMonthlyAvg(currentMonthlyAvgBalance)
+  const amount = Number(currentMonthlyAvgBalance)
+  const hasValidAmount = Number.isFinite(amount) && amount >= 0
 
   return SUBSIDY_TIERS.map((tier) => ({
     ...tier,
-    currentValueText: tier.id === 'tier-5' ? null : '-',
-    requiredTransferText: tier.id === 'tier-5' ? '-' : '已达标',
+    currentValueText: tier.id === 'tier-5' && activeTier?.id === tier.id
+      ? formatWanAmount(amount)
+      : '-',
+    requiredTransferText: resolveRequiredTransferText(tier, amount, hasValidAmount),
     isActive: activeTier?.id === tier.id
   }))
+}
+
+function resolveRequiredTransferText(tier, amount, hasValidAmount) {
+  if (!hasValidAmount) {
+    return '-'
+  }
+
+  if (tier.id === 'tier-5') {
+    return amount >= tier.minInclusive ? '已达标' : '-'
+  }
+
+  if (amount >= tier.minInclusive) {
+    return '已达标'
+  }
+
+  return `还需 ${formatWanAmount(tier.minInclusive - amount)}`
 }
