@@ -23,6 +23,8 @@ The empty shell uses uni-app's standard split:
 - `src/pages.json` for the page registry and the three TabBar entries required by PRD section 2.1.
 - `vite.config.ts` for the uni-app Vite plugin.
 
+TODO for the first styling handoff: add `iconPath` and `selectedIconPath` assets to the three TabBar items before any WeChat mini-program build target is enabled. The current H5 shell intentionally keeps text-only TabBar entries.
+
 ## Candidate Comparison
 
 | Candidate | Match to PRD 1.3 H5 + WeChat embedded + URL access | Assessment |
@@ -55,6 +57,7 @@ The annual summary can be implemented as component state inside the history-perf
 - WeChat native appid, request domains, socket domains, and template IDs stay out of code until a human provides them.
 - Empty route stubs are committed only to make the TabBar shell boot; they contain no business UI or API calls.
 - Styling remains outside this task and should be handled by HZYMiniAppStyle when real pages begin.
+- Page-level follow-up issues must bring their own test plan or test scaffold; this shell only proves the framework can boot.
 
 ## Reopen Trigger
 
