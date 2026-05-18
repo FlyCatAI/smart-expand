@@ -1,0 +1,35 @@
+{
+  "name": "smart-expand",
+  "appid": "__PLACEHOLDER__",
+  "description": "慧展业 H5 shell",
+  "versionName": "0.1.0",
+  "versionCode": "1",
+  "transformPx": false,
+  "h5": {
+    "router": {
+      "mode": "hash",
+      "base": "/"
+    }
+  },
+  "pages": [
+    "pages/index/index",
+    "pages/notifications/notifications",
+    "pages/profile/profile"
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "收单"
+      },
+      {
+        "pagePath": "pages/notifications/notifications",
+        "text": "动态"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  }
+}

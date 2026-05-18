@@ -1,0 +1,38 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "收单"
+      }
+    },
+    {
+      "path": "pages/notifications/notifications",
+      "style": {
+        "navigationBarTitleText": "动态"
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    }
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "收单"
+      },
+      {
+        "pagePath": "pages/notifications/notifications",
+        "text": "动态"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  }
+}
