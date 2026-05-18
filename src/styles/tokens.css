@@ -1,0 +1,72 @@
+.hzy-theme {
+  --color-primary: #007aff;
+  --color-primary-strong: #0056b3;
+  --color-primary-soft: #e8f3ff;
+  --color-secondary: #f0f0f0;
+  --text-color-primary: #333333;
+  --text-color-secondary: #666666;
+  --text-color-weak: #999999;
+  --text-color-inverse: #ffffff;
+  --bg-color: #f5f5f5;
+  --bg-surface: #ffffff;
+  --bg-surface-muted: #fafafa;
+  --bg-overlay: rgba(0, 0, 0, 0.48);
+  --border-color: #e5e5e5;
+  --shadow-card: 0 6px 18px rgba(18, 38, 63, 0.08);
+  --shadow-modal: 0 14px 40px rgba(18, 38, 63, 0.18);
+
+  --status-not-qualified-gray: #666666;
+  --status-not-qualified-blue: #007aff;
+  --status-not-qualified-bg: #f0f0f0;
+  --status-qualified-green: #1f8f4d;
+  --status-qualified-blue: #007aff;
+  --status-qualified-bg: #eaf7ef;
+  --status-active-green: #1f8f4d;
+  --status-active-bg: #eaf7ef;
+
+  --space-4: 2px;
+  --space-8: 4px;
+  --space-12: 6px;
+  --space-16: 8px;
+  --space-24: 12px;
+  --space-32: 16px;
+  --space-40: 20px;
+
+  --font-title: 16px;
+  --font-body: 14px;
+  --font-caption: 12px;
+  --font-micro: 11px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hzy-theme {
+    --color-primary: #5aa9ff;
+    --color-primary-strong: #8bc2ff;
+    --color-primary-soft: #10263a;
+    --color-secondary: #24272c;
+    --text-color-primary: #f4f6f8;
+    --text-color-secondary: #c7ccd1;
+    --text-color-weak: #8c949e;
+    --text-color-inverse: #08111a;
+    --bg-color: #0f1115;
+    --bg-surface: #181b20;
+    --bg-surface-muted: #20242a;
+    --bg-overlay: rgba(0, 0, 0, 0.68);
+    --border-color: #303640;
+    --shadow-card: 0 6px 18px rgba(0, 0, 0, 0.36);
+    --shadow-modal: 0 14px 40px rgba(0, 0, 0, 0.52);
+
+    --status-not-qualified-gray: #c7ccd1;
+    --status-not-qualified-blue: #5aa9ff;
+    --status-not-qualified-bg: #24272c;
+    --status-qualified-green: #77d892;
+    --status-qualified-blue: #5aa9ff;
+    --status-qualified-bg: #173221;
+    --status-active-green: #77d892;
+    --status-active-bg: #173221;
+  }
+}
