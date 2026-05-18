@@ -17,6 +17,18 @@
       "style": {
         "navigationBarTitleText": "我的"
       }
+    },
+    {
+      "path": "pages/merchant-detail/merchant-detail",
+      "style": {
+        "navigationBarTitleText": "商户详情"
+      }
+    },
+    {
+      "path": "pages/merchant-dynamics/merchant-dynamics",
+      "style": {
+        "navigationBarTitleText": "商户动态"
+      }
     }
   ],
   "tabBar": {
