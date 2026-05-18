@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99",
+            "primary-container": "#1A52BF",
+            "on-primary": "#FFFFFF",
+            "on-primary-container": "#FFFFFF",
+            "surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7",
+            "surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB",
+            "surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF",
+            "on-surface": "#191C1E",
+            "on-surface-variant": "#434653",
+            "outline-variant": "#C3C6D0",
+            "outline": "#737685",
+            "tertiary": "#732B00",
+            "tertiary-container": "#993C00",
+            "tertiary-fixed": "#FFDBCC",
+            "on-tertiary-fixed": "#351000",
+            "secondary": "#4E5D88",
+            "secondary-container": "#BFCEFF",
+            "on-secondary-container": "#485781",
+            "error": "#BA1A1A",
+            "error-container": "#FFDAD6",
+            "on-error": "#FFFFFF",
+            "on-error-container": "#93000A",
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --motion-duration-short: 100ms;
+      --motion-duration-medium: 200ms;
+      --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 6px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif;
+      border: 1px solid transparent; cursor: pointer;
+      transition: background var(--motion-duration-short) var(--motion-easing-standard),
+                  color var(--motion-duration-short) var(--motion-easing-standard),
+                  border-color var(--motion-duration-short) var(--motion-easing-standard);
+      user-select: none; white-space: nowrap;
+    }
+    .chip-selected {
+      background: var(--color-primary-container, #1A52BF);
+      color: var(--color-on-primary-container, #FFFFFF);
+      border-color: transparent;
+    }
+    .chip-unselected {
+      background: var(--color-surface-container-lowest, #FFFFFF);
+      color: var(--color-on-surface-variant, #434653);
+      border-color: var(--color-outline, #737685);
+    }
+    .chip-unselected:hover { background: var(--color-surface-container-high, #E6E8EB); }
+    .chip:active { transform: scale(0.96); }
+    .search-expand { max-height: 0; overflow: hidden; transition: max-height var(--motion-duration-long) var(--motion-easing-standard); }
+    .search-expand.open { max-height: 120px; }
+    .quick-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: all var(--motion-duration-short) var(--motion-easing-standard); }
+    .quick-btn:active { transform: scale(0.95); }
+    .quick-btn.active .quick-btn-icon { border: 2px solid rgba(255,255,255,0.8); background: rgba(255,255,255,0.2); }
+    .quick-btn.active .quick-btn-text { color: #fff; font-weight: 600; }
+    .quick-btn-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all var(--motion-duration-short) var(--motion-easing-standard); border: 2px solid transparent; }
+    .quick-btn-text { font-size: 12px; color: rgba(255,255,255,0.85); transition: all var(--motion-duration-short) var(--motion-easing-standard); white-space: nowrap; margin-top: 2px; }
+    .tab-active { color: #003B99; font-weight: 600; position: relative; }
+    .tab-active::after {
+      content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+      width: 20px; height: 3px; background: #003B99; border-radius: 4px;
+    }
+    .opp-badge { background: #fdeceb; border-radius: 12px; padding: 0 12px; height: 24px; display: flex; align-items: center; }
+    .opp-badge-text { font-size: 11px; color: #eb4448; font-weight: 500; line-height: 1; }
+    .tag-star { background: #fff3e0; border-radius: 6px; padding: 2px 8px; font-size: 11px; color: #ff9800; font-weight: 500; }
+    .tag-new { background: #fff0f0; border-radius: 6px; padding: 2px 8px; font-size: 11px; color: #eb4448; font-weight: 500; }
+    .tag-type { background: #e8f0ff; border-radius: 6px; padding: 2px 8px; font-size: 11px; color: #3070ff; font-weight: 500; }
+    .priority-urgent { background: #fff0f0; border-radius: 6px; padding: 2px 10px; font-size: 11px; color: #eb4448; font-weight: 500; }
+    .priority-normal { background: #fffbeb; border-radius: 6px; padding: 2px 10px; font-size: 11px; color: #faad14; font-weight: 500; }
+    .priority-attention { background: #e8f0ff; border-radius: 6px; padding: 2px 10px; font-size: 11px; color: #3070ff; font-weight: 500; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998; display: none; }
+    .modal-overlay.show { display: block; }
+    .modal-content { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 24px 24px 0 0; z-index: 999; max-height: 80vh; overflow-y: auto; transform: translateY(100%); transition: transform var(--motion-duration-long) var(--motion-easing-standard); padding-bottom: env(safe-area-inset-bottom); }
+    .modal-content.show { transform: translateY(0); }
+    .modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto 0; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen">
+
+  <!-- ===================== TOP APP BAR ===================== -->
+  <header class="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-6 bg-white/90 backdrop-blur-xl shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" fill="white" opacity="0.9"/>
+          <path d="M2 17l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M2 12l10 5 10-5" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <span class="text-base font-headline font-semibold text-on-surface">零售工作台</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center cursor-pointer transition-all active:scale-95" onclick="location.href='慧展业_零售排行榜.html'" title="排行榜">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">leaderboard</span>
+      </button>
+      <button class="relative w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center cursor-pointer transition-all active:scale-95" onclick="alert('通知列表')">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="pt-20 pb-28 px-5 max-w-lg mx-auto space-y-5">
+
+    <!-- ====== 本月业绩卡片（收单样式）====== -->
+    <section>
+      <a onclick="location.href='慧展业_绩效明细页.html'" class="block bg-gradient-to-br from-primary to-primary-container rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-[0.99]">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-headline font-bold text-sm text-white">本月业绩</h2>
+          <span class="text-[10px] text-white/60">更新于 2026-05-04 09:00</span>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="flex flex-col items-center gap-1.5">
+            <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月AUM</span>
+            <p class="font-headline text-base font-bold text-white leading-none">¥856<span class="text-[10px] font-medium opacity-70 ml-0.5">万</span></p>
+            <p class="text-[10px] text-green-300 font-medium leading-none">+12.5%</p>
+          </div>
+          <div class="flex flex-col items-center gap-1.5">
+            <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月绩效</span>
+            <p class="font-headline text-base font-bold text-white leading-none">¥12,500</p>
+            <p class="text-[10px] text-green-300 font-medium leading-none">+850</p>
+          </div>
+          <div class="flex flex-col items-center gap-1.5">
+            <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">客户数</span>
+            <p class="font-headline text-base font-bold text-white leading-none">45<span class="text-[10px] font-medium opacity-70 ml-0.5">人</span></p>
+            <p class="text-[10px] text-green-300 font-medium leading-none">+3</p>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <!-- ====== 快捷操作 + 筛选合并栏（收单样式）====== -->
+    <section>
+      <div class="flex gap-2 overflow-x-auto overflow-y-visible pb-1 no-scrollbar">
+        <!-- 查询 -->
+        <button id="btn-search" onclick="toggleSearchInput()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-surface-variant text-base">search</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">查询</span>
+        </button>
+        <!-- 重点客户 -->
+        <button id="btn-key" onclick="sortByKeyCustomer()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-surface-variant text-base">star</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">重点客户</span>
+        </button>
+        <!-- 商机 -->
+        <button id="btn-opportunity" onclick="sortByOpportunity()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-surface-variant text-base">lightbulb</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">商机</span>
+        </button>
+        <!-- 筛选 -->
+        <button id="btn-filter" onclick="toggleMutex('filter')" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all relative">
+          <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-surface-variant text-base">filter_list</span>
+          </div>
+          <span class="text-[10px] font-semibold text-on-surface-variant">筛选</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====== 展开的查询输入框（查询按钮下方，收单样式）====== -->
+    <div id="search-expand" class="hidden bg-surface-container rounded-2xl p-3 shadow-sm">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary text-xl">search</span>
+        <input id="search-input" type="text" placeholder="输入客户姓名或手机号搜索..." class="flex-1 bg-transparent border-none outline-none text-sm text-on-surface placeholder:text-on-surface-variant"/>
+        <button onclick="toggleSearchInput()" class="text-on-surface-variant hover:text-on-surface transition-colors">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ====== Tab切换 ====== -->
+    <div class="flex items-center bg-surface-container-lowest rounded-lg p-1 gap-1 shadow-sm">
+      <button class="flex-1 h-10 rounded-lg bg-primary text-white text-sm font-medium font-body transition-all flex items-center justify-center gap-1" id="tab-btn-list" onclick="switchMainTab('list')">
+        客户列表
+      </button>
+      <button class="flex-1 h-10 rounded-lg text-on-surface-variant text-sm font-medium font-body transition-all flex items-center justify-center gap-1" id="tab-btn-opp" onclick="switchMainTab('opp')">
+        商机提醒
+        <span class="bg-error text-white text-[10px] px-1.5 py-0.5 rounded-full font-medium">8</span>
+      </button>
+    </div>
+
+    <!-- ====== 客户列表 Tab ====== -->
+    <div id="content-list" class="space-y-4">
+
+      <!-- 客户卡片 1 — 重点客户（左侧红色边框） -->
+      <a href="慧展业_客户详情页.html" class="block group relative bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:shadow-lg border-l-4 border-error active:scale-[0.99]" style="border-left-color: #BA1A1A;">
+        <!-- 右上角商机标签 -->
+        <div class="absolute top-4 right-4 opp-badge"><span class="opp-badge-text">3项</span></div>
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center flex-shrink-0">
+            <span class="text-white font-headline font-bold text-lg">陈</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2 pr-12">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-headline text-base font-bold text-on-surface">陈永峰</span>
+                <span class="tag-star">⭐ 重点</span>
+                <span class="tag-type">创富客户</span>
+              </div>
+            </div>
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex flex-col gap-1">
+                <div class="font-label text-sm text-on-surface-variant">138****6521</div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">存款 ¥520万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">理财 ¥200万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">基金 ¥80万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">贷款 ¥56万</span>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0 ml-3">
+                <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+                <p class="font-headline text-sm font-bold text-primary">¥856万</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-label text-on-surface-variant">最近联系：2026-04-28</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- 客户卡片 2 — 无产品新客（张晓婷） -->
+      <a href="慧展业_客户详情页_无产品.html" class="block group relative bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:shadow-lg active:scale-[0.99]">
+        <!-- 右上角商机标签 -->
+        <div class="absolute top-4 right-4 opp-badge"><span class="opp-badge-text">2项</span></div>
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#003B99]/60 to-[#003B99] flex items-center justify-center flex-shrink-0">
+            <span class="text-white font-headline font-bold text-lg">张</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2 pr-12">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-headline text-base font-bold text-on-surface">张晓婷</span>
+                <span class="tag-new">新客</span>
+                <span class="tag-type">潜力客户</span>
+              </div>
+            </div>
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex flex-col gap-1">
+                <div class="font-label text-sm text-on-surface-variant">139****8721</div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">活期 ¥2.5万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">持有产品 0个</span>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0 ml-3">
+                <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+                <p class="font-headline text-sm font-bold text-primary">¥2.5万</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-label text-on-surface-variant">最近联系：2026-05-01</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- 客户卡片 3 — 林美玲 -->
+      <a href="慧展业_客户详情页.html" class="block group relative bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:shadow-lg active:scale-[0.99]">
+        <!-- 右上角商机标签 -->
+        <div class="absolute top-4 right-4 opp-badge"><span class="opp-badge-text">2项</span></div>
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#52c41a]/80 to-[#52c41a] flex items-center justify-center flex-shrink-0">
+            <span class="text-white font-headline font-bold text-lg">林</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2 pr-12">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-headline text-base font-bold text-on-surface">林美玲</span>
+                <span class="tag-new">新客</span>
+                <span class="tag-type">私行客户</span>
+              </div>
+            </div>
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex flex-col gap-1">
+                <div class="font-label text-sm text-on-surface-variant">139****8823</div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">存款 ¥800万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">理财 ¥300万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">基金 ¥100万</span>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0 ml-3">
+                <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+                <p class="font-headline text-sm font-bold text-primary">¥1,200万</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-label text-on-surface-variant">最近联系：2026-04-25</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- 客户卡片 4 — 张海涛 -->
+      <a href="慧展业_客户详情页.html" class="block group relative bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:shadow-lg active:scale-[0.99]">
+        <!-- 右上角商机标签 -->
+        <div class="absolute top-4 right-4 opp-badge"><span class="opp-badge-text">1项</span></div>
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#faad14]/80 to-[#faad14] flex items-center justify-center flex-shrink-0">
+            <span class="text-white font-headline font-bold text-lg">张</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2 pr-12">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-headline text-base font-bold text-on-surface">张海涛</span>
+                <span class="tag-new">新客</span>
+                <span class="tag-type">财富客户</span>
+              </div>
+            </div>
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex flex-col gap-1">
+                <div class="font-label text-sm text-on-surface-variant">137****3345</div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">存款 ¥80万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">理财 ¥30万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">贷款 ¥10万</span>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0 ml-3">
+                <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+                <p class="font-headline text-sm font-bold text-primary">¥120万</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-label text-on-surface-variant">最近联系：2026-04-20</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- 客户卡片 4 — 无商机，AUM与手机号同行 -->
+      <a href="慧展业_客户详情页.html" class="block group relative bg-surface-container-lowest p-5 rounded-xl transition-all duration-300 hover:shadow-lg active:scale-[0.99]">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#4E5D88]/80 to-[#4E5D88] flex items-center justify-center flex-shrink-0">
+            <span class="text-white font-headline font-bold text-lg">王</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-headline text-base font-bold text-on-surface">王志强</span>
+                <span class="tag-type">有效客户</span>
+              </div>
+            </div>
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex flex-col gap-1">
+                <div class="font-label text-sm text-on-surface-variant">136****7756</div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">存款 ¥20万</span>
+                  <span class="text-[10px] font-label text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">理财 ¥15万</span>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0 ml-3">
+                <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
+                <p class="font-headline text-sm font-bold text-primary">¥35万</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-label text-on-surface-variant">最近联系：2026-04-18</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- 上拉加载提示 -->
+      <div class="text-center font-label text-xs text-on-surface-variant py-4">上拉加载更多</div>
+    </div>
+
+    <!-- ====== 商机提醒 Tab ====== -->
+    <div id="content-opp" class="space-y-4" style="display:none">
+
+      <!-- 商机筛选栏 -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <button class="chip chip-selected" data-group="opp" onclick="m3ToggleChip(this)">全部</button>
+        <button class="chip chip-unselected" data-group="opp" onclick="m3ToggleChip(this)">待联系</button>
+        <button class="chip chip-unselected" data-group="opp" onclick="m3ToggleChip(this)">已联系</button>
+        <button class="chip chip-unselected" data-group="opp" onclick="m3ToggleChip(this)">已转化</button>
+      </div>
+
+      <!-- 商机列表 -->
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow-sm space-y-4">
+
+        <!-- 商机1 — 紧急 -->
+        <a href="慧展业_客户详情页.html" class="block bg-[#fff0f0] rounded-xl p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-headline text-sm font-bold text-on-surface">理财产品到期</span>
+            <div class="flex items-center gap-2">
+              <span class="priority-urgent">紧急</span>
+              <span class="text-[10px] font-label text-on-surface-variant bg-white px-2 py-0.5 rounded-full">待联系</span>
+            </div>
+          </div>
+          <p class="font-label text-xs text-on-surface-variant mb-3 leading-relaxed">陈永峰购买的稳盈系列理财¥200万，将于05月15日到期，建议提前联系配置新产品</p>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] font-label text-on-surface-variant">客户：陈永峰 · AUM ¥856万</span>
+            <span class="text-[10px] font-label text-on-surface-variant">到期：2026-05-15</span>
+          </div>
+          <div class="flex gap-3">
+            <button class="flex-1 h-9 bg-primary text-white rounded-lg text-xs font-medium font-body flex items-center justify-center gap-1.5 active:scale-95 transition-transform" onclick="event.stopPropagation();alert('一键拨号：138****6521')">
+              <span class="material-symbols-outlined" style="font-size:14px">call</span>
+              一键拨号
+            </button>
+            <button class="h-9 px-4 bg-white border border-primary text-primary rounded-lg text-xs font-medium font-body" onclick="event.stopPropagation();alert('标记已联系')">标记已联系</button>
+          </div>
+        </a>
+
+        <!-- 商机2 — 一般 -->
+        <a href="慧展业_客户详情页.html" class="block bg-[#fffbeb] rounded-xl p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-headline text-sm font-bold text-on-surface">基金组合优化</span>
+            <div class="flex items-center gap-2">
+              <span class="priority-normal">一般</span>
+              <span class="text-[10px] font-label text-on-surface-variant bg-white px-2 py-0.5 rounded-full">已联系</span>
+            </div>
+          </div>
+          <p class="font-label text-xs text-on-surface-variant mb-3 leading-relaxed">林美玲持仓集中在单一新能源基金，建议分散配置降低风险</p>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] font-label text-on-surface-variant">客户：林美玲 · AUM ¥1,200万</span>
+            <span class="text-[10px] font-label text-on-surface-variant">发布：2026-04-25</span>
+          </div>
+          <div class="flex gap-3">
+            <button class="flex-1 h-9 bg-primary text-white rounded-lg text-xs font-medium font-body flex items-center justify-center gap-1.5 active:scale-95 transition-transform" onclick="event.stopPropagation();alert('一键拨号：139****8823')">
+              <span class="material-symbols-outlined" style="font-size:14px">call</span>
+              再次联系
+            </button>
+            <button class="h-9 px-4 bg-white border border-primary text-primary rounded-lg text-xs font-medium font-body" onclick="event.stopPropagation();alert('填写跟进记录')">填写记录</button>
+          </div>
+        </a>
+
+        <!-- 商机3 — 关注 -->
+        <a href="慧展业_客户详情页.html" class="block bg-[#e8f0ff] rounded-xl p-4 cursor-pointer transition-all hover:shadow-md active:scale-[0.99]">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-headline text-sm font-bold text-on-surface">贷款意愿唤醒</span>
+            <div class="flex items-center gap-2">
+              <span class="priority-attention">关注</span>
+              <span class="text-[10px] font-label text-on-surface-variant bg-white px-2 py-0.5 rounded-full">待联系</span>
+            </div>
+          </div>
+          <p class="font-label text-xs text-on-surface-variant mb-3 leading-relaxed">张海涛曾咨询过经营贷，近期他行利率下调，建议针对性推送优惠方案</p>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] font-label text-on-surface-variant">客户：张海涛 · AUM ¥120万</span>
+            <span class="text-[10px] font-label text-on-surface-variant">发布：2026-04-20</span>
+          </div>
+          <div class="flex gap-3">
+            <button class="flex-1 h-9 bg-primary text-white rounded-lg text-xs font-medium font-body flex items-center justify-center gap-1.5 active:scale-95 transition-transform" onclick="event.stopPropagation();alert('一键拨号：137****3345')">
+              <span class="material-symbols-outlined" style="font-size:14px">call</span>
+              一键拨号
+            </button>
+            <button class="h-9 px-4 bg-white border border-primary text-primary rounded-lg text-xs font-medium font-body" onclick="event.stopPropagation();alert('标记已联系')">标记已联系</button>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===================== BOTTOM TAB BAR ===================== -->
+  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <!-- 收单 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_收单工作台_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">home</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">收单</span>
+    </a>
+    <!-- 零售 [active] -->
+    <a class="flex flex-col items-center justify-center bg-blue-50 text-blue-800 rounded-2xl px-5 py-2" href="慧展业_零售工作台.html">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL'1,'wght'400;font-size:20px">group</span>
+      <span class="font-inter text-[10px] font-bold tracking-wide uppercase mt-1">零售</span>
+    </a>
+    <!-- 场景 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_场景工作台.html">
+      <span class="material-symbols-outlined" style="font-size:20px">auto_awesome</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">场景</span>
+    </a>
+    <!-- 动态 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_动态消息列表_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">dynamic_feed</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">动态</span>
+    </a>
+    <!-- 我的 -->
+    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_我的中心_20260427.html">
+      <span class="material-symbols-outlined" style="font-size:20px">person</span>
+      <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">我的</span>
+    </a>
+  </nav>
+
+  <!-- ===================== 高级筛选弹窗 ===================== -->
+  <div class="modal-overlay" id="filterModal" onclick="closeFilterModal()"></div>
+  <div class="modal-content" id="filterModalContent">
+    <div class="modal-handle"></div>
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-5">
+        <span class="font-headline text-lg font-bold text-on-surface">高级筛选</span>
+        <button onclick="closeFilterModal()" class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center cursor-pointer transition-all active:scale-95">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">close</span>
+        </button>
+      </div>
+
+      <!-- 客户类型 -->
+      <div class="mb-5">
+        <span class="text-xs font-label font-semibold text-on-surface block mb-2">客户类型</span>
+        <div class="flex flex-wrap gap-2">
+          <button class="chip chip-selected" onclick="m3ToggleChip(this)">全部</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">⭐ 重点客户</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">私行客户</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">财富客户</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">创富客户</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">有效客户</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">基础客户</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">潜力客户</button>
+        </div>
+      </div>
+
+      <!-- 本年新客 -->
+      <div class="mb-5">
+        <span class="text-xs font-label font-semibold text-on-surface block mb-2">本年新客</span>
+        <div class="flex flex-wrap gap-2">
+          <button class="chip chip-selected" onclick="m3ToggleChip(this)">全部</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">是</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">否</button>
+        </div>
+      </div>
+
+      <!-- 持有产品 -->
+      <div class="mb-5">
+        <span class="text-xs font-label font-semibold text-on-surface block mb-2">持有产品</span>
+        <div class="flex flex-wrap gap-2">
+          <button class="chip chip-selected" onclick="m3ToggleChip(this)">全部</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">存款</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">理财</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">基金</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">贷款</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">E秒贷</button>
+        </div>
+      </div>
+
+      <!-- 渠道状态 -->
+      <div class="mb-5">
+        <span class="text-xs font-label font-semibold text-on-surface block mb-2">渠道签约</span>
+        <div class="flex flex-wrap gap-2">
+          <button class="chip chip-selected" onclick="m3ToggleChip(this)">全部</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">已签手机银行</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">已签微信通知</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">未签任一渠道</button>
+        </div>
+      </div>
+
+      <!-- 联系状态 -->
+      <div class="mb-5">
+        <span class="text-xs font-label font-semibold text-on-surface block mb-2">联系状态</span>
+        <div class="flex flex-wrap gap-2">
+          <button class="chip chip-selected" onclick="m3ToggleChip(this)">全部</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">本月已联系</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">本月未联系</button>
+        </div>
+      </div>
+
+      <!-- AUM范围 -->
+      <div class="mb-5">
+        <span class="text-xs font-label font-semibold text-on-surface block mb-2">AUM范围（万元）</span>
+        <div class="flex items-center gap-2">
+          <input type="number" placeholder="最小值" class="flex-1 h-11 pl-4 pr-4 rounded-lg bg-surface-container-low text-sm outline-none focus:border-primary border-2 border-transparent transition-all font-body"/>
+          <span class="text-on-surface-variant font-label">—</span>
+          <input type="number" placeholder="最大值" class="flex-1 h-11 pl-4 pr-4 rounded-lg bg-surface-container-low text-sm outline-none focus:border-primary border-2 border-transparent transition-all font-body"/>
+        </div>
+      </div>
+
+      <!-- 商机状态 -->
+      <div class="mb-6">
+        <span class="text-xs font-label font-semibold text-on-surface block mb-2">商机状态</span>
+        <div class="flex flex-wrap gap-2">
+          <button class="chip chip-selected" onclick="m3ToggleChip(this)">全部</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">有商机</button>
+          <button class="chip chip-unselected" onclick="m3ToggleChip(this)">无商机</button>
+        </div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="flex gap-3">
+        <button class="flex-1 h-12 bg-surface-container-low text-on-surface-variant rounded-xl text-sm font-medium font-body" onclick="resetFilter()">重置</button>
+        <button class="flex-1 h-12 bg-primary text-white rounded-xl text-sm font-medium font-body" onclick="applyFilter()">应用筛选</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== 搜索框展开/收起（收单样式）=====
+    let searchExpanded = false;
+    function toggleSearchInput() {
+      const panel = document.getElementById('search-expand');
+      const btn = document.getElementById('btn-search');
+      searchExpanded = !searchExpanded;
+      if (searchExpanded) {
+        panel.classList.remove('hidden');
+        btn.classList.add('border-2', 'border-primary');
+        btn.querySelector('div').classList.add('bg-primary/10');
+        btn.querySelector('span:last-child').classList.add('text-primary');
+        btn.querySelector('span:last-child').classList.remove('text-on-surface-variant');
+        const inp = document.getElementById('search-input');
+        if (inp) inp.focus();
+      } else {
+        panel.classList.add('hidden');
+        btn.classList.remove('border-2', 'border-primary');
+        btn.querySelector('div').classList.remove('bg-primary/10');
+        btn.querySelector('span:last-child').classList.remove('text-primary');
+        btn.querySelector('span:last-child').classList.add('text-on-surface-variant');
+      }
+    }
+
+    // ===== 商机按钮：点击高亮/取消高亮（与收单页一致）=====
+    let activeQuickBtn = null;
+    function highlightQuickBtn(activeId) {
+      ['btn-opportunity', 'btn-key', 'btn-filter'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        if (id === activeId) {
+          btn.classList.add('border-2', 'border-primary');
+          btn.querySelector('div').classList.add('bg-primary/10');
+          btn.querySelector('span:last-child').classList.add('text-primary');
+          btn.querySelector('span:last-child').classList.remove('text-on-surface-variant');
+        } else {
+          clearQuickBtnHighlight(id);
+        }
+      });
+    }
+    function clearQuickBtnHighlight(id) {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.classList.remove('border-2', 'border-primary');
+      btn.querySelector('div').classList.remove('bg-primary/10');
+      btn.querySelector('span:last-child').classList.remove('text-primary');
+      btn.querySelector('span:last-child').classList.add('text-on-surface-variant');
+    }
+    function sortByOpportunity() {
+      if (activeQuickBtn === 'btn-opportunity') {
+        clearQuickBtnHighlight('btn-opportunity');
+        activeQuickBtn = null;
+        switchMainTab('list');
+        toast('已取消排序');
+      } else {
+        clearQuickBtnHighlight('btn-key');
+        clearQuickBtnHighlight('btn-filter');
+        highlightQuickBtn('btn-opportunity');
+        activeQuickBtn = 'btn-opportunity';
+        switchMainTab('list');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        toast('按商机时间倒序排列');
+      }
+    }
+
+    function sortByKeyCustomer() {
+      if (activeQuickBtn === 'btn-key') {
+        clearQuickBtnHighlight('btn-key');
+        activeQuickBtn = null;
+        switchMainTab('list');
+        toast('已取消排序');
+      } else {
+        clearQuickBtnHighlight('btn-opportunity');
+        clearQuickBtnHighlight('btn-filter');
+        highlightQuickBtn('btn-key');
+        activeQuickBtn = 'btn-key';
+        switchMainTab('list');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        toast('只看重点客户');
+      }
+    }
+
+    // ===== 快捷操作互斥高亮 =====
+    let currentMutex = null;
+    function toggleMutex(type) {
+      const btns = { filter: 'btn-filter' };
+      if (currentMutex === type) {
+        if (btns[type]) {
+          clearQuickBtnHighlight(btns[type]);
+        }
+        currentMutex = null;
+        if (type === 'filter') closeFilterModal();
+      } else {
+        if (currentMutex && btns[currentMutex]) clearQuickBtnHighlight(btns[currentMutex]);
+        if (btns[type]) {
+          highlightQuickBtn(btns[type]);
+          activeQuickBtn = btns[type];
+        }
+        currentMutex = type;
+        if (type === 'filter') openFilterModal();
+      }
+    }
+
+    // ===== Tab切换 =====
+    function switchMainTab(tab) {
+      const listBtn = document.getElementById('tab-btn-list');
+      const oppBtn = document.getElementById('tab-btn-opp');
+      const listContent = document.getElementById('content-list');
+      const oppContent = document.getElementById('content-opp');
+      if (tab === 'list') {
+        listBtn.className = 'flex-1 h-10 rounded-lg bg-primary text-white text-sm font-medium font-body transition-all flex items-center justify-center gap-1';
+        oppBtn.className = 'flex-1 h-10 rounded-lg text-on-surface-variant text-sm font-medium font-body transition-all flex items-center justify-center gap-1';
+        listContent.style.display = '';
+        oppContent.style.display = 'none';
+      } else {
+        oppBtn.className = 'flex-1 h-10 rounded-lg bg-primary text-white text-sm font-medium font-body transition-all flex items-center justify-center gap-1';
+        listBtn.className = 'flex-1 h-10 rounded-lg text-on-surface-variant text-sm font-medium font-body transition-all flex items-center justify-center gap-1';
+        oppContent.style.display = '';
+        listContent.style.display = 'none';
+      }
+    }
+
+    // ===== M3 Filter Chip =====
+    function m3ToggleChip(btn) {
+      const group = btn.getAttribute('data-group');
+      if (!group) {
+        const isSelected = btn.classList.contains('chip-selected');
+        btn.parentElement.querySelectorAll('.chip').forEach(c => {
+          c.classList.remove('chip-selected');
+          c.classList.add('chip-unselected');
+        });
+        if (!isSelected) {
+          btn.classList.remove('chip-unselected');
+          btn.classList.add('chip-selected');
+        } else {
+          const first = btn.parentElement.querySelector('.chip');
+          if (first) { first.classList.remove('chip-unselected'); first.classList.add('chip-selected'); }
+        }
+        return;
+      }
+      const isSelected = btn.classList.contains('chip-selected');
+      document.querySelectorAll(`.chip[data-group="${group}"]`).forEach(c => {
+        c.classList.remove('chip-selected');
+        c.classList.add('chip-unselected');
+      });
+      if (!isSelected) {
+        btn.classList.remove('chip-unselected');
+        btn.classList.add('chip-selected');
+      } else {
+        const allBtn = document.querySelector(`.chip[data-group="${group}"]`);
+        if (allBtn) { allBtn.classList.remove('chip-unselected'); allBtn.classList.add('chip-selected'); }
+      }
+    }
+
+    // ===== 高级筛选弹窗 =====
+    function openFilterModal() {
+      document.getElementById('filterModal').classList.add('show');
+      document.getElementById('filterModalContent').classList.add('show');
+    }
+    function closeFilterModal() {
+      document.getElementById('filterModal').classList.remove('show');
+      document.getElementById('filterModalContent').classList.remove('show');
+      if (currentMutex === 'filter') {
+        clearQuickBtnHighlight('btn-filter');
+        currentMutex = null;
+        activeQuickBtn = null;
+      }
+    }
+    function resetFilter() {
+      alert('已重置筛选条件');
+    }
+    function applyFilter() {
+      closeFilterModal();
+      alert('已应用筛选条件');
+    }
+
+    // ===== Toast提示 =====
+    function toast(msg) {
+      const existing = document.getElementById('toast');
+      if (existing) existing.remove();
+      const t = document.createElement('div');
+      t.id = 'toast';
+      t.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-on-surface text-white px-4 py-2 rounded-lg text-sm font-body z-[9999]';
+      t.style.cssText = 'animation: fadeInOut 2s forwards; --motion-duration-short: 200ms;';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2000);
+    }
+  </script>
+</body>
+</html>

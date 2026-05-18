@@ -4,8 +4,8 @@
 > **创建日期**：2026-04-23
 > **状态**：正式
 > **更新说明**：v1.0首个已落地版本，从 Obsidian vault 迁移至需求文档管理仓库；原型页面已确认落地，字段/交互/格式规范均已锚定
-> **关联原型**：慧展业_收单工作台_20260427.html
-> **原型路径**：~/Documents/prototypes_b端/
+> **关联原型**：[`慧展业_收单工作台_20260427.html`](../prototypes/慧展业_收单工作台_20260427.html)（完整清单见 [`../prototypes/README.md`](../prototypes/README.md)）
+> **原型路径**：[`docs/prd/prototypes/`](../prototypes/)
 > **备注**：本需求基于原型页面 [慧展业（客户经理工作台）](https://zhanye.qintnt.top) 整理，所有演示内容均已转化为字段定义、格式要求及交互规范。
 
 ---

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#003B99",
+            "primary-container": "#1A52BF",
+            "surface": "#F7F9FC",
+            "surface-container-low": "#F2F4F7",
+            "surface-container": "#ECEEF1",
+            "surface-container-high": "#E6E8EB",
+            "surface-container-highest": "#E0E3E6",
+            "surface-container-lowest": "#FFFFFF",
+            "on-surface": "#191C1E",
+            "on-surface-variant": "#434653",
+            "outline-variant": "#C3C6D5",
+            "outline": "#737685",
+            "tertiary": "#732B00",
+            "tertiary-container": "#993C00",
+            "tertiary-fixed": "#FFDBCC",
+            "secondary": "#4E5D88",
+            "secondary-container": "#BFCEFF",
+            "error": "#BA1A1A",
+            "error-container": "#FFDAD6",
+            "on-primary": "#FFFFFF",
+            "on-tertiary": "#FFFFFF",
+            "on-tertiary-fixed": "#351000",
+            "on-error": "#FFFFFF",
+            "on-error-container": "#93000A",
+            "on-secondary-container": "#485781",
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          }
+        }
+      }
+    }
+  </script>
+  <script>tailwind.init({ darkMode: 'class', theme: { extend: { colors: { primary: '#003B99', 'primary-container': '#1A52BF', surface: '#F7F9FC', 'surface-container-low': '#F2F4F7', 'surface-container': '#ECEEF1', 'surface-container-high': '#E6E8EB', 'surface-container-highest': '#E0E3E6', 'surface-container-lowest': '#FFFFFF', 'on-surface': '#191C1E', 'on-surface-variant': '#434653', 'outline-variant': '#C3C6D5', outline: '#737685', tertiary: '#732B00', 'tertiary-container': '#993C00', 'tertiary-fixed': '#FFDBCC', secondary: '#4E5D88', 'secondary-container': '#BFCEFF', 'on-secondary-container': '#485781', error: '#BA1A1A', 'error-container': '#FFDAD6', 'on-primary': '#FFFFFF', 'on-tertiary': '#FFFFFF', 'on-tertiary-fixed': '#351000', 'on-error': '#FFFFFF', 'on-error-container': '#93000A' }, borderRadius: { DEFAULT: '0.25rem', lg: '1rem', xl: '1.5rem', full: '9999px' }, fontFamily: { headline: ['Manrope'], body: ['Inter'], label: ['Inter'] } } } });</script>
+  <style>
+
+    /* ========== B端 Motion Tokens ========== */
+    :root {
+      --motion-duration-short: 100ms;
+      --motion-duration-medium: 200ms;
+      --motion-duration-long: 350ms;
+      --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+      --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+      --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+    }
+
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, .font-headline { font-family: 'Manrope', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
+    <div class="flex items-center gap-3">
+      <button class="w-9 h-9 rounded-xl bg-primary-container flex items-center justify-center cursor-pointer transition-all active:scale-95" onclick="history.back()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span class="font-headline font-bold text-base text-on-surface tracking-tight">商户详情</span>
+    </div>
+    <div class="flex items-center gap-1">
+      <button onclick="toast('功能开发中')" class="p-2 rounded-xl hover:bg-surface-container transition-colors active:scale-95">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:20px">more_horiz</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pt-16 pb-28 px-5 max-w-lg mx-auto space-y-5">
+
+    <!-- 商户名称 + 状态 -->
+    <div class="pt-2">
+      <div class="flex items-start justify-between mb-2">
+        <div class="flex-1 min-w-0">
+          <h1 class="font-headline font-extrabold text-2xl text-on-surface leading-tight">时尚美发沙龙</h1>
+          <p class="text-sm text-on-surface-variant mt-1 font-medium">个体 · AUM1-10万</p>
+        </div>
+        <span class="flex-shrink-0 ml-3 text-xs font-bold px-3 py-1.5 rounded-full bg-green-100 text-green-700 shadow-sm">已有效</span>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <span class="text-[10px] font-medium px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">首期二访</span>
+        <span class="text-[10px] font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">高补贴</span>
+      </div>
+    </div>
+
+    <!-- Hero: 补贴数据卡 -->
+    <div class="bg-gradient-to-br from-primary to-primary-container rounded-2xl p-5 text-white shadow-xl shadow-primary/20 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl pointer-events-none"></div>
+      <div class="relative z-10">
+        <p class="text-xs font-medium uppercase tracking-widest opacity-80 mb-3">本期补贴</p>
+        <div class="flex items-end gap-3 mb-4">
+          <span class="font-headline text-4xl font-extrabold tracking-tighter leading-none">¥1.20<span class="text-xl font-semibold opacity-80">万</span></span>
+          <div class="pb-1">
+            <span class="text-xs font-medium opacity-70">预估下期 </span>
+            <span class="text-sm font-bold">¥1.50万</span>
+          </div>
+        </div>
+        <div class="bg-white/15 backdrop-blur-sm rounded-xl p-3">
+          <div class="flex items-center justify-between text-xs">
+            <span class="opacity-80">月目均额达标准</span>
+            <span class="font-semibold">8万及以上</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 经营与资产信息 -->
+    <section>
+      <h2 class="font-headline font-bold text-base text-on-surface mb-3">经营与资产</h2>
+      <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm space-y-4">
+
+        <!-- 当月结算 & 当前活期 -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">当月结算流水</p>
+            <p class="font-headline text-lg font-bold text-on-surface">—</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">当前活期余额</p>
+            <p class="font-headline text-lg font-bold text-primary">¥7.50<span class="text-xs font-medium opacity-70 ml-0.5">万</span></p>
+          </div>
+        </div>
+
+        <div class="h-px bg-surface-container-high"></div>
+
+        <!-- 月日均活期 & 金融资产 -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">本月月日均活期</p>
+            <p class="font-headline text-lg font-bold text-primary">¥11.70<span class="text-xs font-medium opacity-70 ml-0.5">万</span></p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">当前金融资产</p>
+            <p class="font-headline text-lg font-bold text-primary">¥15.00<span class="text-xs font-medium opacity-70 ml-0.5">万</span></p>
+          </div>
+        </div>
+
+        <div class="h-px bg-surface-container-high"></div>
+
+        <!-- 月日均金融资产 -->
+        <div>
+          <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">本月月日均金融资产</p>
+          <p class="font-headline text-lg font-bold text-primary">¥18.00<span class="text-xs font-medium opacity-70 ml-0.5">万</span></p>
+        </div>
+
+        <div class="h-px bg-surface-container-high"></div>
+
+        <!-- 贷款额度 -->
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">普惠贷款</p>
+            <p class="font-headline text-base font-bold text-on-surface">¥4.50<span class="text-[10px] font-medium opacity-70 ml-0.5">万</span></p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">E秒贷</p>
+            <p class="font-headline text-base font-bold text-on-surface">¥2.25<span class="text-[10px] font-medium opacity-70 ml-0.5">万</span></p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">信用卡</p>
+            <p class="font-headline text-base font-bold text-on-surface">¥3.75<span class="text-[10px] font-medium opacity-70 ml-0.5">万</span></p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 他行同名转出 -->
+    <section>
+      <h2 class="font-headline font-bold text-base text-on-surface mb-3">他行同名转出</h2>
+      <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between py-2">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
+              <span class="font-headline text-xs font-bold text-red-600">工</span>
+            </div>
+            <span class="font-body text-sm font-semibold text-on-surface">中国工商银行</span>
+          </div>
+          <span class="font-headline text-sm font-bold text-red-500">-¥1.50<span class="text-[10px] font-medium ml-0.5">万</span></span>
+        </div>
+        <div class="h-px bg-surface-container-high"></div>
+        <div class="flex items-center justify-between py-2">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+              <span class="font-headline text-xs font-bold text-blue-600">建</span>
+            </div>
+            <span class="font-body text-sm font-semibold text-on-surface">中国建设银行</span>
+          </div>
+          <span class="font-headline text-sm font-bold text-red-500">-¥0.85<span class="text-[10px] font-medium ml-0.5">万</span></span>
+        </div>
+        <div class="h-px bg-surface-container-high"></div>
+        <div class="flex items-center justify-between py-2">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
+              <span class="font-headline text-xs font-bold text-orange-600">招</span>
+            </div>
+            <span class="font-body text-sm font-semibold text-on-surface">招商银行</span>
+          </div>
+          <span class="font-headline text-sm font-bold text-red-500">-¥1.20<span class="text-[10px] font-medium ml-0.5">万</span></span>
+        </div>
+      </div>
+      <div class="mt-3 p-3 bg-tertiary-fixed rounded-xl text-xs text-on-tertiary-fixed font-medium flex gap-2">
+        <span class="material-symbols-outlined text-sm flex-shrink-0">lightbulb</span>
+        建议将客户他行活期转入我行，可享更高补贴档位
+      </div>
+    </section>
+
+    <!-- 商机信息 -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-headline font-bold text-base text-on-surface">商机信息</h2>
+        <span class="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">2项</span>
+      </div>
+      <div class="space-y-3">
+
+        <!-- 商机1: 首期二访 -->
+        <div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border-l-4 border-amber-400">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-2 py-1 rounded-full">首期二访</span>
+              <p class="font-headline font-bold text-sm text-on-surface mt-2">营销活动未达标，请提升</p>
+            </div>
+            <span class="text-[10px] text-on-surface-variant font-medium flex-shrink-0 ml-2">2026-04-20</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="toast('查看政策')" class="flex-1 py-2 rounded-lg bg-surface-container text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">policy</span> 查看政策
+            </button>
+            <button onclick="toast('推荐话术')" class="flex-1 py-2 rounded-lg bg-surface-container text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">chat</span> 推荐话术
+            </button>
+            <button onclick="toast('营销海报')" class="flex-1 py-2 rounded-lg bg-surface-container text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">image</span> 海报
+            </button>
+            <button onclick="toast('提交记录')" class="flex-1 py-2 rounded-lg bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">edit_note</span> 记录
+            </button>
+          </div>
+        </div>
+
+        <!-- 商机2: 提额机会 -->
+        <div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm border-l-4 border-primary">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-2 py-1 rounded-full">提额机会</span>
+              <p class="font-headline font-bold text-sm text-on-surface mt-2">客户资质良好，建议提额</p>
+            </div>
+            <span class="text-[10px] text-on-surface-variant font-medium flex-shrink-0 ml-2">2026-04-15</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="toast('查看政策')" class="flex-1 py-2 rounded-lg bg-surface-container text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">policy</span> 查看政策
+            </button>
+            <button onclick="toast('推荐话术')" class="flex-1 py-2 rounded-lg bg-surface-container text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">chat</span> 推荐话术
+            </button>
+            <button onclick="toast('营销海报')" class="flex-1 py-2 rounded-lg bg-surface-container text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">image</span> 海报
+            </button>
+            <button onclick="toast('提交记录')" class="flex-1 py-2 rounded-lg bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 active:scale-95 transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-sm">edit_note</span> 记录
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 基础信息 -->
+    <section>
+      <h2 class="font-headline font-bold text-base text-on-surface mb-3">基础信息</h2>
+      <div class="bg-surface-container-lowest rounded-2xl p-4 shadow-sm space-y-4">
+        <div class="grid grid-cols-2 gap-y-4 gap-x-3">
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">联系人</p>
+            <p class="font-body text-sm font-semibold text-on-surface">李女士</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">联系电话</p>
+            <p class="font-body text-sm font-semibold text-primary">138****1234</p>
+          </div>
+          <div class="col-span-2">
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">商户编号</p>
+            <p class="font-body text-sm font-semibold text-on-surface font-mono">M2024010104</p>
+          </div>
+          <div class="col-span-2">
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">账户号</p>
+            <p class="font-body text-sm font-semibold text-on-surface font-mono">622202******7890126</p>
+          </div>
+          <div class="col-span-2">
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">商户地址</p>
+            <p class="font-body text-sm font-semibold text-on-surface leading-snug">上海市黄浦区人民广场街道南京东路168号</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">入网时间</p>
+            <p class="font-body text-sm font-semibold text-on-surface">2024-01-04</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">达标时间</p>
+            <p class="font-body text-sm font-semibold text-green-600">2024-02-20</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">商户性质</p>
+            <p class="font-body text-sm font-semibold text-on-surface">个体</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-on-surface-variant font-semibold uppercase tracking-widest mb-1">支付机构</p>
+            <p class="font-body text-sm font-semibold text-on-surface">银联商务</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Action Bar -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant z-40" style="padding-bottom: env(safe-area-inset-bottom);">
+    <div class="max-w-lg mx-auto flex items-center justify-around py-3 px-4">
+      <button onclick="location.href='慧展业_商户动态列表_20260427.html?name=时尚美发沙龙'" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">history</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">商户动态</span>
+      </button>
+      <button onclick="openQuotaModal()" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">payments</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">额度管理</span>
+      </button>
+      <button onclick="toast('打开相机')" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-surface-container flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-on-surface-variant" style="font-size:18px">photo_camera</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">拍照</span>
+      </button>
+      <a href="tel:13812345678" class="flex flex-col items-center gap-0.5 flex-1 cursor-pointer active:scale-95 transition-transform">
+        <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center mb-1">
+          <span class="material-symbols-outlined text-white" style="font-size:18px">call</span>
+        </div>
+        <span class="text-[10px] text-on-surface-variant font-medium">拨打电话</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[100] bg-on-surface text-surface px-5 py-3 rounded-full text-sm font-medium shadow-lg opacity-0 pointer-events-none transition-all duration-300 -translate-y-2" style="max-width:calc(100vw - 80px)"></div>
+
+  <!-- 额度管理弹窗 -->
+  <div id="quota-modal" class="fixed inset-0 z-[90] hidden">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeQuotaModal()"></div>
+    <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-3xl p-6 pb-10 shadow-2xl">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-headline font-bold text-xl text-on-surface">月目均额达标准</h2>
+        <button onclick="closeQuotaModal()" class="p-2 rounded-full hover:bg-surface-container transition-colors">
+          <span class="material-symbols-outlined text-on-surface-variant">close</span>
+        </button>
+      </div>
+
+      <!-- 当前状态 -->
+      <div class="bg-gradient-to-br from-primary to-primary-container rounded-2xl p-5 text-white mb-6 shadow-lg">
+        <p class="text-xs font-medium uppercase tracking-widest opacity-80 mb-1">当前活期月日均</p>
+        <p class="font-headline text-3xl font-extrabold">¥11.70<span class="text-lg font-semibold opacity-80 ml-1">万</span></p>
+        <p class="text-xs font-medium text-white/70 mt-2">已达最高档位 · 补贴 ¥1,500/月</p>
+      </div>
+
+      <!-- 档位表 -->
+      <div class="space-y-2">
+        <div class="grid grid-cols-4 gap-2 text-center text-[10px] font-bold text-on-surface-variant uppercase tracking-wider pb-2 border-b border-outline-variant/30">
+          <span>当前活期月日均</span>
+          <span>还需转入</span>
+          <span>活期月日均范围</span>
+          <span>补贴金额</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center py-2.5 rounded-xl bg-surface-container-low">
+          <span class="text-[10px] text-on-surface-variant">—</span>
+          <span class="text-[10px] text-green-600 font-semibold">已达标</span>
+          <span class="text-[10px] text-on-surface font-semibold">0-2万（不含）</span>
+          <span class="text-[10px] text-on-surface font-bold">200元/月</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center py-2.5 rounded-xl bg-surface-container-low">
+          <span class="text-[10px] text-on-surface-variant">—</span>
+          <span class="text-[10px] text-green-600 font-semibold">已达标</span>
+          <span class="text-[10px] text-on-surface font-semibold">2-4万（不含）</span>
+          <span class="text-[10px] text-on-surface font-bold">500元/月</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center py-2.5 rounded-xl bg-surface-container-low">
+          <span class="text-[10px] text-on-surface-variant">—</span>
+          <span class="text-[10px] text-green-600 font-semibold">已达标</span>
+          <span class="text-[10px] text-on-surface font-semibold">4-6万（不含）</span>
+          <span class="text-[10px] text-on-surface font-bold">800元/月</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center py-2.5 rounded-xl bg-surface-container-low">
+          <span class="text-[10px] text-on-surface-variant">—</span>
+          <span class="text-[10px] text-green-600 font-semibold">已达标</span>
+          <span class="text-[10px] text-on-surface font-semibold">6-8万（不含）</span>
+          <span class="text-[10px] text-on-surface font-bold">1,200元/月</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2 text-center py-2.5 rounded-xl bg-primary/5 ring-2 ring-primary">
+          <span class="text-[10px] text-primary font-bold">¥11.70万</span>
+          <span class="text-[10px] text-primary font-semibold">—</span>
+          <span class="text-[10px] text-primary font-semibold">8万及以上</span>
+          <span class="text-[10px] text-primary font-extrabold">1,500元/月</span>
+        </div>
+      </div>
+
+      <p class="text-xs text-on-surface-variant mt-5 leading-relaxed">* 补贴按月日均活期余额分档计算，8万以上为最高档位，补贴1,500元/月封顶。</p>
+    </div>
+  </div>
+
+  <script>
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+      el.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        el.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+        el.classList.remove('opacity-100', 'translate-y-0');
+      }, 2500);
+    }
+    function openQuotaModal() {
+      document.getElementById('quota-modal').classList.remove('hidden');
+    }
+    function closeQuotaModal() {
+      document.getElementById('quota-modal').classList.add('hidden');
+    }
+  </script>
+
+</body>
+</html>
