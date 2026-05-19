@@ -52,7 +52,7 @@
         class="workbench-search__input"
         type="search"
         placeholder="输入商户名称搜索"
-        @input="page = 1"
+        @input="resetPage"
       />
     </section>
 
@@ -257,6 +257,7 @@ const {
   refreshMerchants,
   refreshing,
   regionOptions,
+  resetPage,
   resetDraftFilters,
   routeFailure,
   searchKeyword,

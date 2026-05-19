@@ -509,6 +509,7 @@ export function useAcquiringWorkbench() {
     refreshMerchants,
     refreshing,
     regionOptions,
+    resetPage,
     resetDraftFilters,
     routeFailure,
     searchKeyword,
