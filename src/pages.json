@@ -9,6 +9,18 @@
       }
     },
     {
+      "path": "pages/retail/retail",
+      "style": {
+        "navigationBarTitleText": "零售"
+      }
+    },
+    {
+      "path": "pages/scenario/scenario",
+      "style": {
+        "navigationBarTitleText": "场景"
+      }
+    },
+    {
       "path": "pages/notifications/notifications",
       "style": {
         "navigationBarTitleText": "动态"
@@ -17,7 +29,8 @@
     {
       "path": "pages/profile/profile",
       "style": {
-        "navigationBarTitleText": "我的"
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom"
       }
     }
   ],
@@ -26,6 +39,14 @@
       {
         "pagePath": "pages/index/index",
         "text": "收单"
+      },
+      {
+        "pagePath": "pages/retail/retail",
+        "text": "零售"
+      },
+      {
+        "pagePath": "pages/scenario/scenario",
+        "text": "场景"
       },
       {
         "pagePath": "pages/notifications/notifications",
