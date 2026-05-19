@@ -20,12 +20,12 @@
       <view class="profile-performance">
         <view class="profile-performance__card">
           <view class="profile-performance__glyph profile-performance__glyph--primary" aria-hidden="true"></view>
-          <text class="profile-performance__value">¥{amount}</text>
+          <text class="profile-performance__value">{{ performanceSummary.monthlyAmount }}</text>
           <text class="profile-performance__label">本月绩效</text>
         </view>
         <view class="profile-performance__card">
           <view class="profile-performance__glyph profile-performance__glyph--warning" aria-hidden="true"></view>
-          <text class="profile-performance__value">第{rank}名</text>
+          <text class="profile-performance__value">{{ performanceSummary.aumRank }}</text>
           <text class="profile-performance__label">AUM排行</text>
         </view>
       </view>
@@ -149,6 +149,7 @@ import {
 const EMPTY_TEXT = '暂未配置'
 const PHONE_PATTERN = /^1[3-9]\d{9}$/
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const HOME_PAGE_URL = '/pages/index/index'
 const PLACEHOLDER_MENU_ACTIONS = new Set([
   'performance_detail',
   'retail_ranking',
@@ -180,19 +181,31 @@ const profileMeta = computed(() => {
   return parts.length ? parts.join(' · ') : EMPTY_TEXT
 })
 
+const performanceSummary = computed(() => ({
+  monthlyAmount: EMPTY_TEXT,
+  aumRank: EMPTY_TEXT
+}))
+
 const normalizedPhone = computed(() => normalizeRawText(userState.profile.phone).replace(/\s/g, ''))
 const normalizedEmail = computed(() => normalizeRawText(userState.profile.email))
 
 function handlePhoneTap() {
   const phone = normalizedPhone.value
+  if (!phone) {
+    showToast('手机号为空，无法拨打')
+    return
+  }
+
   if (!PHONE_PATTERN.test(phone)) {
-    showToast('手机号暂不可用')
+    showToast('手机号格式有误，无法拨打')
     return
   }
 
   uni.showModal({
-    title: '确认拨号',
-    content: `确认拨打 ${phone}？`,
+    title: '拨打电话',
+    content: `确定拨打 ${phone} 吗？`,
+    cancelText: '取消',
+    confirmText: '拨打',
     success: (result) => {
       if (!result.confirm) {
         return
@@ -200,12 +213,12 @@ function handlePhoneTap() {
       uni.makePhoneCall({
         phoneNumber: phone,
         fail: () => {
-          showToast('拨号暂不可用')
+          showToast('服务异常，请稍后重试')
         }
       })
     },
     fail: () => {
-      showToast('拨号暂不可用')
+      showToast('服务异常，请稍后重试')
     }
   })
 }
@@ -213,22 +226,20 @@ function handlePhoneTap() {
 function handleEmailTap() {
   const email = normalizedEmail.value
   if (!EMAIL_PATTERN.test(email)) {
-    showToast('邮箱暂不可用')
     return
   }
 
   uni.setClipboardData({
-    data: email,
-    fail: () => {
-      showToast('邮箱暂不可用')
-    }
+    data: email
   })
 }
 
 function handleLogoutTap() {
   uni.showModal({
-    title: '确认退出',
-    content: '确定要退出当前账号吗？',
+    title: '退出登录',
+    content: '确定退出登录吗？',
+    cancelText: '取消',
+    confirmText: '确定',
     success: (result) => {
       if (!result.confirm) {
         return
@@ -236,12 +247,13 @@ function handleLogoutTap() {
       try {
         clearUserSession()
         showToast('已退出登录')
+        resetToLoginState()
       } catch (error) {
-        showToast('退出暂不可用')
+        showToast('服务异常，请稍后重试')
       }
     },
     fail: () => {
-      showToast('退出暂不可用')
+      showToast('服务异常，请稍后重试')
     }
   })
 }
@@ -250,6 +262,15 @@ function handleMenuAction(actionId) {
   if (PLACEHOLDER_MENU_ACTIONS.has(actionId)) {
     showToast(EMPTY_TEXT)
   }
+}
+
+function resetToLoginState() {
+  uni.switchTab({
+    url: HOME_PAGE_URL,
+    fail: () => {
+      showToast('服务异常，请稍后重试')
+    }
+  })
 }
 
 function normalizeDisplayText(value) {

@@ -12,6 +12,26 @@ const AUTH_TOKEN_STORAGE_KEYS = [
   'refresh_token'
 ]
 
+const USER_TRACE_STORAGE_KEYS = [
+  'avatar',
+  'avatar_url',
+  'user_avatar',
+  'profile_avatar',
+  'head_image',
+  'avatarUrl',
+  'name',
+  'userName',
+  'user_name',
+  'real_name',
+  'realName',
+  'employee_id',
+  'employeeId',
+  'staff_no',
+  'staffNo',
+  'work_no',
+  'workNo'
+]
+
 export const USER_PROFILE_FIELD_KEYS = [
   'user_name',
   'employee_id',
@@ -33,8 +53,9 @@ export const USER_SESSION_STORAGE_KEYS = [
   'hzy_profile_cache',
   'userInfo',
   'user_info',
+  ...USER_TRACE_STORAGE_KEYS,
   ...USER_PROFILE_FIELD_KEYS
-]
+].filter((key, index, keys) => keys.indexOf(key) === index)
 
 const emptyProfile = createEmptyUserProfile()
 
