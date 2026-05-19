@@ -166,11 +166,11 @@
         <view v-if="merchant.partner_org" class="workbench-merchant__partner">{{ merchant.partner_org }}</view>
       </view>
 
-      <view v-if="!loading && !visibleMerchants.length" class="workbench-list__empty">
+      <view v-if="!loading && !requestState.failed && !visibleMerchants.length" class="workbench-list__empty">
         暂无商户数据
       </view>
       <view v-if="loading" class="workbench-list__loading"></view>
-      <view v-if="requestState.failed" class="workbench-list__error"></view>
+      <view v-if="requestState.failed" class="workbench-list__error">{{ requestState.errorMessage }}</view>
     </view>
   </view>
 </template>
@@ -181,6 +181,9 @@ import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 
 const PAGE_SIZE = 20
 const REQUEST_TIMEOUT_MS = 8000
+const DEFAULT_MOCK_MERCHANT_COUNT = 48
+const MAX_MOCK_MERCHANT_COUNT = 200
+const MOCK_MERCHANT_COUNT_QUERY_KEYS = ['mock_merchant_count', 'mockMerchantCount', 'merchant_count']
 const NOTICE_SESSION_KEY = 'hzy_workbench_notice_closed'
 let noticeClosedInRuntime = false
 
@@ -279,8 +282,10 @@ const merchants = ref([])
 const loading = ref(false)
 const requestState = reactive({
   failed: false,
-  errorType: ''
+  errorType: '',
+  errorMessage: ''
 })
+const mockMerchantCount = ref(DEFAULT_MOCK_MERCHANT_COUNT)
 
 const queryExpanded = ref(false)
 const queryText = ref('')
@@ -337,6 +342,9 @@ const filteredMerchants = computed(() => {
       return false
     }
     if (activeActionFilter.value === 'high_subsidy_visit' && !marketingTags.includes('高补贴')) {
+      return false
+    }
+    if (activeActionFilter.value === 'potential_active' && !marketingTags.includes('潜力有效')) {
       return false
     }
     if (keyword && !merchant.merchant_name.includes(keyword)) {
@@ -408,7 +416,8 @@ const regionCityIndex = computed(() => Math.max(0, regionCityOptions.value.index
 const regionDistrictIndex = computed(() => Math.max(0, regionDistrictOptions.value.indexOf(advancedFilters.region.district)))
 const regionBranchIndex = computed(() => Math.max(0, regionBranchOptions.value.indexOf(advancedFilters.region.branch)))
 
-onLoad(() => {
+onLoad((options = {}) => {
+  mockMerchantCount.value = resolveMockMerchantCount(options)
   notificationVisible.value = !isNoticeClosedForSession()
   loadHomeData()
 })
@@ -429,8 +438,9 @@ async function loadHomeData() {
   loading.value = true
   requestState.failed = false
   requestState.errorType = ''
+  requestState.errorMessage = ''
   try {
-    const data = await withTimeout(requestHomeWorkbench(), REQUEST_TIMEOUT_MS)
+    const data = await withTimeout(requestHomeWorkbench({ merchantCount: mockMerchantCount.value }), REQUEST_TIMEOUT_MS)
     Object.assign(kpi, data.kpi)
     notification.value = data.notification
     merchants.value = data.merchants
@@ -438,13 +448,14 @@ async function loadHomeData() {
   } catch (error) {
     requestState.failed = true
     requestState.errorType = normalizeRequestError(error)
+    requestState.errorMessage = getRequestErrorMessage(requestState.errorType)
     // TODO(HZYMiniAppStyle): 网络异常/超时/500 fallback 展示文案由样式与合规接力补齐。
   } finally {
     loading.value = false
   }
 }
 
-function requestHomeWorkbench() {
+function requestHomeWorkbench({ merchantCount = DEFAULT_MOCK_MERCHANT_COUNT } = {}) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
@@ -465,10 +476,26 @@ function requestHomeWorkbench() {
           notification_type: '网点动态',
           notification_url: ''
         },
-        merchants: createMockMerchants(48)
+        merchants: createMockMerchants(merchantCount)
       })
     }, 120)
   })
+}
+
+function resolveMockMerchantCount(options) {
+  const matchedKey = MOCK_MERCHANT_COUNT_QUERY_KEYS.find((key) => options?.[key] !== undefined)
+  if (!matchedKey) {
+    return DEFAULT_MOCK_MERCHANT_COUNT
+  }
+  return normalizeMockMerchantCount(options[matchedKey])
+}
+
+function normalizeMockMerchantCount(value) {
+  const count = Number(value)
+  if (!Number.isFinite(count)) {
+    return DEFAULT_MOCK_MERCHANT_COUNT
+  }
+  return Math.min(Math.max(Math.trunc(count), 0), MAX_MOCK_MERCHANT_COUNT)
 }
 
 function withTimeout(promise, timeout) {
@@ -488,6 +515,15 @@ function normalizeRequestError(error) {
     return 'server'
   }
   return 'network'
+}
+
+function getRequestErrorMessage(errorType) {
+  const messageMap = {
+    timeout: '请求超时，请稍后重试',
+    server: '服务暂不可用，请稍后重试',
+    network: '网络异常，请稍后重试'
+  }
+  return messageMap[errorType] || messageMap.network
 }
 
 function handleKpiClick(card) {
@@ -529,10 +565,6 @@ function handleQuickButton(button) {
 }
 
 function handleActionFilter(buttonId) {
-  if (buttonId === 'potential_active') {
-    resetAllListControls()
-    return
-  }
   activeActionFilter.value = activeActionFilter.value === buttonId ? '' : buttonId
   resetPagination()
 }
