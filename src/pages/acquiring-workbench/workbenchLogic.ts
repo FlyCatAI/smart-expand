@@ -187,6 +187,8 @@ export function useAcquiringWorkbench() {
   const filters = reactive<WorkbenchFilters>(initialFilters());
   const draftFilters = reactive<WorkbenchFilters>(initialFilters());
   const kpiCards = computed(() => buildKpiCards(rawKpi));
+  let loadMoreTimer: number | null = null;
+  let loadMoreRequestId = 0;
 
   const regionOptions = computed(() => {
     const provinces = [...new Set(merchants.value.map((item) => item.region.province))];
@@ -213,8 +215,22 @@ export function useAcquiringWorkbench() {
   });
 
   const pagedMerchants = computed(() => visibleAllMerchants.value.slice(0, page.value * PAGE_SIZE));
-  const hasMore = computed(() => pagedMerchants.value.length < visibleAllMerchants.value.length);
+  const hasMore = computed(() => !loadError.value && pagedMerchants.value.length < visibleAllMerchants.value.length);
   const emptyStateText = computed(() => merchants.value.length === 0 ? '暂无商户数据' : '未找到符合条件的商户');
+
+  function cancelPendingLoadMore() {
+    loadMoreRequestId += 1;
+    if (loadMoreTimer !== null) {
+      window.clearTimeout(loadMoreTimer);
+      loadMoreTimer = null;
+    }
+    loadingMore.value = false;
+  }
+
+  function resetPage() {
+    cancelPendingLoadMore();
+    page.value = 1;
+  }
 
   function showToast(message: string) {
     toastMessage.value = message;
@@ -246,13 +262,13 @@ export function useAcquiringWorkbench() {
 
   async function loadMerchants(options: { resetPage?: boolean; refresh?: boolean } = {}) {
     if (loading.value || refreshing.value) return;
+    if (options.resetPage !== false) resetPage();
     loadError.value = false;
     loadFailure.value = null;
     loading.value = !options.refresh;
     refreshing.value = Boolean(options.refresh);
     try {
       merchants.value = await fetchMockMerchants();
-      if (options.resetPage !== false) page.value = 1;
     } catch {
       loadError.value = true;
       notifyLoadFailure('mock_loader_error');
@@ -267,9 +283,16 @@ export function useAcquiringWorkbench() {
   }
 
   function loadNextPage() {
-    if (!hasMore.value || loadingMore.value) return;
+    if (loading.value || refreshing.value || loadError.value || !hasMore.value || loadingMore.value) return;
     loadingMore.value = true;
-    window.setTimeout(() => {
+    const requestId = ++loadMoreRequestId;
+    loadMoreTimer = window.setTimeout(() => {
+      if (requestId !== loadMoreRequestId) return;
+      loadMoreTimer = null;
+      if (!hasMore.value) {
+        loadingMore.value = false;
+        return;
+      }
       page.value += 1;
       loadingMore.value = false;
     }, 80);
@@ -296,7 +319,7 @@ export function useAcquiringWorkbench() {
     sortMode.value = '';
     showSearchInput.value = false;
     searchKeyword.value = '';
-    page.value = 1;
+    resetPage();
   }
 
   function resetListControls() {
@@ -307,7 +330,7 @@ export function useAcquiringWorkbench() {
     showSearchInput.value = false;
     sortMode.value = '';
     activeToolbarAction.value = '';
-    page.value = 1;
+    resetPage();
   }
 
   function clearSortAndToolbar() {
@@ -340,7 +363,7 @@ export function useAcquiringWorkbench() {
       quickFilterTag.value = '';
       if (!willShow) searchKeyword.value = '';
       showToast(willShow ? '展开搜索框' : '收起');
-      page.value = 1;
+      resetPage();
       return;
     }
     if (action.id === 'filter_advanced') {
@@ -366,7 +389,7 @@ export function useAcquiringWorkbench() {
       };
       showToast(messages[nextSort]);
     }
-    page.value = 1;
+    resetPage();
   }
 
   function toggleAdmissionStatus(value: MerchantAdmissionStatus) {
@@ -416,7 +439,7 @@ export function useAcquiringWorkbench() {
       return;
     }
     Object.assign(filters, cloneFilters(draftFilters));
-    page.value = 1;
+    resetPage();
     showFilterModal.value = false;
     showToast('筛选已应用');
   }
@@ -454,6 +477,7 @@ export function useAcquiringWorkbench() {
 
   onBeforeUnmount(() => {
     window.removeEventListener('scroll', handleWindowScroll);
+    cancelPendingLoadMore();
   });
 
   return {
