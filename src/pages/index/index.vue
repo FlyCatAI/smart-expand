@@ -160,8 +160,8 @@
         <view class="workbench-merchant__meta">{{ merchant.expand_type }} · {{ merchant.entry_date }} · {{ merchant.distance_km.toFixed(1) }} km</view>
         <view class="workbench-merchant__status">{{ merchant.status }}</view>
         <view class="workbench-merchant__aum">{{ merchant.aum_level }}</view>
-        <view v-if="merchant.marketing_tags.length" class="workbench-merchant__tags">
-          <text v-for="tag in merchant.marketing_tags" :key="tag" class="workbench-merchant__tag">{{ tag }}</text>
+        <view v-if="getMarketingTags(merchant).length" class="workbench-merchant__tags">
+          <text v-for="tag in getMarketingTags(merchant)" :key="tag" class="workbench-merchant__tag">{{ tag }}</text>
         </view>
         <view v-if="merchant.partner_org" class="workbench-merchant__partner">{{ merchant.partner_org }}</view>
       </view>
@@ -182,6 +182,7 @@ import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
 const PAGE_SIZE = 20
 const REQUEST_TIMEOUT_MS = 8000
 const NOTICE_SESSION_KEY = 'hzy_workbench_notice_closed'
+let noticeClosedInRuntime = false
 
 const quickButtons = [
   { button_id: 'new_entry', button_name: '新入网', button_action: 'toast' },
@@ -331,10 +332,11 @@ const totalMerchantCount = computed(() => merchants.value.length)
 const filteredMerchants = computed(() => {
   const keyword = queryText.value.trim()
   return merchants.value.filter((merchant) => {
-    if (activeActionFilter.value === 'first_followup' && !merchant.marketing_tags.includes('首期二访')) {
+    const marketingTags = getMarketingTags(merchant)
+    if (activeActionFilter.value === 'first_followup' && !marketingTags.includes('首期二访')) {
       return false
     }
-    if (activeActionFilter.value === 'high_subsidy_visit' && !merchant.marketing_tags.includes('高补贴')) {
+    if (activeActionFilter.value === 'high_subsidy_visit' && !marketingTags.includes('高补贴')) {
       return false
     }
     if (keyword && !merchant.merchant_name.includes(keyword)) {
@@ -370,6 +372,7 @@ const sortedMerchants = computed(() => {
   if (activeSort.value === 'opportunity') {
     return list.sort((a, b) => compareNullableText(a.opportunity_date, b.opportunity_date, 'asc'))
   }
+  // 补贴/流水排序仅用于当前 mock 列表展示顺序，不改变真实资金口径，不引入资金计算、佣金公式或费率逻辑。
   if (activeSort.value === 'subsidy') {
     return list.sort((a, b) => compareNumber(b.subsidy_amount, a.subsidy_amount))
   }
@@ -406,7 +409,7 @@ const regionDistrictIndex = computed(() => Math.max(0, regionDistrictOptions.val
 const regionBranchIndex = computed(() => Math.max(0, regionBranchOptions.value.indexOf(advancedFilters.region.branch)))
 
 onLoad(() => {
-  notificationVisible.value = uni.getStorageSync(NOTICE_SESSION_KEY) !== '1'
+  notificationVisible.value = !isNoticeClosedForSession()
   loadHomeData()
 })
 
@@ -500,7 +503,7 @@ function handleNotificationClick() {
 
 function closeNotification() {
   notificationVisible.value = false
-  uni.setStorageSync(NOTICE_SESSION_KEY, '1')
+  closeNoticeForSession()
 }
 
 function handleQuickButton(button) {
@@ -705,10 +708,35 @@ function navigateByPrdRoute(route, params = {}) {
   const url = query ? `${route}?${query}` : route
   uni.navigateTo({
     url,
-    fail: () => {
-      // TODO(HZYMiniAppStyle): 目标页未注册或跳转失败时的提示文案由后续页面任务补齐。
+    fail: (error) => {
+      console.warn('navigateTo failed', { url, error })
+      showToast('页面跳转失败')
     }
   })
+}
+
+function isNoticeClosedForSession() {
+  const storage = getH5SessionStorage()
+  if (storage) {
+    return storage.getItem(NOTICE_SESSION_KEY) === '1'
+  }
+  return noticeClosedInRuntime
+}
+
+function closeNoticeForSession() {
+  const storage = getH5SessionStorage()
+  if (storage) {
+    storage.setItem(NOTICE_SESSION_KEY, '1')
+    return
+  }
+  noticeClosedInRuntime = true
+}
+
+function getH5SessionStorage() {
+  if (typeof window === 'undefined' || !window.sessionStorage) {
+    return null
+  }
+  return window.sessionStorage
 }
 
 function showToast(title) {
@@ -771,6 +799,10 @@ function getOptionCount(group, value) {
     if (group === 'progress') return merchant.status === value
     return false
   }).length
+}
+
+function getMarketingTags(merchant) {
+  return Array.isArray(merchant?.marketing_tags) ? merchant.marketing_tags : []
 }
 
 function matchesRegionFilter(merchant) {
