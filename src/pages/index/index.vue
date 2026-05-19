@@ -722,14 +722,17 @@ function showToast(title) {
 function formatWanAmount(value) {
   const number = Number(value)
   if (!Number.isFinite(number)) {
-    return '¥0.00万'
+    return '—'
   }
   return `¥${number.toFixed(2)}万`
 }
 
 function formatWanDelta(value) {
   const number = Number(value)
-  if (!Number.isFinite(number) || number === 0) {
+  if (!Number.isFinite(number)) {
+    return '—'
+  }
+  if (number === 0) {
     return '¥0.00万'
   }
   const sign = number > 0 ? '+' : '-'
@@ -813,7 +816,7 @@ function createMockMerchants(count) {
   const statuses = ['未达标', '已达标', '已有效']
   const admissionStatuses = ['准入成功', '准入失败', '已补贴', '无补贴']
   const types = ['正餐餐饮', '饮品甜点', '商超购物', '社区便利', '美容美发', '医疗保健']
-  const aumLevels = ['AUM1-10万', 'AUM10-100万', 'AUM100万以上']
+  const aumLevels = ['AUM 1万（含）-10万（不含）', 'AUM 10万（含）-100万（不含）', 'AUM 100万及以上']
   const tagGroups = [
     ['首期二访'],
     ['二访'],
