@@ -162,27 +162,26 @@ onShow(() => {
 })
 
 const displayProfile = computed(() => ({
-  user_name: formatText(userState.profile.user_name),
-  employee_id: formatText(userState.profile.employee_id),
-  job_level: formatText(userState.profile.job_level),
-  phone: formatText(userState.profile.phone),
-  email: formatText(userState.profile.email),
+  user_name: normalizeDisplayText(userState.profile.user_name),
+  employee_id: normalizeDisplayText(userState.profile.employee_id),
+  job_level: normalizeDisplayText(userState.profile.job_level),
+  phone: normalizeDisplayText(userState.profile.phone),
+  email: normalizeDisplayText(userState.profile.email),
   join_date: formatDate(userState.profile.join_date),
-  org_branch: formatText(userState.profile.org_branch),
-  org_sub_branch: formatText(userState.profile.org_sub_branch),
-  position: formatText(userState.profile.position),
-  level: formatText(userState.profile.level)
+  org_branch: normalizeDisplayText(userState.profile.org_branch),
+  org_sub_branch: normalizeDisplayText(userState.profile.org_sub_branch),
+  position: normalizeDisplayText(userState.profile.position),
+  level: normalizeDisplayText(userState.profile.level)
 }))
 
 const profileMeta = computed(() => {
-  const parts = [userState.profile.org_sub_branch, userState.profile.position]
-    .map(formatText)
+  const parts = [displayProfile.value.org_sub_branch, displayProfile.value.position]
     .filter((value) => value !== EMPTY_TEXT)
   return parts.length ? parts.join(' · ') : EMPTY_TEXT
 })
 
-const normalizedPhone = computed(() => String(userState.profile.phone || '').replace(/\s/g, ''))
-const normalizedEmail = computed(() => String(userState.profile.email || '').trim())
+const normalizedPhone = computed(() => normalizeRawText(userState.profile.phone).replace(/\s/g, ''))
+const normalizedEmail = computed(() => normalizeRawText(userState.profile.email))
 
 function handlePhoneTap() {
   const phone = normalizedPhone.value
@@ -204,6 +203,9 @@ function handlePhoneTap() {
           showToast('拨号暂不可用')
         }
       })
+    },
+    fail: () => {
+      showToast('拨号暂不可用')
     }
   })
 }
@@ -231,8 +233,15 @@ function handleLogoutTap() {
       if (!result.confirm) {
         return
       }
-      clearUserSession()
-      showToast('已退出登录')
+      try {
+        clearUserSession()
+        showToast('已退出登录')
+      } catch (error) {
+        showToast('退出暂不可用')
+      }
+    },
+    fail: () => {
+      showToast('退出暂不可用')
     }
   })
 }
@@ -243,14 +252,27 @@ function handleMenuAction(actionId) {
   }
 }
 
-function formatText(value) {
-  const text = value === null || value === undefined ? '' : String(value).trim()
-  return text ? text : EMPTY_TEXT
+function normalizeDisplayText(value) {
+  return isEmptyDisplayValue(value) ? EMPTY_TEXT : String(value).trim()
+}
+
+function normalizeRawText(value) {
+  return isEmptyDisplayValue(value) ? '' : String(value).trim()
+}
+
+function isEmptyDisplayValue(value) {
+  if (value === null || value === undefined) {
+    return true
+  }
+  const text = String(value).trim()
+  return !text || text === '-' || ['null', 'undefined'].includes(text.toLowerCase())
 }
 
 function formatDate(value) {
-  const text = value === null || value === undefined ? '' : String(value).trim()
-  if (!text) return EMPTY_TEXT
+  const text = normalizeRawText(value)
+  if (!text) {
+    return EMPTY_TEXT
+  }
   const directMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})/)
   if (directMatch) {
     return `${directMatch[1]}-${directMatch[2]}-${directMatch[3]}`

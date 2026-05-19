@@ -2,6 +2,16 @@ import { reactive } from 'vue'
 
 export const USER_PROFILE_STORAGE_KEY = 'hzy_user_profile'
 
+const AUTH_TOKEN_STORAGE_KEYS = [
+  'hzy_auth_token',
+  'hzy_refresh_token',
+  'hzy_access_token',
+  'hzy_token',
+  'token',
+  'access_token',
+  'refresh_token'
+]
+
 export const USER_PROFILE_FIELD_KEYS = [
   'user_name',
   'employee_id',
@@ -16,13 +26,7 @@ export const USER_PROFILE_FIELD_KEYS = [
 ]
 
 export const USER_SESSION_STORAGE_KEYS = [
-  'hzy_auth_token',
-  'hzy_refresh_token',
-  'hzy_access_token',
-  'hzy_token',
-  'token',
-  'access_token',
-  'refresh_token',
+  ...AUTH_TOKEN_STORAGE_KEYS,
   USER_PROFILE_STORAGE_KEY,
   'hzy_user_cache',
   'hzy_user_info',
@@ -49,20 +53,16 @@ export function hydrateUserState() {
 
 export function clearUserSession() {
   try {
-    uni.clearStorageSync()
-  } catch (error) {
-    USER_SESSION_STORAGE_KEYS.forEach((key) => removeStorageValue(key))
+    clearUniStorage()
+    USER_SESSION_STORAGE_KEYS.forEach((key) => {
+      removeH5StorageValue('localStorage', key)
+      removeH5StorageValue('sessionStorage', key)
+    })
+    clearH5SessionStorage()
+  } finally {
+    Object.assign(userState.profile, createEmptyUserProfile())
+    userState.isLoggedIn = false
   }
-
-  USER_SESSION_STORAGE_KEYS.forEach((key) => {
-    removeStorageValue(key)
-    removeH5StorageValue('localStorage', key)
-    removeH5StorageValue('sessionStorage', key)
-  })
-  clearH5SessionStorage()
-
-  Object.assign(userState.profile, createEmptyUserProfile())
-  userState.isLoggedIn = false
 }
 
 export function createEmptyUserProfile() {
@@ -75,8 +75,7 @@ export function createEmptyUserProfile() {
 function normalizeUserProfile(value) {
   const source = isPlainObject(value) ? value : {}
   return USER_PROFILE_FIELD_KEYS.reduce((profile, key) => {
-    const fieldValue = source[key]
-    profile[key] = fieldValue === null || fieldValue === undefined ? '' : String(fieldValue).trim()
+    profile[key] = normalizeProfileFieldValue(source[key])
     return profile
   }, { ...emptyProfile })
 }
@@ -93,9 +92,7 @@ function hasAnyProfileValue(profile) {
 }
 
 function hasAnyToken() {
-  return USER_SESSION_STORAGE_KEYS
-    .filter((key) => key.includes('token'))
-    .some((key) => Boolean(readStorageValue(key)))
+  return AUTH_TOKEN_STORAGE_KEYS.some((key) => Boolean(readStorageValue(key)))
 }
 
 function readStorageValue(key) {
@@ -126,31 +123,70 @@ function removeStorageValue(key) {
 }
 
 function readH5StorageValue(type, key) {
-  const storage = getH5Storage(type)
-  return storage ? storage.getItem(key) : ''
+  try {
+    const storage = getH5Storage(type)
+    return storage ? storage.getItem(key) : ''
+  } catch (error) {
+    return ''
+  }
 }
 
 function removeH5StorageValue(type, key) {
-  const storage = getH5Storage(type)
-  if (storage) {
-    storage.removeItem(key)
+  try {
+    const storage = getH5Storage(type)
+    if (storage) {
+      storage.removeItem(key)
+    }
+  } catch (error) {
+    // noop: userState is reset in clearUserSession finally.
   }
 }
 
 function clearH5SessionStorage() {
-  const storage = getH5Storage('sessionStorage')
-  if (storage) {
-    storage.clear()
+  try {
+    const storage = getH5Storage('sessionStorage')
+    if (storage) {
+      storage.clear()
+    }
+  } catch (error) {
+    // noop: userState is reset in clearUserSession finally.
   }
 }
 
 function getH5Storage(type) {
-  if (typeof window === 'undefined' || !window[type]) {
+  try {
+    if (typeof window === 'undefined' || !window[type]) {
+      return null
+    }
+    return window[type]
+  } catch (error) {
     return null
   }
-  return window[type]
 }
 
 function isPlainObject(value) {
   return Object.prototype.toString.call(value) === '[object Object]'
+}
+
+function clearUniStorage() {
+  try {
+    uni.clearStorageSync()
+  } catch (error) {
+    USER_SESSION_STORAGE_KEYS.forEach((key) => removeStorageValue(key))
+  }
+}
+
+function normalizeProfileFieldValue(value) {
+  if (isEmptyProfileValue(value)) {
+    return ''
+  }
+  return String(value).trim()
+}
+
+function isEmptyProfileValue(value) {
+  if (value === null || value === undefined) {
+    return true
+  }
+  const text = String(value).trim()
+  return !text || text === '-' || ['null', 'undefined'].includes(text.toLowerCase())
 }
