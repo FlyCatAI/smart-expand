@@ -75,10 +75,6 @@ function rejectMock(message, options) {
 }
 
 function normalizeMerchantId(merchantId) {
-  if (merchantId === undefined || merchantId === null) {
-    return DEFAULT_MERCHANT_ID
-  }
-
   if (typeof merchantId !== 'string' || merchantId.trim() === '') {
     return null
   }
@@ -98,7 +94,7 @@ function normalizePositiveInteger(value, fallback) {
   return value
 }
 
-export function fetchMerchantDetail(merchantId = DEFAULT_MERCHANT_ID, options = {}) {
+export function fetchMerchantDetail(merchantId, options = {}) {
   const normalizedMerchantId = normalizeMerchantId(merchantId)
 
   if (!normalizedMerchantId) {

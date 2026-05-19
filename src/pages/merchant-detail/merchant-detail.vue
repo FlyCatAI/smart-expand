@@ -141,7 +141,6 @@
 
 <script>
 import MerchantProductState from '../../components/MerchantProductState.vue'
-import { DEFAULT_MERCHANT_ID } from '../../fixtures/merchant-detail.js'
 import { dialMerchant, fetchMerchantDetail } from '../../services/merchantService.js'
 import { formatWanAmount } from '../../utils/money.js'
 import { buildQuotaRows } from '../../utils/subsidyTiers.js'
@@ -155,7 +154,7 @@ export default {
   },
   data() {
     return {
-      merchantId: DEFAULT_MERCHANT_ID,
+      merchantId: undefined,
       merchant: null,
       loading: false,
       loadFailed: false,
@@ -227,7 +226,7 @@ export default {
     }
   },
   onLoad(options = {}) {
-    this.merchantId = options.merchantId ? decodeURIComponent(options.merchantId) : DEFAULT_MERCHANT_ID
+    this.merchantId = options.merchantId ? decodeURIComponent(options.merchantId) : undefined
     this.loadMerchantDetail()
   },
   methods: {

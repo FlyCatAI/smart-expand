@@ -80,17 +80,28 @@ for (const input of invalidTierInputs) {
   assert.equal(tier, null, `invalid monthlyAvgBalance=${String(input)}`)
 }
 
-await assert.rejects(
-  () => fetchMerchantDetail(''),
-  (error) => error.statusCode === 400 && error.code === 'MOCK_BAD_REQUEST'
-)
+const invalidMerchantDetailCases = [
+  ['missing argument', () => fetchMerchantDetail()],
+  ['undefined merchantId', () => fetchMerchantDetail(undefined)],
+  ['null merchantId', () => fetchMerchantDetail(null)],
+  ['empty merchantId', () => fetchMerchantDetail('')]
+]
+
+for (const [label, request] of invalidMerchantDetailCases) {
+  await assert.rejects(
+    request,
+    (error) => error.statusCode === 400 && error.code === 'MOCK_BAD_REQUEST',
+    `fetchMerchantDetail ${label}`
+  )
+}
+
 await assert.rejects(
   () => fetchMerchantDetail('missing'),
   (error) => error.statusCode === 404 && error.code === 'MOCK_NOT_FOUND'
 )
 
-const defaultMerchant = await fetchMerchantDetail()
-assert.equal(defaultMerchant.merchant_id, 'merchant-with-product')
+const merchantWithProduct = await fetchMerchantDetail('merchant-with-product')
+assert.equal(merchantWithProduct.merchant_id, 'merchant-with-product')
 
 const defaultDynamics = await fetchMerchantDynamics({ merchantId: 'merchant-with-product' })
 assert.equal(defaultDynamics.page, 1)
