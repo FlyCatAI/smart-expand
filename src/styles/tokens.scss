@@ -1,0 +1,84 @@
+/* Source: docs/prd/prototypes/慧展业_我的中心_20260427.html */
+
+:root,
+page {
+  /* Color tokens copied from the prototype Tailwind config. */
+  --color-primary: #003B99;
+  --color-primary-container: #1A52BF;
+  --color-on-primary: #FFFFFF;
+  --color-surface: #F7F9FC;
+  --color-surface-container-lowest: #FFFFFF;
+  --color-surface-container-low: #F2F4F7;
+  --color-surface-container: #ECEEF1;
+  --color-surface-container-high: #E6E8EB;
+  --color-surface-container-highest: #E0E3E6;
+  --color-on-surface: #191C1E;
+  --color-on-surface-variant: #434653;
+  --color-outline: #737685;
+  --color-outline-variant: #C3C6D5;
+  --color-secondary: #4E5D88;
+  --color-secondary-container: #BFCEFF;
+  --color-on-secondary-container: #485781;
+  --color-tertiary: #732B00;
+  --color-tertiary-container: #993C00;
+  --color-tertiary-fixed: #FFDBCC;
+  --color-on-tertiary: #FFFFFF;
+  --color-on-tertiary-fixed: #351000;
+  --color-error: #BA1A1A;
+  --color-error-container: #FFDAD6;
+  --color-on-error: #FFFFFF;
+  --color-on-error-container: #93000A;
+
+  /* Semantic aliases keep later page styles token-only without inventing colors. */
+  --color-warning: var(--color-tertiary);
+  --color-warning-container: var(--color-tertiary-fixed);
+  --color-on-warning: var(--color-on-tertiary);
+  --color-on-warning-container: var(--color-on-tertiary-fixed);
+  --color-danger: var(--color-error);
+  --color-danger-container: var(--color-error-container);
+  --color-on-danger: var(--color-on-error);
+  --color-on-danger-container: var(--color-on-error-container);
+
+  /* Dark slots are reserved only; no theme switching is implemented in this task. */
+  --color-dark-primary: var(--color-primary);
+  --color-dark-primary-container: var(--color-primary-container);
+  --color-dark-surface: var(--color-surface);
+  --color-dark-surface-container: var(--color-surface-container);
+  --color-dark-on-surface: var(--color-on-surface);
+  --color-dark-on-surface-variant: var(--color-on-surface-variant);
+  --color-dark-outline: var(--color-outline);
+  --color-dark-outline-variant: var(--color-outline-variant);
+  --color-dark-warning: var(--color-warning);
+  --color-dark-danger: var(--color-danger);
+
+  /* Radius tokens copied from the prototype Tailwind config. */
+  --radius-default: 0.25rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Font tokens from the prototype Tailwind config and observed Tailwind text scale. */
+  --font-family-headline: "Manrope", sans-serif;
+  --font-family-body: "Inter", sans-serif;
+  --font-family-label: "Inter", sans-serif;
+  --font-size-2xs: 10px;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+
+  /* Motion tokens copied from the prototype :root block. */
+  --motion-duration-short: 100ms;
+  --motion-duration-medium: 200ms;
+  --motion-duration-long: 350ms;
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+  --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+}
+
