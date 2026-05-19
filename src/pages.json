@@ -3,7 +3,9 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "收单"
+        "navigationBarTitleText": "收单",
+        "enablePullDownRefresh": true,
+        "onReachBottomDistance": 80
       }
     },
     {
