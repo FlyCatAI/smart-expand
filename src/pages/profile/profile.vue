@@ -8,8 +8,8 @@
       <view class="profile-hero">
         <view class="profile-hero__avatar" aria-hidden="true"></view>
         <view class="profile-hero__body">
-          <text class="profile-hero__name">暂未配置</text>
-          <text class="profile-hero__meta">暂未配置 · 暂未配置</text>
+          <text class="profile-hero__name">{{ displayProfile.user_name }}</text>
+          <text class="profile-hero__meta">{{ profileMeta }}</text>
           <view class="profile-hero__tags">
             <text class="profile-hero__tag">零售</text>
             <text class="profile-hero__tag">收单</text>
@@ -20,12 +20,12 @@
       <view class="profile-performance">
         <view class="profile-performance__card">
           <view class="profile-performance__glyph profile-performance__glyph--primary" aria-hidden="true"></view>
-          <text class="profile-performance__value">¥{amount}</text>
+          <text class="profile-performance__value">{{ performanceSummary.monthlyAmount }}</text>
           <text class="profile-performance__label">本月绩效</text>
         </view>
         <view class="profile-performance__card">
           <view class="profile-performance__glyph profile-performance__glyph--warning" aria-hidden="true"></view>
-          <text class="profile-performance__value">第{rank}名</text>
+          <text class="profile-performance__value">{{ performanceSummary.aumRank }}</text>
           <text class="profile-performance__label">AUM排行</text>
         </view>
       </view>
@@ -34,45 +34,53 @@
         <view class="profile-info__grid">
           <view class="profile-info__item" data-field="user_name">
             <text class="profile-info__label">真实姓名</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.user_name }}</text>
           </view>
           <view class="profile-info__item" data-field="employee_id">
             <text class="profile-info__label">工号</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.employee_id }}</text>
           </view>
           <view class="profile-info__item" data-field="job_level">
             <text class="profile-info__label">职级</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.job_level }}</text>
           </view>
           <view class="profile-info__item" data-field="phone">
             <text class="profile-info__label">手机号</text>
-            <!-- TODO(GRA-55): bind phone confirmation before native dialing. -->
-            <button class="profile-info__value profile-info__value--action">暂未配置</button>
+            <button
+              class="profile-info__value profile-info__value--action"
+              @click="handlePhoneTap"
+            >
+              {{ displayProfile.phone }}
+            </button>
           </view>
           <view class="profile-info__item" data-field="email">
             <text class="profile-info__label">邮箱地址</text>
-            <!-- TODO(GRA-55): bind email copy or edit behavior if required. -->
-            <button class="profile-info__value profile-info__value--action">暂未配置</button>
+            <button
+              class="profile-info__value profile-info__value--action"
+              @click="handleEmailTap"
+            >
+              {{ displayProfile.email }}
+            </button>
           </view>
           <view class="profile-info__item" data-field="join_date">
             <text class="profile-info__label">入职日期</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.join_date }}</text>
           </view>
           <view class="profile-info__item" data-field="org_branch">
             <text class="profile-info__label">所属分行</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.org_branch }}</text>
           </view>
           <view class="profile-info__item" data-field="org_sub_branch">
             <text class="profile-info__label">所属支行</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.org_sub_branch }}</text>
           </view>
           <view class="profile-info__item" data-field="position">
             <text class="profile-info__label">职位</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.position }}</text>
           </view>
           <view class="profile-info__item" data-field="level">
             <text class="profile-info__label">级别</text>
-            <text class="profile-info__value">暂未配置</text>
+            <text class="profile-info__value">{{ displayProfile.level }}</text>
           </view>
         </view>
       </view>
@@ -80,7 +88,7 @@
       <view class="profile-section">
         <text class="profile-section__title">我的工具</text>
         <view class="profile-menu">
-          <view class="profile-menu__item">
+          <view class="profile-menu__item" @click="handleMenuAction('performance_detail')">
             <view class="profile-menu__icon profile-menu__icon--primary" aria-hidden="true"></view>
             <view class="profile-menu__body">
               <text class="profile-menu__title">绩效明细</text>
@@ -88,7 +96,7 @@
             </view>
             <view class="profile-menu__chevron" aria-hidden="true"></view>
           </view>
-          <view class="profile-menu__item">
+          <view class="profile-menu__item" @click="handleMenuAction('retail_ranking')">
             <view class="profile-menu__icon profile-menu__icon--warning" aria-hidden="true"></view>
             <view class="profile-menu__body">
               <text class="profile-menu__title">零售排行榜</text>
@@ -102,17 +110,17 @@
       <view class="profile-section">
         <text class="profile-section__title">设置</text>
         <view class="profile-menu">
-          <view class="profile-menu__item">
+          <view class="profile-menu__item" @click="handleMenuAction('notification_settings')">
             <view class="profile-menu__icon" aria-hidden="true"></view>
             <text class="profile-menu__title profile-menu__title--solo">消息通知</text>
             <view class="profile-menu__chevron" aria-hidden="true"></view>
           </view>
-          <view class="profile-menu__item">
+          <view class="profile-menu__item" @click="handleMenuAction('privacy_settings')">
             <view class="profile-menu__icon" aria-hidden="true"></view>
             <text class="profile-menu__title profile-menu__title--solo">隐私设置</text>
             <view class="profile-menu__chevron" aria-hidden="true"></view>
           </view>
-          <view class="profile-menu__item">
+          <view class="profile-menu__item" @click="handleMenuAction('about')">
             <view class="profile-menu__icon" aria-hidden="true"></view>
             <text class="profile-menu__title profile-menu__title--solo">关于我们</text>
             <view class="profile-menu__chevron" aria-hidden="true"></view>
@@ -124,15 +132,193 @@
         <text>版本号 v1.0.0</text>
       </view>
 
-      <!-- TODO(GRA-55): bind logout confirmation and cleanup flow. -->
-      <button class="profile-logout">退出登录</button>
+      <button class="profile-logout" @click="handleLogoutTap">退出登录</button>
     </view>
   </view>
 </template>
 
-<style lang="scss" scoped>
-@use "@/styles/tokens.scss";
+<script setup>
+import { computed } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
+import {
+  clearUserSession,
+  hydrateUserState,
+  userState
+} from '../../stores/user'
 
+const EMPTY_TEXT = '暂未配置'
+const PHONE_PATTERN = /^1[3-9]\d{9}$/
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const HOME_PAGE_URL = '/pages/index/index'
+const PLACEHOLDER_MENU_ACTIONS = new Set([
+  'performance_detail',
+  'retail_ranking',
+  'notification_settings',
+  'privacy_settings',
+  'about'
+])
+
+onShow(() => {
+  hydrateUserState()
+})
+
+const displayProfile = computed(() => ({
+  user_name: normalizeDisplayText(userState.profile.user_name),
+  employee_id: normalizeDisplayText(userState.profile.employee_id),
+  job_level: normalizeDisplayText(userState.profile.job_level),
+  phone: normalizeDisplayText(userState.profile.phone),
+  email: normalizeDisplayText(userState.profile.email),
+  join_date: formatDate(userState.profile.join_date),
+  org_branch: normalizeDisplayText(userState.profile.org_branch),
+  org_sub_branch: normalizeDisplayText(userState.profile.org_sub_branch),
+  position: normalizeDisplayText(userState.profile.position),
+  level: normalizeDisplayText(userState.profile.level)
+}))
+
+const profileMeta = computed(() => {
+  const parts = [displayProfile.value.org_sub_branch, displayProfile.value.position]
+    .filter((value) => value !== EMPTY_TEXT)
+  return parts.length ? parts.join(' · ') : EMPTY_TEXT
+})
+
+const performanceSummary = computed(() => ({
+  monthlyAmount: EMPTY_TEXT,
+  aumRank: EMPTY_TEXT
+}))
+
+const normalizedPhone = computed(() => normalizeRawText(userState.profile.phone).replace(/\s/g, ''))
+const normalizedEmail = computed(() => normalizeRawText(userState.profile.email))
+
+function handlePhoneTap() {
+  const phone = normalizedPhone.value
+  if (!phone) {
+    showToast('手机号为空，无法拨打')
+    return
+  }
+
+  if (!PHONE_PATTERN.test(phone)) {
+    showToast('手机号格式有误，无法拨打')
+    return
+  }
+
+  uni.showModal({
+    title: '拨打电话',
+    content: `确定拨打 ${phone} 吗？`,
+    cancelText: '取消',
+    confirmText: '拨打',
+    success: (result) => {
+      if (!result.confirm) {
+        return
+      }
+      uni.makePhoneCall({
+        phoneNumber: phone,
+        fail: () => {
+          showToast('服务异常，请稍后重试')
+        }
+      })
+    },
+    fail: () => {
+      showToast('服务异常，请稍后重试')
+    }
+  })
+}
+
+function handleEmailTap() {
+  const email = normalizedEmail.value
+  if (!EMAIL_PATTERN.test(email)) {
+    return
+  }
+
+  uni.setClipboardData({
+    data: email
+  })
+}
+
+function handleLogoutTap() {
+  uni.showModal({
+    title: '退出登录',
+    content: '确定退出登录吗？',
+    cancelText: '取消',
+    confirmText: '确定',
+    success: (result) => {
+      if (!result.confirm) {
+        return
+      }
+      try {
+        clearUserSession()
+        showToast('已退出登录')
+        resetToLoginState()
+      } catch (error) {
+        showToast('服务异常，请稍后重试')
+      }
+    },
+    fail: () => {
+      showToast('服务异常，请稍后重试')
+    }
+  })
+}
+
+function handleMenuAction(actionId) {
+  if (PLACEHOLDER_MENU_ACTIONS.has(actionId)) {
+    showToast(EMPTY_TEXT)
+  }
+}
+
+function resetToLoginState() {
+  uni.switchTab({
+    url: HOME_PAGE_URL,
+    fail: () => {
+      showToast('服务异常，请稍后重试')
+    }
+  })
+}
+
+function normalizeDisplayText(value) {
+  return isEmptyDisplayValue(value) ? EMPTY_TEXT : String(value).trim()
+}
+
+function normalizeRawText(value) {
+  return isEmptyDisplayValue(value) ? '' : String(value).trim()
+}
+
+function isEmptyDisplayValue(value) {
+  if (value === null || value === undefined) {
+    return true
+  }
+  const text = String(value).trim()
+  return !text || text === '-' || ['null', 'undefined'].includes(text.toLowerCase())
+}
+
+function formatDate(value) {
+  const text = normalizeRawText(value)
+  if (!text) {
+    return EMPTY_TEXT
+  }
+  const directMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (directMatch) {
+    return `${directMatch[1]}-${directMatch[2]}-${directMatch[3]}`
+  }
+  const date = new Date(text)
+  if (Number.isNaN(date.getTime())) {
+    return EMPTY_TEXT
+  }
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0')
+  ].join('-')
+}
+
+function showToast(title) {
+  if (!title) return
+  uni.showToast({
+    title,
+    icon: 'none'
+  })
+}
+</script>
+
+<style lang="scss" scoped>
 .profile-page {
   min-height: 100vh;
   overflow-x: hidden;
