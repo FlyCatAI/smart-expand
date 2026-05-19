@@ -63,6 +63,68 @@
       --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
       --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
       --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+      --color-primary: #003B99;
+      --color-primary-container: #1A52BF;
+      --color-surface: #F7F9FC;
+      --color-surface-container-low: #F2F4F7;
+      --color-surface-container: #ECEEF1;
+      --color-surface-container-high: #E6E8EB;
+      --color-surface-container-highest: #E0E3E6;
+      --color-surface-container-lowest: #FFFFFF;
+      --color-on-surface: #191C1E;
+      --color-on-surface-variant: #434653;
+      --color-outline-variant: #C3C6D5;
+      --color-outline: #737685;
+      --color-error: #BA1A1A;
+      --color-on-primary: #FFFFFF;
+      --color-positive: #047857;
+      --color-positive-container: #DCFCE7;
+      --color-negative: #B91C1C;
+      --color-negative-container: #FEE2E2;
+      --color-warning: #B45309;
+      --color-warning-container: #FEF3C7;
+      --color-info: #1D4ED8;
+      --color-info-container: #DBEAFE;
+      --color-neutral-container: #E5E7EB;
+      --color-overlay: rgba(17, 24, 39, 0.35);
+      --elevation-card: 0 10px 24px rgba(15, 23, 42, 0.08);
+      --elevation-raised: 0 16px 36px rgba(15, 23, 42, 0.14);
+      --elevation-nav: 0 -12px 28px rgba(15, 23, 42, 0.08);
+      --color-kpi-positive: #A7F3D0;
+      --safe-bottom: env(safe-area-inset-bottom);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-primary: #9DBBFF;
+        --color-primary-container: #2E5EBF;
+        --color-surface: #101418;
+        --color-surface-container-low: #171B20;
+        --color-surface-container: #1D232A;
+        --color-surface-container-high: #252B33;
+        --color-surface-container-highest: #303741;
+        --color-surface-container-lowest: #14181D;
+        --color-on-surface: #EEF2F7;
+        --color-on-surface-variant: #C4CAD5;
+        --color-outline-variant: #4B5563;
+        --color-outline: #8B95A4;
+        --color-error: #FFB4AB;
+        --color-on-primary: #061A3D;
+        --color-positive: #86EFAC;
+        --color-positive-container: #123D2C;
+        --color-negative: #FCA5A5;
+        --color-negative-container: #4A1717;
+        --color-warning: #FCD34D;
+        --color-warning-container: #46320A;
+        --color-info: #93C5FD;
+        --color-info-container: #102E58;
+        --color-neutral-container: #374151;
+        --color-overlay: rgba(0, 0, 0, 0.62);
+        --elevation-card: 0 10px 28px rgba(0, 0, 0, 0.24);
+        --elevation-raised: 0 16px 40px rgba(0, 0, 0, 0.34);
+        --elevation-nav: 0 -12px 28px rgba(0, 0, 0, 0.24);
+        --color-kpi-positive: #BBF7D0;
+      }
     }
 
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
@@ -113,8 +175,8 @@
       transition: background var(--motion-duration-short) var(--motion-easing-standard),
                   border-color var(--motion-duration-short) var(--motion-easing-standard);
     }
-    .action-btn:hover { background: var(--color-primary-container, #1A52BF)22; border-color: var(--color-primary, #003B99); }
-    .action-btn:active { background: var(--color-primary-container, #1A52BF)33; }
+    .action-btn:hover { background: color-mix(in srgb, var(--color-primary-container) 12%, transparent); border-color: var(--color-primary, #003B99); }
+    .action-btn:active { background: color-mix(in srgb, var(--color-primary-container) 18%, transparent); }
 
     /* ========== Router ======== */
     .page { display: none; }
@@ -133,14 +195,276 @@
       /* M3: dividers use outline-variant at 50% opacity, no full border */
       box-shadow: inset 0 -1px 0 var(--color-outline-variant, #C3C6D0);
     }
-    .opp-badge { position: absolute; top: 12px; right: 12px; background: #fdeceb; border-radius: 12px; padding: 0 12px; height: 24px; display: flex; align-items: center; }
-    .opp-badge-text { font-size: 11px; color: #eb4448; font-weight: 500; line-height: 1; }
+    .opp-badge { position: absolute; top: 12px; right: 12px; background: var(--color-negative-container); border-radius: 12px; padding: 0 10px; min-width: 32px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .opp-badge-text { font-size: 11px; color: var(--color-negative); font-weight: 700; line-height: 1; }
+
+    /* ========== Acquiring Workbench Home Styles ========== */
+    .workbench-topbar {
+      background: color-mix(in srgb, var(--color-surface-container-lowest) 88%, transparent);
+      box-shadow: 0 1px 0 color-mix(in srgb, var(--color-outline-variant) 70%, transparent), var(--elevation-card);
+    }
+    .workbench-shell {
+      width: 100%;
+      box-sizing: border-box;
+      overflow-x: clip;
+      background:
+        radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 28rem),
+        var(--color-surface);
+    }
+    .workbench-topbar .text-on-surface,
+    .workbench-shell .text-on-surface { color: var(--color-on-surface); }
+    .workbench-topbar .text-on-surface-variant,
+    .workbench-shell .text-on-surface-variant { color: var(--color-on-surface-variant); }
+    .workbench-topbar .text-primary,
+    .workbench-shell .text-primary { color: var(--color-primary); }
+    .workbench-shell .bg-surface-container { background-color: var(--color-surface-container); }
+    .workbench-shell .bg-surface-container-lowest { background-color: var(--color-surface-container-lowest); }
+    .workbench-shell .bg-surface-container-highest { background-color: var(--color-surface-container-highest); }
+    .quick-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .quick-card {
+      min-width: 0;
+      min-height: 104px;
+      border: 1px solid color-mix(in srgb, var(--color-outline-variant) 58%, transparent);
+      background: var(--color-surface-container-lowest);
+      box-shadow: var(--elevation-card);
+    }
+    .quick-card__icon {
+      background: color-mix(in srgb, var(--color-primary-container) 12%, var(--color-surface-container-lowest));
+      color: var(--color-primary);
+      border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+    }
+    .quick-card__icon .material-symbols-outlined { color: inherit; }
+    .quick-card__icon--warning {
+      background: var(--color-warning-container);
+      color: var(--color-warning);
+      border-color: color-mix(in srgb, var(--color-warning) 32%, transparent);
+    }
+    .quick-card__icon--positive {
+      background: var(--color-positive-container);
+      color: var(--color-positive);
+      border-color: color-mix(in srgb, var(--color-positive) 30%, transparent);
+    }
+    .quick-card__icon--info {
+      background: var(--color-info-container);
+      color: var(--color-info);
+      border-color: color-mix(in srgb, var(--color-info) 30%, transparent);
+    }
+    .kpi-card {
+      position: relative;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-container));
+      box-shadow: var(--elevation-raised);
+      overflow: hidden;
+    }
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -48px -58px auto;
+      width: 172px;
+      height: 172px;
+      border-radius: 9999px;
+      background: color-mix(in srgb, var(--color-on-primary) 10%, transparent);
+      pointer-events: none;
+    }
+    .kpi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .kpi-item {
+      min-width: 0;
+      border-radius: 16px;
+      padding: 10px 4px;
+      background: color-mix(in srgb, var(--color-on-primary) 10%, transparent);
+    }
+    .metric-positive { color: var(--color-positive); }
+    .metric-negative { color: var(--color-negative); }
+    .metric-neutral { color: var(--color-on-surface-variant); }
+    .kpi-card .metric-positive { color: var(--color-kpi-positive); }
+    .notice-banner {
+      border: 1px solid color-mix(in srgb, var(--color-outline-variant) 56%, transparent);
+      background: var(--color-surface-container);
+      box-shadow: var(--elevation-card);
+    }
+    .notice-banner__title {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      white-space: normal;
+      word-break: break-word;
+    }
+    .utility-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      overflow: visible;
+      padding-block: 2px 8px;
+    }
+    .utility-card {
+      min-width: 0;
+      min-height: 76px;
+      padding-inline: 6px;
+      border: 1px solid color-mix(in srgb, var(--color-outline-variant) 52%, transparent);
+      background: var(--color-surface-container-lowest);
+    }
+    .utility-card .material-symbols-outlined { color: var(--color-primary); }
+    .notification-btn {
+      color: var(--color-on-surface-variant);
+      background: transparent;
+    }
+    .notification-btn:hover { background: var(--color-surface-container); }
+    .search-panel {
+      border: 1px solid color-mix(in srgb, var(--color-outline-variant) 58%, transparent);
+      background: var(--color-surface-container-lowest);
+      box-shadow: var(--elevation-card);
+    }
+    .merchant-card {
+      border: 1px solid color-mix(in srgb, var(--color-outline-variant) 56%, transparent);
+      background: var(--color-surface-container-lowest);
+      box-shadow: var(--elevation-card);
+    }
+    .merchant-card--attention {
+      border-left: 4px solid var(--color-warning);
+    }
+    .merchant-card__main { padding-right: 44px; }
+    .merchant-card__title-row { max-width: 100%; }
+    .merchant-card__title {
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+    .merchant-card__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      line-height: 1.25;
+    }
+    .merchant-card__aum {
+      min-width: 82px;
+      max-width: 112px;
+      overflow-wrap: anywhere;
+    }
+    .status-pill, .marketing-tag {
+      border-radius: 9999px;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+    .status-pill--active,
+    .status-pill--qualified {
+      color: var(--color-positive);
+      background: var(--color-positive-container);
+      border-color: color-mix(in srgb, var(--color-positive) 22%, transparent);
+    }
+    .status-pill--pending {
+      color: var(--color-on-surface-variant);
+      background: var(--color-neutral-container);
+      border-color: color-mix(in srgb, var(--color-outline) 28%, transparent);
+    }
+    .marketing-tag--followup {
+      color: var(--color-warning);
+      background: var(--color-warning-container);
+      border-color: color-mix(in srgb, var(--color-warning) 26%, transparent);
+    }
+    .marketing-tag--subsidy {
+      color: var(--color-info);
+      background: var(--color-info-container);
+      border-color: color-mix(in srgb, var(--color-info) 26%, transparent);
+    }
+    .marketing-tag--potential {
+      color: var(--color-positive);
+      background: var(--color-positive-container);
+      border-color: color-mix(in srgb, var(--color-positive) 26%, transparent);
+    }
+    .load-more-btn {
+      min-height: 40px;
+      color: var(--color-primary);
+      background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-container-lowest));
+      border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+    }
+    .state-card {
+      display: grid;
+      place-items: center;
+      gap: 10px;
+      min-height: 176px;
+      padding: 24px;
+      border: 1px dashed var(--color-outline-variant);
+      border-radius: 24px;
+      background: var(--color-surface-container-lowest);
+      color: var(--color-on-surface-variant);
+      text-align: center;
+    }
+    .state-card__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: var(--color-surface-container);
+      color: var(--color-primary);
+    }
+    .skeleton-line {
+      height: 12px;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, var(--color-surface-container), var(--color-surface-container-highest), var(--color-surface-container));
+      background-size: 220% 100%;
+      animation: skeleton-pulse 1.35s var(--motion-easing-standard) infinite;
+    }
+    @keyframes skeleton-pulse { to { background-position: -220% 0; } }
+    .filter-backdrop { background: var(--color-overlay); }
+    .filter-sheet {
+      max-width: 32rem;
+      margin-inline: auto;
+      max-height: min(86vh, 720px);
+      display: flex;
+      flex-direction: column;
+      background: var(--color-surface);
+    }
+    .filter-sheet__body {
+      overflow-y: auto;
+      padding-right: 2px;
+      overscroll-behavior: contain;
+    }
+    .filter-date-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px; align-items: center; }
+    .filter-actions {
+      position: sticky;
+      bottom: 0;
+      padding-top: 14px;
+      padding-bottom: max(0px, var(--safe-bottom));
+      background: linear-gradient(to top, var(--color-surface) 76%, color-mix(in srgb, var(--color-surface) 0%, transparent));
+    }
+    .bottom-nav {
+      overflow: hidden;
+      background: color-mix(in srgb, var(--color-surface-container-lowest) 92%, transparent);
+      border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 70%, transparent);
+      box-shadow: var(--elevation-nav);
+      padding-bottom: max(24px, calc(14px + var(--safe-bottom)));
+    }
+    .bottom-nav__item {
+      flex: 1 1 0;
+      min-width: 0;
+      color: var(--color-on-surface-variant);
+      padding-inline: 8px;
+    }
+    .bottom-nav__item--active {
+      color: var(--color-primary);
+      background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-container-lowest));
+    }
+
+    @media (max-width: 390px) {
+      .workbench-shell { padding-left: 16px; padding-right: 16px; }
+      .quick-grid { gap: 9px; }
+      .quick-card { min-height: 98px; padding-block: 14px; }
+      .kpi-grid { gap: 6px; }
+      .kpi-item { padding-inline: 2px; }
+      .merchant-card { padding: 14px; }
+      .merchant-card__main { padding-right: 34px; }
+      .merchant-card__header { flex-direction: column; gap: 10px; }
+      .merchant-card__aum { max-width: none; text-align: left; margin-left: 0; }
+      .filter-date-row { grid-template-columns: 1fr; }
+      .filter-date-row__separator { text-align: center; }
+    }
   </style>
 </head>
 <body class="bg-surface text-on-surface antialiased">
 
   <!-- TopAppBar -->
-  <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm h-16 flex justify-between items-center px-6">
+  <header class="workbench-topbar fixed top-0 w-full z-50 backdrop-blur-xl h-16 flex justify-between items-center px-6">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -152,35 +476,35 @@
       <span class="text-base font-headline font-semibold text-on-surface">收单工作台</span>
     </div>
     <div class="flex items-center gap-2">
-      <button class="p-2 rounded-full hover:bg-slate-100 transition-colors active:scale-95">
-        <span class="material-symbols-outlined text-slate-500 text-xl">notifications</span>
+      <button class="notification-btn p-2 rounded-full transition-colors active:scale-95">
+        <span class="material-symbols-outlined text-xl">notifications</span>
       </button>
     </div>
   </header>
 
   <!-- Main Content -->
-    <main id="page-home" class="page active pt-20 pb-28 px-5 max-w-lg mx-auto space-y-5">
+    <main id="page-home" class="workbench-shell page active pt-20 pb-28 px-5 max-w-lg mx-auto space-y-5">
 
     <!-- 第一行：快捷操作 新入网/商户查重/排行榜 -->
     <section>
-      <div class="flex gap-3">
+      <div class="quick-grid">
         <!-- 待补贴 -->
-        <a href="慧展业_待补贴商户.html" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-container/10 flex items-center justify-center">
+        <a href="慧展业_待补贴商户.html" class="quick-card flex flex-col items-center gap-2 py-4 rounded-2xl hover:shadow-md transition-all active:scale-95">
+          <div class="quick-card__icon w-12 h-12 rounded-2xl flex items-center justify-center">
             <span class="material-symbols-outlined text-primary text-2xl">person_add</span>
           </div>
           <span class="text-[11px] font-semibold text-on-surface tracking-wide">待补贴</span>
         </a>
         <!-- 商户查重 -->
-        <button onclick="openDuplicateModal()" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-container/10 flex items-center justify-center">
+        <button onclick="openDuplicateModal()" class="quick-card flex flex-col items-center gap-2 py-4 rounded-2xl hover:shadow-md transition-all active:scale-95">
+          <div class="quick-card__icon w-12 h-12 rounded-2xl flex items-center justify-center">
             <span class="material-symbols-outlined text-primary text-2xl">find_replace</span>
           </div>
           <span class="text-[11px] font-semibold text-on-surface tracking-wide">商户查重</span>
         </button>
         <!-- 排行榜 -->
-        <a href="慧展业_收单排行榜.html" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-primary-container/10 flex items-center justify-center">
+        <a href="慧展业_收单排行榜.html" class="quick-card flex flex-col items-center gap-2 py-4 rounded-2xl hover:shadow-md transition-all active:scale-95">
+          <div class="quick-card__icon w-12 h-12 rounded-2xl flex items-center justify-center">
             <span class="material-symbols-outlined text-primary text-2xl">leaderboard</span>
           </div>
           <span class="text-[11px] font-semibold text-on-surface tracking-wide">排行榜</span>
@@ -190,35 +514,35 @@
 
     <!-- 本月业绩 合并卡片 -->
     <section>
-      <div class="bg-gradient-to-br from-primary to-primary-container rounded-2xl p-5 shadow-sm">
+      <div class="kpi-card rounded-2xl p-5">
         <div class="flex items-center justify-between mb-4">
           <h2 class="font-headline font-bold text-sm text-white">本月业绩</h2>
           <span class="text-[10px] text-white/60">更新于 2026-04-27 10:00</span>
         </div>
-        <div class="grid grid-cols-4 gap-3">
+        <div class="kpi-grid grid">
           <!-- 本月收入 → 收入明细页 -->
-          <a href="慧展业_收入明细页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+          <a href="慧展业_收入明细页_20260427.html" class="kpi-item flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
             <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月收入</span>
             <p class="font-headline text-base font-bold text-white leading-none">¥28.56</p>
-            <p class="text-[10px] text-green-300 font-medium leading-none">+0.82</p>
+            <p class="metric-positive text-[10px] font-medium leading-none">+0.82</p>
           </a>
           <!-- 本月入网 → 历史业绩页 -->
-          <a href="慧展业_历史业绩页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+          <a href="慧展业_历史业绩页_20260427.html" class="kpi-item flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
             <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月入网</span>
             <p class="font-headline text-base font-bold text-white leading-none">45<span class="text-[10px] font-medium opacity-70 ml-0.5">户</span></p>
-            <p class="text-[10px] text-green-300 font-medium leading-none">+3</p>
+            <p class="metric-positive text-[10px] font-medium leading-none">+3</p>
           </a>
           <!-- 本月达标 → 历史业绩页 -->
-          <a href="慧展业_历史业绩页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+          <a href="慧展业_历史业绩页_20260427.html" class="kpi-item flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
             <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月达标</span>
             <p class="font-headline text-base font-bold text-white leading-none">38<span class="text-[10px] font-medium opacity-70 ml-0.5">户</span></p>
-            <p class="text-[10px] text-green-300 font-medium leading-none">+5</p>
+            <p class="metric-positive text-[10px] font-medium leading-none">+5</p>
           </a>
           <!-- 本月有效 → 历史业绩页 -->
-          <a href="慧展业_历史业绩页_20260427.html" class="flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
+          <a href="慧展业_历史业绩页_20260427.html" class="kpi-item flex flex-col items-center gap-1.5 cursor-pointer active:scale-95 transition-transform">
             <span class="text-[10px] font-semibold text-white/70 uppercase tracking-wider leading-tight text-center">本月有效</span>
             <p class="font-headline text-base font-bold text-white leading-none">42<span class="text-[10px] font-medium opacity-70 ml-0.5">/50</span></p>
-            <p class="text-[10px] text-green-300 font-medium leading-none">+1</p>
+            <p class="metric-positive text-[10px] font-medium leading-none">+1</p>
           </a>
         </div>
       </div>
@@ -226,7 +550,7 @@
 
     <!-- 动态栏 -->
     <section>
-      <div class="relative bg-surface-container rounded-2xl p-4 shadow-sm cursor-pointer active:scale-[0.99] transition-transform overflow-hidden">
+      <div class="notice-banner relative rounded-2xl p-4 cursor-pointer active:scale-[0.99] transition-transform overflow-hidden">
         <div class="absolute top-0 right-0 opacity-[0.06] pointer-events-none transform translate-x-4 -translate-y-4">
           <span class="material-symbols-outlined text-[7rem] text-on-surface">campaign</span>
         </div>
@@ -236,7 +560,7 @@
           </div>
           <div class="flex-1 min-w-0 flex items-center gap-2">
             <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-2 py-0.5 rounded-full flex-shrink-0">网点动态</span>
-            <p class="text-sm font-semibold leading-snug text-on-surface truncate">轻松解锁，领5元红包！</p>
+            <p class="notice-banner__title text-sm font-semibold leading-snug text-on-surface">轻松解锁，领5元红包！</p>
           </div>
           <button class="p-1 text-on-surface-variant hover:text-on-surface transition-colors flex-shrink-0">
             <span class="material-symbols-outlined text-lg">close</span>
@@ -247,25 +571,25 @@
 
     <!-- 第二行快捷操作：首期二访/潜力有效/高补贴回访 -->
     <section>
-      <div class="flex gap-3">
+      <div class="quick-grid">
         <!-- 首期二访 -->
-        <button id="btn-first-followup" onclick="toggleFilter('first-followup')" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
-          <div class="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center">
-            <span class="material-symbols-outlined text-amber-600 text-2xl">replay</span>
+        <button id="btn-first-followup" onclick="toggleFilter('first-followup')" class="quick-card flex flex-col items-center gap-2 py-4 rounded-2xl hover:shadow-md transition-all active:scale-95">
+          <div class="quick-card__icon quick-card__icon--warning w-12 h-12 rounded-2xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">replay</span>
           </div>
           <span class="text-[11px] font-semibold text-on-surface tracking-wide">首期二访</span>
         </button>
         <!-- 潜力有效 -->
-        <button id="btn-potential-active" onclick="toggleFilter('potential-active')" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
-          <div class="w-12 h-12 rounded-2xl bg-green-50 border-2 border-green-200 flex items-center justify-center">
-            <span class="material-symbols-outlined text-green-600 text-2xl">trending_up</span>
+        <button id="btn-potential-active" onclick="toggleFilter('potential-active')" class="quick-card flex flex-col items-center gap-2 py-4 rounded-2xl hover:shadow-md transition-all active:scale-95">
+          <div class="quick-card__icon quick-card__icon--positive w-12 h-12 rounded-2xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">trending_up</span>
           </div>
           <span class="text-[11px] font-semibold text-on-surface tracking-wide">潜力有效</span>
         </button>
         <!-- 高补贴回访 -->
-        <button id="btn-high-subsidy" onclick="toggleFilter('high-subsidy')" class="flex-1 flex flex-col items-center gap-2 py-4 bg-surface-container-lowest rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95">
-          <div class="w-12 h-12 rounded-2xl bg-blue-50 border-2 border-blue-200 flex items-center justify-center">
-            <span class="material-symbols-outlined text-blue-600 text-2xl">volunteer_activism</span>
+        <button id="btn-high-subsidy" onclick="toggleFilter('high-subsidy')" class="quick-card flex flex-col items-center gap-2 py-4 rounded-2xl hover:shadow-md transition-all active:scale-95">
+          <div class="quick-card__icon quick-card__icon--info w-12 h-12 rounded-2xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">volunteer_activism</span>
           </div>
           <span class="text-[11px] font-semibold text-on-surface tracking-wide">高补贴回访</span>
         </button>
@@ -274,36 +598,36 @@
 
     <!-- 快捷操作第三行：查询/商机/补贴/流水/筛选 -->
     <section>
-      <div class="flex gap-2 overflow-x-auto overflow-y-visible pb-1 no-scrollbar">
+      <div class="utility-strip no-scrollbar">
         <!-- 查询 -->
-        <button id="btn-search" onclick="toggleSearchInput()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+        <button id="btn-search" onclick="toggleSearchInput()" class="utility-card flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl hover:shadow-md transition-all">
           <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
             <span class="material-symbols-outlined text-on-surface-variant text-base">search</span>
           </div>
           <span class="text-[10px] font-semibold text-on-surface-variant">查询</span>
         </button>
         <!-- 商机 -->
-        <button id="btn-opportunity" onclick="sortByOpportunity()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+        <button id="btn-opportunity" onclick="sortByOpportunity()" class="utility-card flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl hover:shadow-md transition-all">
           <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
             <span class="material-symbols-outlined text-primary text-base">lightbulb</span>
           </div>
           <span class="text-[10px] font-semibold text-on-surface-variant">商机</span>
         </button>
         <!-- 补贴 -->
-        <button id="btn-subsidy" onclick="sortBySubsidy()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+        <button id="btn-subsidy" onclick="sortBySubsidy()" class="utility-card flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl hover:shadow-md transition-all">
           <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
             <span class="material-symbols-outlined text-primary text-base">payments</span>
           </div>
           <span class="text-[10px] font-semibold text-on-surface-variant">补贴</span>
         </button>
         <!-- 流水 -->
-        <button id="btn-transaction" onclick="sortByTransaction()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all">
+        <button id="btn-transaction" onclick="sortByTransaction()" class="utility-card flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl hover:shadow-md transition-all">
           <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
             <span class="material-symbols-outlined text-primary text-base">account_balance</span>
           </div>
           <span class="text-[10px] font-semibold text-on-surface-variant">流水</span>
         </button>
-        <button onclick="openFilterModal()" class="flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95 relative">
+        <button onclick="openFilterModal()" class="utility-card flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2.5 rounded-xl hover:shadow-md transition-all active:scale-95 relative">
           <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
             <span class="material-symbols-outlined text-primary text-base">filter_list</span>
           </div>
@@ -316,7 +640,7 @@
         <!-- 商户列表 -->
     <section>
       <!-- 展开的查询输入框（默认隐藏） -->
-      <div id="search-expand" class="hidden mb-3 bg-surface-container rounded-2xl p-3 shadow-sm">
+      <div id="search-expand" class="search-panel hidden mb-3 rounded-2xl p-3">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-primary text-xl">search</span>
           <input id="search-input" type="text" placeholder="输入商户名称搜索..." class="flex-1 bg-transparent border-none outline-none text-sm text-on-surface placeholder:text-on-surface-variant"/>
@@ -333,15 +657,15 @@
       <div id="merchant-list" class="space-y-3">
 
         <!-- 商户卡片 1: 已有效 -->
-        <a onclick="openMerchantDetail('时尚美发沙龙')" class="relative block bg-surface-container-lowest rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+        <a onclick="openMerchantDetail('时尚美发沙龙')" class="merchant-card relative block rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
           <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">2项</span></div>
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <h3 class="font-headline font-bold text-base text-on-surface truncate">时尚美发沙龙</h3>
-                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">已有效</span>
+          <div class="merchant-card__header flex justify-between items-start mb-3">
+            <div class="merchant-card__main flex-1 min-w-0">
+              <div class="merchant-card__title-row flex items-center gap-2 mb-1">
+                <h3 class="merchant-card__title font-headline font-bold text-base text-on-surface truncate">时尚美发沙龙</h3>
+                <span class="status-pill status-pill--active flex-shrink-0 text-[10px] font-bold px-2 py-0.5">已有效</span>
               </div>
-              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+              <div class="merchant-card__meta text-[11px] text-on-surface-variant">
                 <span class="flex items-center gap-1">
                   <span class="material-symbols-outlined text-[12px]">person</span> 自拓
                 </span>
@@ -353,27 +677,27 @@
                 </span>
               </div>
             </div>
-            <div class="text-right flex-shrink-0 ml-3">
+            <div class="merchant-card__aum text-right flex-shrink-0 ml-3">
               <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
               <p class="font-headline text-sm font-bold text-primary">AUM1-10万</p>
             </div>
           </div>
           <div class="flex flex-wrap gap-1.5">
-            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">首期二访</span>
-            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">高补贴</span>
+            <span class="marketing-tag marketing-tag--followup text-[10px] font-medium px-2 py-1">首期二访</span>
+            <span class="marketing-tag marketing-tag--subsidy text-[10px] font-medium px-2 py-1">高补贴</span>
           </div>
         </a>
 
         <!-- 商户卡片 2: 已达标 -->
-        <a onclick="openMerchantDetail('海底捞火锅店')" class="relative block bg-surface-container-lowest rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+        <a onclick="openMerchantDetail('海底捞火锅店')" class="merchant-card relative block rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
           <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">1项</span></div>
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <h3 class="font-headline font-bold text-base text-on-surface truncate">海底捞火锅店</h3>
-                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">已达标</span>
+          <div class="merchant-card__header flex justify-between items-start mb-3">
+            <div class="merchant-card__main flex-1 min-w-0">
+              <div class="merchant-card__title-row flex items-center gap-2 mb-1">
+                <h3 class="merchant-card__title font-headline font-bold text-base text-on-surface truncate">海底捞火锅店</h3>
+                <span class="status-pill status-pill--qualified flex-shrink-0 text-[10px] font-bold px-2 py-0.5">已达标</span>
               </div>
-              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+              <div class="merchant-card__meta text-[11px] text-on-surface-variant">
                 <span class="flex items-center gap-1">
                   <span class="material-symbols-outlined text-[12px]">person</span> 合作推荐
                 </span>
@@ -385,26 +709,26 @@
                 </span>
               </div>
             </div>
-            <div class="text-right flex-shrink-0 ml-3">
+            <div class="merchant-card__aum text-right flex-shrink-0 ml-3">
               <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
               <p class="font-headline text-sm font-bold text-primary">AUM100万以上</p>
             </div>
           </div>
           <div class="flex flex-wrap gap-1.5">
-            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">潜力有效</span>
+            <span class="marketing-tag marketing-tag--potential text-[10px] font-medium px-2 py-1">潜力有效</span>
           </div>
         </a>
 
         <!-- 商户卡片 3: 未达标 -->
-        <a onclick="openMerchantDetail('便利购超市')" class="relative block bg-surface-container-lowest rounded-2xl p-4 border-l-4 border-amber-400 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+        <a onclick="openMerchantDetail('便利购超市')" class="merchant-card merchant-card--attention relative block rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
           <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">1项</span></div>
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <h3 class="font-headline font-bold text-base text-on-surface truncate">便利购超市</h3>
-                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">未达标</span>
+          <div class="merchant-card__header flex justify-between items-start mb-3">
+            <div class="merchant-card__main flex-1 min-w-0">
+              <div class="merchant-card__title-row flex items-center gap-2 mb-1">
+                <h3 class="merchant-card__title font-headline font-bold text-base text-on-surface truncate">便利购超市</h3>
+                <span class="status-pill status-pill--pending flex-shrink-0 text-[10px] font-bold px-2 py-0.5">未达标</span>
               </div>
-              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+              <div class="merchant-card__meta text-[11px] text-on-surface-variant">
                 <span class="flex items-center gap-1">
                   <span class="material-symbols-outlined text-[12px]">person</span> 自拓
                 </span>
@@ -416,7 +740,7 @@
                 </span>
               </div>
             </div>
-            <div class="text-right flex-shrink-0 ml-3">
+            <div class="merchant-card__aum text-right flex-shrink-0 ml-3">
               <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
               <p class="font-headline text-sm font-bold text-on-surface-variant">AUM10-100万</p>
             </div>
@@ -426,15 +750,15 @@
         </a>
 
         <!-- 商户卡片 4 -->
-        <a onclick="openMerchantDetail('社区生鲜驿站')" class="relative block bg-surface-container-lowest rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
+        <a onclick="openMerchantDetail('社区生鲜驿站')" class="merchant-card relative block rounded-2xl p-4 transition-all cursor-pointer hover:shadow-md active:scale-[0.99]">
           <div class="absolute top-3 right-3 opp-badge"><span class="opp-badge-text">1项</span></div>
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <h3 class="font-headline font-bold text-base text-on-surface truncate">瑞幸咖啡人民广场店</h3>
-                <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">已有效</span>
+          <div class="merchant-card__header flex justify-between items-start mb-3">
+            <div class="merchant-card__main flex-1 min-w-0">
+              <div class="merchant-card__title-row flex items-center gap-2 mb-1">
+                <h3 class="merchant-card__title font-headline font-bold text-base text-on-surface truncate">瑞幸咖啡人民广场店</h3>
+                <span class="status-pill status-pill--active flex-shrink-0 text-[10px] font-bold px-2 py-0.5">已有效</span>
               </div>
-              <div class="flex items-center gap-3 text-[11px] text-on-surface-variant">
+              <div class="merchant-card__meta text-[11px] text-on-surface-variant">
                 <span class="flex items-center gap-1">
                   <span class="material-symbols-outlined text-[12px]">person</span> 合作推荐
                 </span>
@@ -446,19 +770,19 @@
                 </span>
               </div>
             </div>
-            <div class="text-right flex-shrink-0 ml-3">
+            <div class="merchant-card__aum text-right flex-shrink-0 ml-3">
               <p class="text-[10px] text-on-surface-variant mb-0.5">AUM</p>
               <p class="font-headline text-sm font-bold text-primary">AUM10-100万</p>
             </div>
           </div>
           <div class="flex flex-wrap gap-1.5">
-            <span class="text-[10px] font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">高补贴</span>
+            <span class="marketing-tag marketing-tag--subsidy text-[10px] font-medium px-2 py-1">高补贴</span>
           </div>
         </a>
 
         <!-- 加载更多 -->
         <div class="text-center py-4">
-          <button class="text-[12px] text-primary font-semibold hover:underline active:scale-95 transition-all">
+          <button class="load-more-btn text-[12px] font-semibold rounded-full px-5 hover:underline active:scale-95 transition-all">
             加载更多商户
           </button>
         </div>
@@ -780,29 +1104,29 @@
     <!-- ========== Toast ========== -->
 
   <!-- BottomNavBar -->
-  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl rounded-t-[24px] shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+  <nav class="bottom-nav fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 backdrop-blur-xl rounded-t-[24px]">
     <!-- 收单 [active] -->
-    <a class="flex flex-col items-center justify-center bg-blue-50 text-blue-800 rounded-2xl px-5 py-2" href="慧展业_收单工作台_20260427.html">
+    <a class="bottom-nav__item bottom-nav__item--active flex flex-col items-center justify-center rounded-2xl px-5 py-2" href="慧展业_收单工作台_20260427.html">
       <span class="material-symbols-outlined" style="font-variation-settings:'FILL'1,'wght'400;font-size:20px">home</span>
       <span class="font-inter text-[10px] font-bold tracking-wide uppercase mt-1">收单</span>
     </a>
     <!-- 零售 -->
-    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_零售工作台.html">
+    <a class="bottom-nav__item flex flex-col items-center justify-center px-5 py-2" href="慧展业_零售工作台.html">
       <span class="material-symbols-outlined" style="font-size:20px">group</span>
       <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">零售</span>
     </a>
     <!-- 场景 -->
-    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_场景工作台.html">
+    <a class="bottom-nav__item flex flex-col items-center justify-center px-5 py-2" href="慧展业_场景工作台.html">
       <span class="material-symbols-outlined" style="font-size:20px">auto_awesome</span>
       <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">场景</span>
     </a>
     <!-- 动态 -->
-    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_动态消息列表_20260427.html">
+    <a class="bottom-nav__item flex flex-col items-center justify-center px-5 py-2" href="慧展业_动态消息列表_20260427.html">
       <span class="material-symbols-outlined" style="font-size:20px">dynamic_feed</span>
       <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">动态</span>
     </a>
     <!-- 我的 -->
-    <a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2" href="慧展业_我的中心_20260427.html">
+    <a class="bottom-nav__item flex flex-col items-center justify-center px-5 py-2" href="慧展业_我的中心_20260427.html">
       <span class="material-symbols-outlined" style="font-size:20px">person</span>
       <span class="font-inter text-[10px] font-medium tracking-wide uppercase mt-1">我的</span>
     </a>
@@ -813,8 +1137,8 @@
 
   <!-- 高级筛选弹窗 -->
   <div id="filter-modal" class="fixed inset-0 z-[90] hidden">
-    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" onclick="closeFilterModal()"></div>
-    <div class="absolute bottom-0 left-0 right-0 bg-surface rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto shadow-2xl">
+    <div class="filter-backdrop absolute inset-0 backdrop-blur-sm" onclick="closeFilterModal()"></div>
+    <div class="filter-sheet absolute bottom-0 left-0 right-0 rounded-t-3xl p-6 pb-6 shadow-2xl">
       <div class="flex items-center justify-between mb-6">
         <h2 class="font-headline font-bold text-xl text-on-surface">高级筛选</h2>
         <button onclick="closeFilterModal()" class="p-2 rounded-full hover:bg-surface-container transition-colors">
@@ -822,7 +1146,7 @@
         </button>
       </div>
 
-      <div class="space-y-6">
+      <div class="filter-sheet__body space-y-6">
         <div>
           <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">入网状态</p>
           <div class="flex flex-wrap gap-2">
@@ -865,9 +1189,9 @@
         </div>
         <div>
           <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-3">入网时间</p>
-          <div class="flex items-center gap-3">
+          <div class="filter-date-row">
             <input type="date" class="flex-1 bg-surface-container-highest border-none rounded-xl py-3 px-4 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 outline-none"/>
-            <span class="text-on-surface-variant text-sm">至</span>
+            <span class="filter-date-row__separator text-on-surface-variant text-sm">至</span>
             <input type="date" class="flex-1 bg-surface-container-highest border-none rounded-xl py-3 px-4 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 outline-none" value="2026-04-27"/>
           </div>
         </div>
@@ -882,7 +1206,7 @@
         </div>
       </div>
 
-      <div class="flex gap-3 mt-8">
+      <div class="filter-actions flex gap-3 mt-8">
         <button onclick="resetFilter()" class="flex-1 py-3.5 rounded-full bg-surface-container text-on-surface-variant font-semibold text-sm transition-all hover:bg-surface-container-high active:scale-95">重置</button>
         <button onclick="applyFilter()" class="flex-[2] py-3.5 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-bold text-sm shadow-lg shadow-primary/20 transition-all hover:shadow-xl active:scale-95">应用筛选</button>
       </div>
