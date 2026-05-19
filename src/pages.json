@@ -1,0 +1,61 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "收单",
+        "enablePullDownRefresh": true,
+        "onReachBottomDistance": 80
+      }
+    },
+    {
+      "path": "pages/retail/retail",
+      "style": {
+        "navigationBarTitleText": "零售"
+      }
+    },
+    {
+      "path": "pages/scenario/scenario",
+      "style": {
+        "navigationBarTitleText": "场景"
+      }
+    },
+    {
+      "path": "pages/notifications/notifications",
+      "style": {
+        "navigationBarTitleText": "动态"
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "收单"
+      },
+      {
+        "pagePath": "pages/retail/retail",
+        "text": "零售"
+      },
+      {
+        "pagePath": "pages/scenario/scenario",
+        "text": "场景"
+      },
+      {
+        "pagePath": "pages/notifications/notifications",
+        "text": "动态"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  }
+}

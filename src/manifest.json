@@ -1,0 +1,14 @@
+{
+  "name": "smart-expand",
+  "appid": "__PLACEHOLDER__",
+  "description": "慧展业 H5 shell",
+  "versionName": "0.1.0",
+  "versionCode": "1",
+  "transformPx": false,
+  "h5": {
+    "router": {
+      "mode": "hash",
+      "base": "/"
+    }
+  }
+}
