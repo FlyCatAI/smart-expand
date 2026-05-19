@@ -56,7 +56,7 @@ export type MerchantProgress = '已达标' | '已有效' | '未达标' | '未有
 export type MerchantType = '正餐餐饮' | '饮品甜点' | '商超购物' | '社区便利' | '美容美发' | '医疗保健';
 export type MerchantExpandType = '自拓' | '合作推荐';
 export type AumLevel = 'AUM未达1万' | 'AUM1-10万' | 'AUM10-100万' | 'AUM100万以上' | 'AUM暂无数据';
-export type MarketingTag = '首期二访' | '二访' | '高补贴' | '潜力有效';
+export type MarketingTag = '首期二访' | '二访' | '高补贴' | '高补贴回访' | '潜力有效';
 
 export interface RegionValue {
   province: string;

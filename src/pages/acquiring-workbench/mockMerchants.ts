@@ -15,9 +15,10 @@ const tagGroups: MarketingTag[][] = [
   ['首期二访'],
   ['二访'],
   ['高补贴'],
+  ['高补贴回访'],
   ['潜力有效'],
   ['首期二访', '潜力有效'],
-  ['高补贴', '二访'],
+  ['高补贴回访', '二访'],
   [],
 ];
 const aumLevels: Array<{ level: AumLevel; boundary: string }> = [
@@ -39,10 +40,21 @@ function formatDate(offset: number) {
   return date.toISOString().slice(0, 10);
 }
 
+function resolveMockMerchantCount() {
+  const allowedCounts = new Set([0, 1, 19, 20, 21, 48]);
+  const params = new URLSearchParams(window.location.search);
+  const rawValue = params.get('mockMerchantCount') ?? window.sessionStorage.getItem('hzy:acquiring-workbench:mock-count') ?? '48';
+  const count = Number(rawValue);
+  return allowedCounts.has(count) ? count : 48;
+}
+
 export async function fetchMockMerchants(): Promise<Merchant[]> {
   await new Promise((resolve) => window.setTimeout(resolve, 120));
+  const params = new URLSearchParams(window.location.search);
+  const shouldFail = params.get('mockMerchantError') === '1' || window.sessionStorage.getItem('hzy:acquiring-workbench:mock-error') === '1';
+  if (shouldFail) throw new Error('mock merchant loader failed');
 
-  return Array.from({ length: 48 }, (_, index) => {
+  return Array.from({ length: resolveMockMerchantCount() }, (_, index) => {
     const number = index + 1;
     const aum = aumLevels[index % aumLevels.length];
     const region = regions[index % regions.length];

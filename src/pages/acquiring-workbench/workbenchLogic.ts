@@ -5,6 +5,7 @@ import type {
   KpiTone,
   Merchant,
   MerchantAdmissionStatus,
+  MarketingTag,
   MerchantProgress,
   MerchantType,
   QuickAction,
@@ -93,9 +94,9 @@ function moneyAmount(value: number | null | undefined) {
 
 function moneyDelta(value: number | null | undefined) {
   if (!isFiniteNumber(value)) return { text: '--', tone: 'neutral' as KpiTone };
-  if (Object.is(value, -0) || value === 0) return { text: '较昨日 ¥0.00万', tone: 'neutral' as KpiTone };
+  if (Object.is(value, -0) || value === 0) return { text: '¥0.00万', tone: 'neutral' as KpiTone };
   const prefix = value > 0 ? '+' : '-';
-  return { text: `较昨日 ${prefix}¥${Math.abs(value).toFixed(2)}万`, tone: value > 0 ? 'positive' as KpiTone : 'negative' as KpiTone };
+  return { text: `${prefix}¥${Math.abs(value).toFixed(2)}万`, tone: value > 0 ? 'positive' as KpiTone : 'negative' as KpiTone };
 }
 
 function countDelta(value: number) {
@@ -172,6 +173,7 @@ export function useAcquiringWorkbench() {
   const refreshing = ref(false);
   const loadError = ref(false);
   const routeFailure = ref<RouteFailure | null>(null);
+  const loadFailure = ref<RouteFailure | null>(null);
   const toastMessage = ref('');
   const page = ref(1);
   const searchKeyword = ref('');
@@ -226,6 +228,11 @@ export function useAcquiringWorkbench() {
     window.dispatchEvent(new CustomEvent('hzy:route-failed', { detail: routeFailure.value }));
   }
 
+  function notifyLoadFailure(reason: string) {
+    loadFailure.value = { route: 'mock-merchants', reason, at: Date.now() };
+    window.dispatchEvent(new CustomEvent('hzy:merchant-load-failed', { detail: loadFailure.value }));
+  }
+
   function navigateTo(route: string, query: Record<string, string> = {}) {
     if (!route) return;
     if (!knownRoutes.has(route)) {
@@ -240,6 +247,7 @@ export function useAcquiringWorkbench() {
   async function loadMerchants(options: { resetPage?: boolean; refresh?: boolean } = {}) {
     if (loading.value || refreshing.value) return;
     loadError.value = false;
+    loadFailure.value = null;
     loading.value = !options.refresh;
     refreshing.value = Boolean(options.refresh);
     try {
@@ -247,6 +255,7 @@ export function useAcquiringWorkbench() {
       if (options.resetPage !== false) page.value = 1;
     } catch {
       loadError.value = true;
+      notifyLoadFailure('mock_loader_error');
     } finally {
       loading.value = false;
       refreshing.value = false;
@@ -280,8 +289,13 @@ export function useAcquiringWorkbench() {
     navigateTo(card.route, { source: card.id });
   }
 
-  function setQuickFilter(tag: string) {
-    quickFilterTag.value = tag;
+  function setQuickFilter(actionId: QuickActionId, tag: MarketingTag) {
+    const isCancelling = quickFilterTag.value === tag;
+    quickFilterTag.value = isCancelling ? '' : tag;
+    activeToolbarAction.value = isCancelling ? '' : actionId;
+    sortMode.value = '';
+    showSearchInput.value = false;
+    searchKeyword.value = '';
     page.value = 1;
   }
 
@@ -307,15 +321,15 @@ export function useAcquiringWorkbench() {
       return;
     }
     if (action.id === 'first_followup') {
-      setQuickFilter(quickFilterTag.value === '首期二访' ? '' : '首期二访');
+      setQuickFilter(action.id, '首期二访');
       return;
     }
     if (action.id === 'potential_active') {
-      resetListControls();
+      setQuickFilter(action.id, '潜力有效');
       return;
     }
     if (action.id === 'high_subsidy_visit') {
-      setQuickFilter(quickFilterTag.value === '高补贴' ? '' : '高补贴');
+      setQuickFilter(action.id, '高补贴回访');
       return;
     }
     if (action.id === 'query') {
@@ -323,6 +337,7 @@ export function useAcquiringWorkbench() {
       showSearchInput.value = willShow;
       activeToolbarAction.value = willShow ? 'query' : '';
       sortMode.value = '';
+      quickFilterTag.value = '';
       if (!willShow) searchKeyword.value = '';
       showToast(willShow ? '展开搜索框' : '收起');
       page.value = 1;
@@ -340,6 +355,7 @@ export function useAcquiringWorkbench() {
     } else {
       showSearchInput.value = false;
       searchKeyword.value = '';
+      quickFilterTag.value = '';
       sortMode.value = nextSort;
       activeToolbarAction.value = action.id;
       const messages: Record<SortMode, string> = {
@@ -354,15 +370,28 @@ export function useAcquiringWorkbench() {
   }
 
   function toggleAdmissionStatus(value: MerchantAdmissionStatus) {
+    const isCancelling = draftFilters.admissionStatuses.includes(value);
     setArrayItem(draftFilters.admissionStatuses, value);
+    if (isCancelling) showToast('已取消入网状态筛选');
   }
 
   function toggleMerchantType(value: MerchantType) {
+    const isCancelling = draftFilters.merchantTypes.includes(value);
     setArrayItem(draftFilters.merchantTypes, value);
+    if (isCancelling) showToast('已取消商户类型筛选');
   }
 
   function toggleProgress(value: MerchantProgress) {
+    const isCancelling = draftFilters.progresses.includes(value);
     setArrayItem(draftFilters.progresses, value);
+    if (isCancelling) showToast('已取消达标进度筛选');
+  }
+
+  function setPartnerFilter(value: WorkbenchFilters['partner']) {
+    const wasPartnerFiltered = draftFilters.partner !== '全部';
+    const isCancelling = wasPartnerFiltered && value === '全部';
+    draftFilters.partner = value;
+    if (isCancelling) showToast('已取消合作伙伴筛选');
   }
 
   function updateRegion(level: keyof WorkbenchFilters['region'], value: string) {
@@ -447,6 +476,7 @@ export function useAcquiringWorkbench() {
     loadNextPage,
     loading,
     loadingMore,
+    loadFailure,
     notification,
     page,
     pagedMerchants,
@@ -462,6 +492,7 @@ export function useAcquiringWorkbench() {
     showNotification,
     showSearchInput,
     toastMessage,
+    setPartnerFilter,
     toggleAdmissionStatus,
     toggleMerchantType,
     toggleProgress,

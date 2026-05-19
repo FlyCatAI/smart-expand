@@ -32,7 +32,10 @@
         :key="action.id"
         class="workbench-actions__item"
         :class="{
-          'is-active': activeToolbarAction === action.id || (action.id === 'first_followup' && quickFilterTag === '首期二访') || (action.id === 'high_subsidy_visit' && quickFilterTag === '高补贴'),
+          'is-active': activeToolbarAction === action.id
+            || (action.id === 'first_followup' && quickFilterTag === '首期二访')
+            || (action.id === 'potential_active' && quickFilterTag === '潜力有效')
+            || (action.id === 'high_subsidy_visit' && quickFilterTag === '高补贴回访'),
         }"
         :data-action-id="action.id"
         type="button"
@@ -63,7 +66,7 @@
 
       <div v-if="loading" class="merchant-list__loading">加载中</div>
       <div v-else-if="loadError" class="merchant-list__error">
-        <!-- TODO(HZYMiniAppStyle): 补充网络异常/超时/500 fallback 展示文案与样式 -->
+        <span class="merchant-list__error-text">商户数据加载失败</span>
         <button class="merchant-list__retry" type="button" @click="loadMerchants()">重试</button>
       </div>
       <div v-else-if="pagedMerchants.length === 0" class="merchant-list__empty">{{ emptyStateText }}</div>
@@ -167,7 +170,7 @@
             type="button"
             class="filter-chip"
             :class="{ 'is-selected': draftFilters.partner === partner }"
-            @click="draftFilters.partner = partner"
+            @click="setPartnerFilter(partner)"
           >
             {{ partner }} {{ partner === '全部' ? visibleAllMerchants.length : countFor({ partner }) }}
           </button>
@@ -210,6 +213,9 @@
     <div v-if="routeFailure" class="workbench-route-failure" data-observable="route-failed">
       <!-- TODO(HZYMiniAppStyle): 路由失败可观察占位，不在逻辑层新增终态文案 -->
     </div>
+    <div v-if="loadFailure" class="merchant-list__load-failure" data-observable="merchant-load-failed">
+      <!-- TODO(HZYMiniAppStyle): mock 请求失败可观察占位，样式层补充最终异常态展示 -->
+    </div>
   </main>
 </template>
 
@@ -238,6 +244,7 @@ const {
   hasMore,
   kpiCards,
   loadError,
+  loadFailure,
   loadMerchants,
   loadNextPage,
   loading,
@@ -256,6 +263,7 @@ const {
   showFilterModal,
   showNotification,
   showSearchInput,
+  setPartnerFilter,
   toastMessage,
   toggleAdmissionStatus,
   toggleMerchantType,
