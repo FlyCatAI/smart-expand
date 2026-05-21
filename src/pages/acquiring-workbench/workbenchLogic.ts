@@ -20,6 +20,7 @@ import type {
 const SESSION_NOTIFICATION_CLOSED = 'hzy:acquiring-workbench:notification-closed';
 const PAGE_SIZE = 20;
 const knownRoutes = new Set(['/income-details', '/history-performance', '/merchant-detail', '/notice-detail']);
+const unavailableRoutes = new Set(['/merchant-detail']);
 
 export const quickActions: QuickAction[] = [
   { id: 'new_entry', name: '新入网', action: 'toast' },
@@ -242,6 +243,7 @@ export function useAcquiringWorkbench() {
   function notifyRouteFailure(route: string, reason: string) {
     routeFailure.value = { route, reason, at: Date.now() };
     window.dispatchEvent(new CustomEvent('hzy:route-failed', { detail: routeFailure.value }));
+    showToast('页面跳转失败');
   }
 
   function notifyLoadFailure(reason: string) {
@@ -255,10 +257,19 @@ export function useAcquiringWorkbench() {
       notifyRouteFailure(route, 'unknown_route');
       return;
     }
+    if (unavailableRoutes.has(route)) {
+      notifyRouteFailure(route, 'unavailable_route');
+      return;
+    }
     const params = new URLSearchParams(query);
     const url = params.size ? `${route}?${params.toString()}` : route;
-    window.history.pushState({}, '', url);
-    window.dispatchEvent(new CustomEvent('hzy:navigation', { detail: { route, query } }));
+    try {
+      window.history.pushState({}, '', url);
+      routeFailure.value = null;
+      window.dispatchEvent(new CustomEvent('hzy:navigation', { detail: { route, query } }));
+    } catch {
+      notifyRouteFailure(url, 'navigate_failed');
+    }
   }
 
   async function loadMerchants(options: { resetPage?: boolean; refresh?: boolean } = {}) {

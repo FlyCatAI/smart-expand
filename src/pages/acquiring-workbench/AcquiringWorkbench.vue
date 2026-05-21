@@ -210,8 +210,8 @@
     </section>
 
     <div v-if="toastMessage" class="workbench-toast" role="status">{{ toastMessage }}</div>
-    <div v-if="routeFailure" class="workbench-route-failure" data-observable="route-failed">
-      <!-- TODO(HZYMiniAppStyle): 路由失败可观察占位，不在逻辑层新增终态文案 -->
+    <div v-if="routeFailure" class="workbench-route-failure" role="status" data-observable="route-failed">
+      页面跳转失败
     </div>
     <div v-if="loadFailure" class="merchant-list__load-failure" data-observable="merchant-load-failed">
       <!-- TODO(HZYMiniAppStyle): mock 请求失败可观察占位，样式层补充最终异常态展示 -->
