@@ -20,6 +20,7 @@ import type {
 const SESSION_NOTIFICATION_CLOSED = 'hzy:acquiring-workbench:notification-closed';
 const PAGE_SIZE = 20;
 const knownRoutes = new Set(['/income-details', '/history-performance', '/merchant-detail', '/notice-detail']);
+const unavailableMockRoutes = new Set(['/merchant-detail']);
 
 export const quickActions: QuickAction[] = [
   { id: 'new_entry', name: '新入网', action: 'toast' },
@@ -253,6 +254,12 @@ export function useAcquiringWorkbench() {
     if (!route) return;
     if (!knownRoutes.has(route)) {
       notifyRouteFailure(route, 'unknown_route');
+      showToast('页面跳转失败');
+      return;
+    }
+    if (unavailableMockRoutes.has(route)) {
+      notifyRouteFailure(route, 'route_unavailable');
+      showToast('页面跳转失败');
       return;
     }
     const params = new URLSearchParams(query);
