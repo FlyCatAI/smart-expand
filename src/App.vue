@@ -26,3 +26,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('hzy:navigation', syncRoute);
 });
 </script>
+
+<style>
+@import './styles/hzy-theme.css';
+</style>

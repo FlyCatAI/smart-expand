@@ -89,3 +89,5 @@ const {
   loading,
 } = useNoticeDetail();
 </script>
+
+<style src="./NoticeDetail.css"></style>

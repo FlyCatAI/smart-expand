@@ -97,3 +97,5 @@ const {
   toneForMessage,
 } = useDynamicMessages();
 </script>
+
+<style src="./DynamicMessages.css"></style>
