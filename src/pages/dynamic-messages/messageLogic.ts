@@ -78,6 +78,7 @@ export function useDynamicMessages() {
   const routeFailure = ref<MessageFailure | null>(null);
   const page = ref(1);
   let loadMoreTimer: number | null = null;
+  let messageLoadRequestId = 0;
   let loadMoreRequestId = 0;
 
   const tabs = computed(() => buildMessageTabs(messages.value));
@@ -116,20 +117,25 @@ export function useDynamicMessages() {
   }
 
   async function loadMessages(options: { refresh?: boolean; resetPage?: boolean } = {}) {
-    if (loading.value || refreshing.value) return;
+    const requestId = ++messageLoadRequestId;
+    const requestTab = activeTab.value;
+    const requestScenario = mockScenario.value;
     if (options.resetPage !== false) resetPage();
     loadError.value = false;
     loadFailure.value = null;
     loading.value = !options.refresh;
     refreshing.value = Boolean(options.refresh);
     try {
-      const nextMessages = await fetchMockMessages({ scenario: mockScenario.value, tabId: activeTab.value });
+      const nextMessages = await fetchMockMessages({ scenario: requestScenario, tabId: requestTab });
+      if (requestId !== messageLoadRequestId) return;
       messages.value = nextMessages.sort((a, b) => `${b.msg_date} ${b.msg_time}`.localeCompare(`${a.msg_date} ${a.msg_time}`));
     } catch {
+      if (requestId !== messageLoadRequestId) return;
       loadError.value = true;
-      loadFailure.value = { target: 'dynamic-messages', reason: 'mock_loader_error', at: Date.now() };
+      loadFailure.value = { target: requestTab, reason: 'mock_loader_error', at: Date.now() };
       notifyLoadFailure(loadFailure.value);
     } finally {
+      if (requestId !== messageLoadRequestId) return;
       loading.value = false;
       refreshing.value = false;
     }
@@ -225,8 +231,19 @@ export function useNoticeDetail() {
   const loadFailure = ref<MessageFailure | null>(null);
   const compliancePending = computed(() => detail.value?.content_status === 'pending_compliance');
 
+  function failNoticeDetail(reason: string, target = 'notice-detail') {
+    detail.value = null;
+    loadError.value = true;
+    loadFailure.value = { target, reason, at: Date.now() };
+    notifyLoadFailure(loadFailure.value);
+  }
+
   async function loadNoticeDetail() {
-    if (!noticeId.value || loading.value) return;
+    if (loading.value) return;
+    if (!noticeId.value) {
+      failNoticeDetail('notice_detail_invalid_id');
+      return;
+    }
     loading.value = true;
     loadError.value = false;
     loadFailure.value = null;
