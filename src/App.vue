@@ -1,12 +1,16 @@
 <template>
   <HistoryPerformance v-if="currentRoute === '/history-performance'" />
+  <DynamicMessages v-else-if="currentRoute === '/dynamic-messages'" />
+  <NoticeDetail v-else-if="currentRoute === '/notice-detail'" />
   <AcquiringWorkbench v-else />
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import AcquiringWorkbench from './pages/acquiring-workbench/AcquiringWorkbench.vue';
+import DynamicMessages from './pages/dynamic-messages/DynamicMessages.vue';
 import HistoryPerformance from './pages/history-performance/HistoryPerformance.vue';
+import NoticeDetail from './pages/dynamic-messages/NoticeDetail.vue';
 
 const currentRoute = ref(window.location.pathname);
 
@@ -24,3 +28,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('hzy:navigation', syncRoute);
 });
 </script>
+
+<style>
+@import './styles/hzy-theme.css';
+</style>

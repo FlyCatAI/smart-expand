@@ -1,0 +1,124 @@
+:root {
+  --color-primary: #003b99;
+  --color-primary-container: #1a52bf;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #ffffff;
+  --color-surface: #f7f9fc;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f7;
+  --color-surface-container: #eceef1;
+  --color-surface-container-high: #e6e8eb;
+  --color-surface-container-highest: #e0e3e6;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #434653;
+  --color-outline: #737685;
+  --color-outline-variant: #c3c6d5;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-warning: #7a4100;
+  --color-warning-container: #ffdfb8;
+  --color-on-warning-container: #3f2100;
+  --color-success: #0d6b2f;
+  --color-success-container: #c2f0cf;
+  --color-on-success-container: #00390f;
+  --color-tone-blue: #003b99;
+  --color-tone-blue-container: #e5efff;
+  --color-tone-orange: #9a4200;
+  --color-tone-orange-container: #ffead6;
+  --color-tone-green: #0d6b2f;
+  --color-tone-green-container: #e1f7e7;
+  --color-tone-red: #ba1a1a;
+  --color-tone-red-container: #ffdad6;
+  --color-tone-purple: #6b3fb3;
+  --color-tone-purple-container: #efe5ff;
+  --color-tone-gray: #4f5663;
+  --color-tone-gray-container: #eef1f5;
+
+  --font-family-headline: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-body: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-size-caption: 10px;
+  --font-size-label: 12px;
+  --font-size-body: 14px;
+  --font-size-title: 18px;
+  --font-size-display: 24px;
+  --line-height-compact: 1.25;
+  --line-height-body: 1.55;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+
+  --space-0: 0;
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+  --space-page-edge: 20px;
+  --space-page-top: 16px;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --shadow-card: 0 8px 22px rgba(25, 28, 30, 0.08);
+  --shadow-sticky: 0 8px 18px rgba(25, 28, 30, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(0, 59, 153, 0.18);
+
+  --motion-duration-short: 100ms;
+  --motion-duration-medium: 200ms;
+  --motion-duration-long: 350ms;
+  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+  --motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #9fc2ff;
+    --color-primary-container: #2457ad;
+    --color-on-primary: #00285f;
+    --color-on-primary-container: #ffffff;
+    --color-surface: #101316;
+    --color-surface-container-lowest: #171a1d;
+    --color-surface-container-low: #1d2227;
+    --color-surface-container: #252b31;
+    --color-surface-container-high: #303741;
+    --color-surface-container-highest: #3b4350;
+    --color-on-surface: #eff1f4;
+    --color-on-surface-variant: #c8cbd2;
+    --color-outline: #9297a3;
+    --color-outline-variant: #454b55;
+    --color-error: #ffb4ab;
+    --color-error-container: #650006;
+    --color-on-error-container: #ffdad6;
+    --color-warning: #ffbd73;
+    --color-warning-container: #5d3100;
+    --color-on-warning-container: #ffdfb8;
+    --color-success: #8bd99d;
+    --color-success-container: #00531e;
+    --color-on-success-container: #c2f0cf;
+    --color-tone-blue: #b8d2ff;
+    --color-tone-blue-container: #173967;
+    --color-tone-orange: #ffc18a;
+    --color-tone-orange-container: #56310f;
+    --color-tone-green: #9ee4ad;
+    --color-tone-green-container: #1c4d2a;
+    --color-tone-red: #ffb4ab;
+    --color-tone-red-container: #650006;
+    --color-tone-purple: #d7bbff;
+    --color-tone-purple-container: #463065;
+    --color-tone-gray: #d7dbe2;
+    --color-tone-gray-container: #353b44;
+    --shadow-card: 0 10px 26px rgba(0, 0, 0, 0.36);
+    --shadow-sticky: 0 8px 18px rgba(0, 0, 0, 0.34);
+    --shadow-focus: 0 0 0 3px rgba(159, 194, 255, 0.28);
+  }
+}
