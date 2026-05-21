@@ -266,6 +266,7 @@ export function useAcquiringWorkbench() {
     try {
       window.history.pushState({}, '', url);
       routeFailure.value = null;
+      window.dispatchEvent(new CustomEvent('hzy:navigation', { detail: { route, query } }));
     } catch {
       notifyRouteFailure(url, 'navigate_failed');
     }
