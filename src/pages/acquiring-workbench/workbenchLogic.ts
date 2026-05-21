@@ -258,6 +258,7 @@ export function useAcquiringWorkbench() {
     const params = new URLSearchParams(query);
     const url = params.size ? `${route}?${params.toString()}` : route;
     window.history.pushState({}, '', url);
+    window.dispatchEvent(new CustomEvent('hzy:route-changed', { detail: { route, query } }));
   }
 
   async function loadMerchants(options: { resetPage?: boolean; refresh?: boolean } = {}) {
