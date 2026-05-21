@@ -103,3 +103,5 @@ const {
   selectedPeriod,
 } = useHistoryPerformance();
 </script>
+
+<style src="./historyPerformance.css"></style>
