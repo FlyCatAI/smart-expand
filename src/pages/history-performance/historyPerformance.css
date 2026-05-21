@@ -8,9 +8,15 @@
   --history-color-muted: var(--color-on-surface-variant, GrayText);
   --history-color-primary: var(--color-primary, Highlight);
   --history-color-on-primary: var(--color-on-primary, HighlightText);
-  --history-color-positive: var(--color-positive, var(--hzy-color-positive, var(--history-color-primary)));
-  --history-color-negative: var(--color-error, var(--hzy-color-negative, var(--history-color-primary)));
-  --history-color-neutral: var(--color-on-surface-variant, GrayText);
+  --history-tone-positive-fallback: oklch(42% 0.13 154deg);
+  --history-tone-negative-fallback: var(--color-error, oklch(43% 0.18 29deg));
+  --history-tone-neutral-fallback: var(--color-on-surface-variant, GrayText);
+  --history-color-positive: var(--color-positive, var(--hzy-color-positive, var(--history-tone-positive-fallback)));
+  --history-color-negative: var(
+    --color-negative,
+    var(--color-error, var(--hzy-color-negative, var(--history-tone-negative-fallback)))
+  );
+  --history-color-neutral: var(--color-neutral, var(--history-tone-neutral-fallback));
   --history-color-warning: var(--color-tertiary, var(--history-color-primary));
   --history-space-2xs: 4px;
   --history-space-xs: 6px;
@@ -382,6 +388,9 @@
     --history-color-muted: var(--color-on-surface-variant-dark, GrayText);
     --history-color-primary: var(--color-primary-dark, Highlight);
     --history-color-on-primary: var(--color-on-primary-dark, HighlightText);
+    --history-tone-positive-fallback: oklch(76% 0.14 154deg);
+    --history-tone-negative-fallback: var(--color-error-dark, oklch(72% 0.16 29deg));
+    --history-tone-neutral-fallback: var(--color-on-surface-variant-dark, GrayText);
     --history-shadow-card: 0 10px 26px color-mix(in srgb, var(--history-color-text) 14%, transparent);
 
     color-scheme: dark;
