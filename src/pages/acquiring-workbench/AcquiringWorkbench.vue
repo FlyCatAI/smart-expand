@@ -274,3 +274,43 @@ const {
   visibleAllMerchants,
 } = useAcquiringWorkbench();
 </script>
+
+<style scoped>
+.acquiring-workbench {
+  --workbench-color-surface: #ffffff;
+  --workbench-color-on-surface: #191c1e;
+  --workbench-kpi-delta-positive: #006d3c;
+  --workbench-kpi-delta-negative: #ba1a1a;
+  --workbench-kpi-delta-neutral: #5b616e;
+
+  background: var(--workbench-color-surface);
+  color: var(--workbench-color-on-surface);
+}
+
+.workbench-kpi__delta {
+  color: var(--workbench-kpi-delta-neutral);
+  font-weight: 600;
+}
+
+.workbench-kpi__delta[data-tone='positive'] {
+  color: var(--workbench-kpi-delta-positive);
+}
+
+.workbench-kpi__delta[data-tone='negative'] {
+  color: var(--workbench-kpi-delta-negative);
+}
+
+.workbench-kpi__delta[data-tone='neutral'] {
+  color: var(--workbench-kpi-delta-neutral);
+}
+
+@media (prefers-color-scheme: dark) {
+  .acquiring-workbench {
+    --workbench-color-surface: #111318;
+    --workbench-color-on-surface: #e3e2e8;
+    --workbench-kpi-delta-positive: #72e2a1;
+    --workbench-kpi-delta-negative: #ffb4ab;
+    --workbench-kpi-delta-neutral: #c5c6d0;
+  }
+}
+</style>
