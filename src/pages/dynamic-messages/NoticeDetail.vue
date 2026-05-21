@@ -29,9 +29,7 @@
             <dd>{{ detail.valid_end }}</dd>
           </div>
         </dl>
-        <div v-if="detail.notice_content.length" class="notice-detail__rich-text" data-content-field="notice_content">
-          <p v-for="paragraph in detail.notice_content" :key="paragraph">{{ paragraph }}</p>
-        </div>
+        <div v-if="detail.notice_content" class="notice-detail__rich-text" data-content-field="notice_content" v-html="detail.notice_content"></div>
       </section>
 
       <section v-else-if="detail.notice_type === '培训通知'" class="notice-detail__training">
@@ -45,18 +43,12 @@
             <dd>{{ detail.training_method }}</dd>
           </div>
         </dl>
-        <div v-if="detail.notice_content.length" class="notice-detail__rich-text" data-content-field="notice_content">
-          <p v-for="paragraph in detail.notice_content" :key="paragraph">{{ paragraph }}</p>
-        </div>
-        <div v-if="detail.attention_notes.length" class="notice-detail__notes" data-content-field="attention_notes">
-          <p v-for="note in detail.attention_notes" :key="note">{{ note }}</p>
-        </div>
+        <div v-if="detail.notice_content" class="notice-detail__rich-text" data-content-field="notice_content" v-html="detail.notice_content"></div>
+        <div v-if="detail.attention_notes" class="notice-detail__notes" data-content-field="attention_notes" v-html="detail.attention_notes"></div>
       </section>
 
       <section v-else-if="detail.announcement_kind === 'assessment'" class="notice-detail__announcement" data-announcement-kind="assessment">
-        <div v-if="detail.content_sections.length" class="notice-detail__sections" data-content-field="content_sections">
-          <p v-for="section in detail.content_sections" :key="section">{{ section }}</p>
-        </div>
+        <div v-if="detail.notice_content" class="notice-detail__rich-text" data-content-field="notice_content" v-html="detail.notice_content"></div>
       </section>
 
       <section v-else class="notice-detail__announcement" data-announcement-kind="duty">
@@ -70,12 +62,7 @@
             <dd>{{ detail.holiday_end }}</dd>
           </div>
         </dl>
-        <div v-if="detail.daily_schedule.length" class="notice-detail__schedule" data-content-field="daily_schedule">
-          <p v-for="item in detail.daily_schedule" :key="item">{{ item }}</p>
-        </div>
-        <div v-if="detail.duty_requirements.length" class="notice-detail__requirements" data-content-field="duty_requirements">
-          <p v-for="item in detail.duty_requirements" :key="item">{{ item }}</p>
-        </div>
+        <div v-if="detail.notice_content" class="notice-detail__rich-text" data-content-field="notice_content" v-html="detail.notice_content"></div>
       </section>
 
       <div v-if="compliancePending" class="notice-detail__compliance-pending" data-observable="notice-content-pending-compliance">

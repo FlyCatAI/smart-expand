@@ -44,21 +44,21 @@ export interface PolicyNoticeDetail extends BaseNoticeDetail {
   notice_type: '政策通知';
   valid_start: string;
   valid_end: string;
-  notice_content: string[];
+  notice_content: string;
 }
 
 export interface TrainingNoticeDetail extends BaseNoticeDetail {
   notice_type: '培训通知';
   training_time: string;
   training_method: TrainingMethod;
-  notice_content: string[];
-  attention_notes: string[];
+  notice_content: string;
+  attention_notes: string;
 }
 
 export interface AssessmentAnnouncementDetail extends BaseNoticeDetail {
   notice_type: '通知公告';
   announcement_kind: 'assessment';
-  content_sections: string[];
+  notice_content: string;
 }
 
 export interface DutyAnnouncementDetail extends BaseNoticeDetail {
@@ -66,8 +66,7 @@ export interface DutyAnnouncementDetail extends BaseNoticeDetail {
   announcement_kind: 'duty';
   holiday_start: string;
   holiday_end: string;
-  daily_schedule: string[];
-  duty_requirements: string[];
+  notice_content: string;
 }
 
 export type NoticeDetail =
