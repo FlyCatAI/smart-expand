@@ -18,6 +18,7 @@ import type {
 } from './types';
 
 const SESSION_NOTIFICATION_CLOSED = 'hzy:acquiring-workbench:notification-closed';
+const SESSION_KPI_SCENARIO = 'hzy:acquiring-workbench:mock-kpi-scenario';
 const PAGE_SIZE = 20;
 const knownRoutes = new Set(['/income-details', '/history-performance', '/merchant-detail', '/notice-detail']);
 
@@ -35,7 +36,7 @@ export const quickActions: QuickAction[] = [
   { id: 'filter_advanced', name: '筛选', action: 'modal' },
 ];
 
-const rawKpi: RawKpi = {
+const defaultRawKpi: RawKpi = {
   incomeAmount: 28.56,
   incomeDelta: 0.82,
   entryCount: 45,
@@ -45,6 +46,21 @@ const rawKpi: RawKpi = {
   activeCount: 42,
   activeDelta: 1,
   activeThreshold: 50,
+};
+
+const mockKpiScenarios: Record<string, Partial<RawKpi>> = {
+  'income-zero': { incomeAmount: 0, incomeDelta: 0 },
+  'income-billion': { incomeAmount: 100000, incomeDelta: 0.01 },
+  'income-max-99999': { incomeAmount: 99999.99, incomeDelta: 0.01 },
+  'income-negative': { incomeAmount: -1.23, incomeDelta: -0.01 },
+  'income-nan': { incomeAmount: Number.NaN, incomeDelta: Number.NaN },
+  'income-infinity': { incomeAmount: Number.POSITIVE_INFINITY, incomeDelta: Number.POSITIVE_INFINITY },
+  'income-rounding': { incomeAmount: 1.235, incomeDelta: 0.005 },
+  'delta-zero': { incomeDelta: 0 },
+  'delta-positive-cent': { incomeDelta: 0.01 },
+  'delta-negative-cent': { incomeDelta: -0.01 },
+  'delta-over-100-positive': { incomeAmount: 28.56, incomeDelta: 128.57 },
+  'delta-over-100-negative': { incomeAmount: 28.56, incomeDelta: -128.57 },
 };
 
 const defaultNotification: WorkbenchNotification = {
@@ -80,6 +96,44 @@ function cloneFilters(source: WorkbenchFilters): WorkbenchFilters {
     entryStart: source.entryStart,
     entryEnd: source.entryEnd,
     region: { ...source.region },
+  };
+}
+
+function parseMockNumber(value: string | null) {
+  if (value === null) return undefined;
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return undefined;
+  if (normalized === 'null') return null;
+  if (normalized === 'nan') return Number.NaN;
+  if (normalized === 'infinity' || normalized === '+infinity' || normalized === 'inf' || normalized === '+inf') {
+    return Number.POSITIVE_INFINITY;
+  }
+  if (normalized === '-infinity' || normalized === '-inf') return Number.NEGATIVE_INFINITY;
+  return Number(normalized);
+}
+
+function resolveRawKpi() {
+  if (typeof window === 'undefined') return { data: defaultRawKpi, scenario: '' };
+
+  const params = new URLSearchParams(window.location.search);
+  const scenarioParam = params.get('mockKpiScenario');
+  const scenario = scenarioParam ?? window.sessionStorage.getItem(SESSION_KPI_SCENARIO) ?? '';
+  if (scenarioParam !== null) {
+    if (scenarioParam === 'default' || scenarioParam === '') window.sessionStorage.removeItem(SESSION_KPI_SCENARIO);
+    else window.sessionStorage.setItem(SESSION_KPI_SCENARIO, scenarioParam);
+  }
+
+  const scenarioData = scenario && scenario !== 'default' ? mockKpiScenarios[scenario] : undefined;
+  const data: RawKpi = { ...defaultRawKpi, ...scenarioData };
+  const incomeAmount = parseMockNumber(params.get('mockKpiIncomeAmount'));
+  const incomeDelta = parseMockNumber(params.get('mockKpiIncomeDelta'));
+
+  if (incomeAmount !== undefined) data.incomeAmount = incomeAmount;
+  if (incomeDelta !== undefined) data.incomeDelta = incomeDelta;
+
+  return {
+    data,
+    scenario: scenarioData ? scenario : '',
   };
 }
 
@@ -186,7 +240,9 @@ export function useAcquiringWorkbench() {
   const showNotification = ref(true);
   const filters = reactive<WorkbenchFilters>(initialFilters());
   const draftFilters = reactive<WorkbenchFilters>(initialFilters());
-  const kpiCards = computed(() => buildKpiCards(rawKpi));
+  const resolvedKpi = resolveRawKpi();
+  const kpiCards = computed(() => buildKpiCards(resolvedKpi.data));
+  const activeKpiMockScenario = resolvedKpi.scenario;
   let loadMoreTimer: number | null = null;
   let loadMoreRequestId = 0;
 
@@ -482,6 +538,7 @@ export function useAcquiringWorkbench() {
 
   return {
     activeFilterCount,
+    activeKpiMockScenario,
     activeToolbarAction,
     applyDraftFilters,
     closeFilterModal,
