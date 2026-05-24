@@ -1,5 +1,5 @@
 <template>
-  <main class="acquiring-workbench">
+  <main class="acquiring-workbench" :data-kpi-mock-scenario="activeKpiMockScenario || undefined">
     <section class="workbench-kpi" aria-label="本月业绩">
       <button
         v-for="card in kpiCards"
@@ -230,6 +230,7 @@ const partnerOptions = ['全部', '是', '否'] as const;
 
 const {
   activeFilterCount,
+  activeKpiMockScenario,
   activeToolbarAction,
   applyDraftFilters,
   closeFilterModal,
